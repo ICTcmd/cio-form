@@ -1,0 +1,963 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>City Information Office - Request Form System</title>
+    <style>
+        /* Reset and Base Styles */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            padding: 20px;
+            min-height: 100vh;
+        }
+
+        /* Form Container - Screen View */
+        .form-container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.2);
+        }
+
+        .form-header {
+            text-align: center;
+            margin-bottom: 30px;
+            border-bottom: 3px solid #667eea;
+            padding-bottom: 20px;
+        }
+
+        .form-header h1 {
+            color: #333;
+            font-size: 24px;
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+
+        .form-header h2 {
+            color: #666;
+            font-size: 16px;
+            font-weight: normal;
+        }
+
+        .logo-placeholder {
+            width: 80px;
+            height: 80px;
+            margin: 0 auto 15px;
+            background: #667eea;
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 28px;
+            font-weight: bold;
+            border-radius: 50%;
+        }
+
+        .form-section {
+            margin-bottom: 30px;
+        }
+
+        .form-section h3 {
+            background: #667eea;
+            color: white;
+            padding: 10px 15px;
+            margin-bottom: 15px;
+            border-radius: 5px;
+            font-size: 16px;
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+            color: #333;
+            font-weight: 500;
+        }
+
+        .form-group input[type="text"],
+        .form-group input[type="date"],
+        .form-group input[type="time"],
+        .form-group input[type="tel"],
+        .form-group textarea {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 14px;
+            transition: border-color 0.3s;
+        }
+
+        .form-group input:focus,
+        .form-group textarea:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            gap: 15px;
+        }
+
+        .checkbox-group {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+
+        .checkbox-item {
+            display: flex;
+            align-items: center;
+        }
+
+        .checkbox-item input[type="checkbox"] {
+            margin-right: 8px;
+            width: 18px;
+            height: 18px;
+            cursor: pointer;
+        }
+
+        .checkbox-item label {
+            margin: 0;
+            cursor: pointer;
+            font-weight: normal;
+        }
+
+        .conditional-field {
+            display: none;
+            margin-top: 10px;
+            padding: 15px;
+            background: #f8f9fa;
+            border-left: 3px solid #667eea;
+            border-radius: 3px;
+        }
+
+        .conditional-field.active {
+            display: block;
+        }
+
+        .button-group {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            margin-top: 30px;
+        }
+
+        .btn {
+            padding: 12px 30px;
+            font-size: 16px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-weight: 600;
+        }
+
+        .btn-primary {
+            background: #667eea;
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: #5568d3;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+        }
+
+        .btn-secondary {
+            background: #6c757d;
+            color: white;
+        }
+
+        .btn-secondary:hover {
+            background: #5a6268;
+        }
+
+        .note {
+            background: #fff3cd;
+            border: 1px solid #ffc107;
+            padding: 15px;
+            border-radius: 5px;
+            margin-top: 20px;
+            font-size: 14px;
+            color: #856404;
+        }
+
+        /* Print Layout Styles */
+        .print-view {
+            display: none;
+        }
+
+        @media print {
+            @page {
+                size: landscape;
+                margin: 10mm;
+            }
+
+            body {
+                background: white;
+                padding: 0;
+                margin: 0;
+            }
+
+            .form-container,
+            .button-group,
+            .note {
+                display: none !important;
+            }
+
+            .print-view {
+                display: flex !important;
+                width: 100%;
+                height: 100vh;
+                gap: 0;
+            }
+
+            .print-copy {
+                flex: 1;
+                padding: 15px;
+                border-right: 1px dashed #999;
+                font-size: 10px;
+                page-break-inside: avoid;
+            }
+
+            .print-copy:last-child {
+                border-right: none;
+            }
+
+            .print-header {
+                text-align: center;
+                margin-bottom: 15px;
+                padding-bottom: 10px;
+                border-bottom: 2px solid #000;
+            }
+
+            .print-header h1 {
+                font-size: 14px;
+                margin-bottom: 3px;
+                font-weight: bold;
+            }
+
+            .print-header h2 {
+                font-size: 10px;
+                font-weight: normal;
+                margin-bottom: 8px;
+            }
+
+            .print-logo {
+                width: 50px;
+                height: 50px;
+                margin: 0 auto 8px;
+                background: #000;
+                color: white;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                font-size: 18px;
+                font-weight: bold;
+                border-radius: 50%;
+            }
+
+            .print-date {
+                text-align: right;
+                margin-top: 5px;
+                font-size: 9px;
+            }
+
+            .print-section {
+                margin-bottom: 12px;
+            }
+
+            .print-section h3 {
+                background: #000;
+                color: white;
+                padding: 4px 8px;
+                margin-bottom: 8px;
+                font-size: 11px;
+                font-weight: bold;
+            }
+
+            .print-field {
+                margin-bottom: 6px;
+                font-size: 9px;
+                display: flex;
+            }
+
+            .print-field-label {
+                font-weight: bold;
+                margin-right: 5px;
+                min-width: 100px;
+            }
+
+            .print-field-value {
+                flex: 1;
+                border-bottom: 1px solid #333;
+                min-height: 14px;
+            }
+
+            .print-checkbox-grid {
+                display: grid;
+                grid-template-columns: 1fr 1fr;
+                gap: 4px;
+                margin-bottom: 8px;
+            }
+
+            .print-checkbox {
+                display: flex;
+                align-items: center;
+                font-size: 9px;
+            }
+
+            .print-checkbox-box {
+                width: 10px;
+                height: 10px;
+                border: 1px solid #000;
+                margin-right: 4px;
+                display: inline-flex;
+                align-items: center;
+                justify-content: center;
+                font-size: 8px;
+            }
+
+            .print-checkbox-box.checked::after {
+                content: '✓';
+            }
+
+            .print-conditional {
+                margin-top: 8px;
+                padding: 6px;
+                background: #f0f0f0;
+                border-left: 2px solid #000;
+            }
+
+            .print-footer {
+                margin-top: 15px;
+                padding-top: 10px;
+                border-top: 1px solid #333;
+            }
+
+            .print-signature {
+                text-align: center;
+                margin-top: 30px;
+                padding-top: 5px;
+                border-top: 1px solid #000;
+                width: 60%;
+                margin-left: auto;
+                margin-right: auto;
+                font-size: 10px;
+                font-weight: bold;
+            }
+
+            .print-note {
+                font-size: 8px;
+                margin-top: 10px;
+                text-align: center;
+                font-style: italic;
+            }
+
+            .print-row {
+                display: grid;
+                grid-template-columns: 1fr 1fr 1fr;
+                gap: 8px;
+                margin-bottom: 6px;
+            }
+
+            .print-cio-section {
+                margin-top: 12px;
+                padding: 8px;
+                border: 1px solid #000;
+            }
+
+            .print-cio-row {
+                display: flex;
+                align-items: center;
+                margin-bottom: 4px;
+                font-size: 9px;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .form-container {
+                padding: 20px;
+            }
+
+            .form-row {
+                grid-template-columns: 1fr;
+            }
+
+            .checkbox-group {
+                grid-template-columns: 1fr;
+            }
+
+            .button-group {
+                flex-direction: column;
+            }
+
+            .btn {
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Screen View Form -->
+    <div class="form-container">
+        <div class="form-header">
+            <div class="logo-placeholder">CIO</div>
+            <h1>CITY INFORMATION OFFICE</h1>
+            <h2>City Government of Bago</h2>
+        </div>
+
+        <form id="requestForm">
+            <!-- Date -->
+            <div class="form-group">
+                <label for="formDate">Date:</label>
+                <input type="date" id="formDate" name="formDate" required>
+            </div>
+
+            <!-- Request Form Section -->
+            <div class="form-section">
+                <h3>REQUEST FORM</h3>
+                <div class="form-group">
+                    <label for="requestingOffice">Requesting Office:</label>
+                    <input type="text" id="requestingOffice" name="requestingOffice" required>
+                </div>
+                <div class="form-group">
+                    <label for="contactPerson">Contact Person:</label>
+                    <input type="text" id="contactPerson" name="contactPerson" required>
+                </div>
+                <div class="form-group">
+                    <label for="contactNo">Contact No.:</label>
+                    <input type="tel" id="contactNo" name="contactNo" required>
+                </div>
+            </div>
+
+            <!-- Event Details Section -->
+            <div class="form-section">
+                <h3>EVENT DETAILS</h3>
+                <div class="form-group">
+                    <label for="eventActivity">Event/Activity:</label>
+                    <input type="text" id="eventActivity" name="eventActivity" required>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="eventDate">Date:</label>
+                        <input type="date" id="eventDate" name="eventDate" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="eventTime">Time:</label>
+                        <input type="time" id="eventTime" name="eventTime" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="eventVenue">Venue:</label>
+                        <input type="text" id="eventVenue" name="eventVenue" required>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Service Requested Section -->
+            <div class="form-section">
+                <h3>SERVICE REQUESTED</h3>
+                <div class="checkbox-group">
+                    <div class="checkbox-item">
+                        <input type="checkbox" id="graphicDesign" name="service" value="Graphic/ Lay-out Design">
+                        <label for="graphicDesign">Graphic/ Lay-out Design</label>
+                    </div>
+                    <div class="checkbox-item">
+                        <input type="checkbox" id="radioGuesting" name="service" value="Radio Guesting">
+                        <label for="radioGuesting">Radio Guesting</label>
+                    </div>
+                    <div class="checkbox-item">
+                        <input type="checkbox" id="photoCoverage" name="service" value="Photo Coverage">
+                        <label for="photoCoverage">Photo Coverage</label>
+                    </div>
+                    <div class="checkbox-item">
+                        <input type="checkbox" id="videoEditing" name="service" value="Video Editing">
+                        <label for="videoEditing">Video Editing</label>
+                    </div>
+                    <div class="checkbox-item">
+                        <input type="checkbox" id="videoCoverage" name="service" value="Video Coverage">
+                        <label for="videoCoverage">Video Coverage</label>
+                    </div>
+                    <div class="checkbox-item">
+                        <input type="checkbox" id="socialMediaPosting" name="service" value="Social Media Posting">
+                        <label for="socialMediaPosting">Social Media Posting</label>
+                    </div>
+                    <div class="checkbox-item">
+                        <input type="checkbox" id="videoCoverageInterview" name="service" value="Video Coverage with Interview">
+                        <label for="videoCoverageInterview">Video Coverage with Interview</label>
+                    </div>
+                    <div class="checkbox-item">
+                        <input type="checkbox" id="copyMaterials" name="service" value="Copy of Photo/Video Materials">
+                        <label for="copyMaterials">Copy of Photo/Video Materials</label>
+                    </div>
+                    <div class="checkbox-item">
+                        <input type="checkbox" id="drone" name="service" value="Drone">
+                        <label for="drone">Drone</label>
+                    </div>
+                </div>
+
+                <!-- Conditional Fields -->
+                <div id="videoEditingFields" class="conditional-field">
+                    <div class="form-group">
+                        <label for="videoEditingDueDate">Due Date:</label>
+                        <input type="date" id="videoEditingDueDate" name="videoEditingDueDate">
+                    </div>
+                </div>
+
+                <div id="socialMediaFields" class="conditional-field">
+                    <div class="form-group">
+                        <label for="socialMediaDates">Posting Dates:</label>
+                        <input type="text" id="socialMediaDates" name="socialMediaDates" placeholder="Enter posting dates">
+                    </div>
+                </div>
+
+                <div id="copyMaterialsFields" class="conditional-field">
+                    <div class="form-group">
+                        <label for="copyAbout">About:</label>
+                        <input type="text" id="copyAbout" name="copyAbout">
+                    </div>
+                    <div class="form-group">
+                        <label for="copyEvent">Event:</label>
+                        <input type="text" id="copyEvent" name="copyEvent">
+                    </div>
+                    <div class="form-group">
+                        <label for="copyDateTaken">Date Taken:</label>
+                        <input type="date" id="copyDateTaken" name="copyDateTaken">
+                    </div>
+                </div>
+            </div>
+
+            <!-- For CIO Use Section -->
+            <div class="form-section">
+                <h3>FOR CIO USE</h3>
+                <div class="form-group">
+                    <label>Request Status:</label>
+                    <div class="checkbox-group">
+                        <div class="checkbox-item">
+                            <input type="checkbox" id="statusApproved" name="requestStatus" value="Approved">
+                            <label for="statusApproved">Approved</label>
+                        </div>
+                        <div class="checkbox-item">
+                            <input type="checkbox" id="statusDeclined" name="requestStatus" value="Declined">
+                            <label for="statusDeclined">Declined</label>
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="requestRemarks">Remarks:</label>
+                    <input type="text" id="requestRemarks" name="requestRemarks">
+                </div>
+                <div class="form-group">
+                    <label>Progress Status:</label>
+                    <div class="checkbox-group">
+                        <div class="checkbox-item">
+                            <input type="checkbox" id="progressCompleted" name="progressStatus" value="Completed">
+                            <label for="progressCompleted">Completed</label>
+                        </div>
+                        <div class="checkbox-item">
+                            <input type="checkbox" id="progressOngoing" name="progressStatus" value="Ongoing">
+                            <label for="progressOngoing">Ongoing</label>
+                        </div>
+                        <div class="checkbox-item">
+                            <input type="checkbox" id="progressDeferred" name="progressStatus" value="Deferred">
+                            <label for="progressDeferred">Deferred</label>
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="progressRemarks">Remarks:</label>
+                    <input type="text" id="progressRemarks" name="progressRemarks">
+                </div>
+                <div class="form-group">
+                    <label for="assignedPersonnel">Assigned Personnel:</label>
+                    <input type="text" id="assignedPersonnel" name="assignedPersonnel">
+                </div>
+            </div>
+
+            <div class="note">
+                <strong>Note:</strong> Please submit requests at least 3 working days before the event, subject to CIO personnel and equipment availability.
+            </div>
+
+            <div class="button-group">
+                <button type="button" class="btn btn-secondary" onclick="resetForm()">Reset Form</button>
+                <button type="button" class="btn btn-primary" onclick="printForm()">Print Form / Generate Document</button>
+            </div>
+        </form>
+    </div>
+
+    <!-- Print View (Hidden on screen, visible on print) -->
+    <div class="print-view" id="printView">
+        <!-- Left Copy -->
+        <div class="print-copy">
+            <div class="print-header">
+                <div class="print-logo">CIO</div>
+                <h1>CITY INFORMATION OFFICE</h1>
+                <h2>CITY GOVERNMENT OF BAGO</h2>
+                <div class="print-date">DATE: <span id="printDate1"></span></div>
+            </div>
+
+            <div class="print-section">
+                <h3>REQUEST FORM</h3>
+                <div class="print-field">
+                    <span class="print-field-label">Requesting Office:</span>
+                    <span class="print-field-value" id="printRequestingOffice1"></span>
+                </div>
+                <div class="print-field">
+                    <span class="print-field-label">Contact Person:</span>
+                    <span class="print-field-value" id="printContactPerson1"></span>
+                </div>
+                <div class="print-field">
+                    <span class="print-field-label">Contact No.:</span>
+                    <span class="print-field-value" id="printContactNo1"></span>
+                </div>
+            </div>
+
+            <div class="print-section">
+                <h3>EVENT DETAILS</h3>
+                <div class="print-field">
+                    <span class="print-field-label">Event/Activity:</span>
+                    <span class="print-field-value" id="printEventActivity1"></span>
+                </div>
+                <div class="print-row">
+                    <div class="print-field">
+                        <span class="print-field-label">Date:</span>
+                        <span class="print-field-value" id="printEventDate1"></span>
+                    </div>
+                    <div class="print-field">
+                        <span class="print-field-label">Time:</span>
+                        <span class="print-field-value" id="printEventTime1"></span>
+                    </div>
+                    <div class="print-field">
+                        <span class="print-field-label">Venue:</span>
+                        <span class="print-field-value" id="printEventVenue1"></span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="print-section">
+                <h3>SERVICE REQUESTED</h3>
+                <div class="print-checkbox-grid" id="printServiceGrid1"></div>
+                <div id="printConditional1"></div>
+            </div>
+
+            <div class="print-section">
+                <div class="print-cio-section">
+                    <h3 style="margin: 0 0 8px 0;">FOR CIO USE</h3>
+                    <div class="print-cio-row">
+                        <span style="font-weight: bold; margin-right: 10px;">Request Status:</span>
+                        <span class="print-checkbox-box" id="printStatusApproved1"></span>
+                        <span style="margin-right: 10px;">Approved</span>
+                        <span class="print-checkbox-box" id="printStatusDeclined1"></span>
+                        <span>Declined</span>
+                    </div>
+                    <div class="print-field">
+                        <span class="print-field-label">Remarks:</span>
+                        <span class="print-field-value" id="printRequestRemarks1"></span>
+                    </div>
+                    <div class="print-cio-row" style="margin-top: 6px;">
+                        <span style="font-weight: bold; margin-right: 10px;">Progress Status:</span>
+                        <span class="print-checkbox-box" id="printProgressCompleted1"></span>
+                        <span style="margin-right: 8px;">Completed</span>
+                        <span class="print-checkbox-box" id="printProgressOngoing1"></span>
+                        <span style="margin-right: 8px;">Ongoing</span>
+                        <span class="print-checkbox-box" id="printProgressDeferred1"></span>
+                        <span>Deferred</span>
+                    </div>
+                    <div class="print-field">
+                        <span class="print-field-label">Remarks:</span>
+                        <span class="print-field-value" id="printProgressRemarks1"></span>
+                    </div>
+                    <div class="print-field">
+                        <span class="print-field-label">Assigned Personnel:</span>
+                        <span class="print-field-value" id="printAssignedPersonnel1"></span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="print-footer">
+                <div class="print-signature">CITY INFORMATION OFFICER</div>
+                <div class="print-note">
+                    Note: Please submit requests at least 3 working days before the event, subject to CIO personnel and equipment availability.
+                </div>
+            </div>
+        </div>
+
+        <!-- Right Copy (Duplicate) -->
+        <div class="print-copy">
+            <div class="print-header">
+                <div class="print-logo">CIO</div>
+                <h1>CITY INFORMATION OFFICE</h1>
+                <h2>CITY GOVERNMENT OF BAGO</h2>
+                <div class="print-date">DATE: <span id="printDate2"></span></div>
+            </div>
+
+            <div class="print-section">
+                <h3>REQUEST FORM</h3>
+                <div class="print-field">
+                    <span class="print-field-label">Requesting Office:</span>
+                    <span class="print-field-value" id="printRequestingOffice2"></span>
+                </div>
+                <div class="print-field">
+                    <span class="print-field-label">Contact Person:</span>
+                    <span class="print-field-value" id="printContactPerson2"></span>
+                </div>
+                <div class="print-field">
+                    <span class="print-field-label">Contact No.:</span>
+                    <span class="print-field-value" id="printContactNo2"></span>
+                </div>
+            </div>
+
+            <div class="print-section">
+                <h3>EVENT DETAILS</h3>
+                <div class="print-field">
+                    <span class="print-field-label">Event/Activity:</span>
+                    <span class="print-field-value" id="printEventActivity2"></span>
+                </div>
+                <div class="print-row">
+                    <div class="print-field">
+                        <span class="print-field-label">Date:</span>
+                        <span class="print-field-value" id="printEventDate2"></span>
+                    </div>
+                    <div class="print-field">
+                        <span class="print-field-label">Time:</span>
+                        <span class="print-field-value" id="printEventTime2"></span>
+                    </div>
+                    <div class="print-field">
+                        <span class="print-field-label">Venue:</span>
+                        <span class="print-field-value" id="printEventVenue2"></span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="print-section">
+                <h3>SERVICE REQUESTED</h3>
+                <div class="print-checkbox-grid" id="printServiceGrid2"></div>
+                <div id="printConditional2"></div>
+            </div>
+
+            <div class="print-section">
+                <div class="print-cio-section">
+                    <h3 style="margin: 0 0 8px 0;">FOR CIO USE</h3>
+                    <div class="print-cio-row">
+                        <span style="font-weight: bold; margin-right: 10px;">Request Status:</span>
+                        <span class="print-checkbox-box" id="printStatusApproved2"></span>
+                        <span style="margin-right: 10px;">Approved</span>
+                        <span class="print-checkbox-box" id="printStatusDeclined2"></span>
+                        <span>Declined</span>
+                    </div>
+                    <div class="print-field">
+                        <span class="print-field-label">Remarks:</span>
+                        <span class="print-field-value" id="printRequestRemarks2"></span>
+                    </div>
+                    <div class="print-cio-row" style="margin-top: 6px;">
+                        <span style="font-weight: bold; margin-right: 10px;">Progress Status:</span>
+                        <span class="print-checkbox-box" id="printProgressCompleted2"></span>
+                        <span style="margin-right: 8px;">Completed</span>
+                        <span class="print-checkbox-box" id="printProgressOngoing2"></span>
+                        <span style="margin-right: 8px;">Ongoing</span>
+                        <span class="print-checkbox-box" id="printProgressDeferred2"></span>
+                        <span>Deferred</span>
+                    </div>
+                    <div class="print-field">
+                        <span class="print-field-label">Remarks:</span>
+                        <span class="print-field-value" id="printProgressRemarks2"></span>
+                    </div>
+                    <div class="print-field">
+                        <span class="print-field-label">Assigned Personnel:</span>
+                        <span class="print-field-value" id="printAssignedPersonnel2"></span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="print-footer">
+                <div class="print-signature">CITY INFORMATION OFFICER</div>
+                <div class="print-note">
+                    Note: Please submit requests at least 3 working days before the event, subject to CIO personnel and equipment availability.
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Set today's date by default
+        document.addEventListener('DOMContentLoaded', function() {
+            const today = new Date().toISOString().split('T')[0];
+            document.getElementById('formDate').value = today;
+
+            // Add event listeners for conditional fields
+            document.getElementById('videoEditing').addEventListener('change', toggleConditionalField);
+            document.getElementById('socialMediaPosting').addEventListener('change', toggleConditionalField);
+            document.getElementById('copyMaterials').addEventListener('change', toggleConditionalField);
+        });
+
+        function toggleConditionalField(event) {
+            const checkbox = event.target;
+            const fieldId = checkbox.id + 'Fields';
+            const field = document.getElementById(fieldId);
+            
+            if (checkbox.checked) {
+                field.classList.add('active');
+            } else {
+                field.classList.remove('active');
+            }
+        }
+
+        function populatePrintView() {
+            // Get form data
+            const formDate = document.getElementById('formDate').value;
+            const requestingOffice = document.getElementById('requestingOffice').value;
+            const contactPerson = document.getElementById('contactPerson').value;
+            const contactNo = document.getElementById('contactNo').value;
+            const eventActivity = document.getElementById('eventActivity').value;
+            const eventDate = document.getElementById('eventDate').value;
+            const eventTime = document.getElementById('eventTime').value;
+            const eventVenue = document.getElementById('eventVenue').value;
+
+            // Populate both copies (1 and 2)
+            for (let i = 1; i <= 2; i++) {
+                document.getElementById(`printDate${i}`).textContent = formDate;
+                document.getElementById(`printRequestingOffice${i}`).textContent = requestingOffice;
+                document.getElementById(`printContactPerson${i}`).textContent = contactPerson;
+                document.getElementById(`printContactNo${i}`).textContent = contactNo;
+                document.getElementById(`printEventActivity${i}`).textContent = eventActivity;
+                document.getElementById(`printEventDate${i}`).textContent = eventDate;
+                document.getElementById(`printEventTime${i}`).textContent = eventTime;
+                document.getElementById(`printEventVenue${i}`).textContent = eventVenue;
+
+                // Populate service checkboxes
+                const serviceGrid = document.getElementById(`printServiceGrid${i}`);
+                serviceGrid.innerHTML = '';
+                
+                const services = [
+                    { id: 'graphicDesign', label: 'Graphic/ Lay-out Design' },
+                    { id: 'radioGuesting', label: 'Radio Guesting' },
+                    { id: 'photoCoverage', label: 'Photo Coverage' },
+                    { id: 'videoEditing', label: 'Video Editing' },
+                    { id: 'videoCoverage', label: 'Video Coverage' },
+                    { id: 'socialMediaPosting', label: 'Social Media Posting' },
+                    { id: 'videoCoverageInterview', label: 'Video Coverage with Interview' },
+                    { id: 'copyMaterials', label: 'Copy of Photo/Video Materials' },
+                    { id: 'drone', label: 'Drone' }
+                ];
+
+                services.forEach(service => {
+                    const checkbox = document.getElementById(service.id);
+                    const div = document.createElement('div');
+                    div.className = 'print-checkbox';
+                    div.innerHTML = `
+                        <span class="print-checkbox-box ${checkbox.checked ? 'checked' : ''}"></span>
+                        ${service.label}
+                    `;
+                    serviceGrid.appendChild(div);
+                });
+
+                // Populate conditional fields
+                const conditionalDiv = document.getElementById(`printConditional${i}`);
+                conditionalDiv.innerHTML = '';
+
+                if (document.getElementById('videoEditing').checked) {
+                    const dueDate = document.getElementById('videoEditingDueDate').value;
+                    conditionalDiv.innerHTML += `
+                        <div class="print-conditional">
+                            <strong>FOR VIDEO EDITING</strong><br>
+                            Due Date: ${dueDate}
+                        </div>
+                    `;
+                }
+
+                if (document.getElementById('socialMediaPosting').checked) {
+                    const postingDates = document.getElementById('socialMediaDates').value;
+                    conditionalDiv.innerHTML += `
+                        <div class="print-conditional">
+                            <strong>FOR SOCIAL MEDIA POSTING</strong><br>
+                            Posting Dates: ${postingDates}
+                        </div>
+                    `;
+                }
+
+                if (document.getElementById('copyMaterials').checked) {
+                    const about = document.getElementById('copyAbout').value;
+                    const event = document.getElementById('copyEvent').value;
+                    const dateTaken = document.getElementById('copyDateTaken').value;
+                    conditionalDiv.innerHTML += `
+                        <div class="print-conditional">
+                            <strong>FOR COPY OF PHOTO/VIDEO MATERIALS</strong><br>
+                            About: ${about} | Event: ${event} | Date Taken: ${dateTaken}
+                        </div>
+                    `;
+                }
+
+                // Populate CIO Use section
+                const requestRemarks = document.getElementById('requestRemarks').value;
+                const progressRemarks = document.getElementById('progressRemarks').value;
+                const assignedPersonnel = document.getElementById('assignedPersonnel').value;
+
+                document.getElementById(`printRequestRemarks${i}`).textContent = requestRemarks;
+                document.getElementById(`printProgressRemarks${i}`).textContent = progressRemarks;
+                document.getElementById(`printAssignedPersonnel${i}`).textContent = assignedPersonnel;
+
+                // Status checkboxes
+                if (document.getElementById('statusApproved').checked) {
+                    document.getElementById(`printStatusApproved${i}`).classList.add('checked');
+                }
+                if (document.getElementById('statusDeclined').checked) {
+                    document.getElementById(`printStatusDeclined${i}`).classList.add('checked');
+                }
+                if (document.getElementById('progressCompleted').checked) {
+                    document.getElementById(`printProgressCompleted${i}`).classList.add('checked');
+                }
+                if (document.getElementById('progressOngoing').checked) {
+                    document.getElementById(`printProgressOngoing${i}`).classList.add('checked');
+                }
+                if (document.getElementById('progressDeferred').checked) {
+                    document.getElementById(`printProgressDeferred${i}`).classList.add('checked');
+                }
+            }
+        }
+
+        function printForm() {
+            // Validate required fields
+            const form = document.getElementById('requestForm');
+            if (!form.checkValidity()) {
+                alert('Please fill in all required fields before printing.');
+                form.reportValidity();
+                return;
+            }
+
+            // Populate print view with form data
+            populatePrintView();
+
+            // Trigger print
+            window.print();
+        }
+
+        function resetForm() {
+            if (confirm('Are you sure you want to reset the form? All entered data will be cleared.')) {
+                document.getElementById('requestForm').reset();
+                const today = new Date().toISOString().split('T')[0];
+                document.getElementById('formDate').value = today;
+                
+                // Hide conditional fields
+                document.querySelectorAll('.conditional-field').forEach(field => {
+                    field.classList.remove('active');
+                });
+            }
+        }
+    </script>
+</body>
+</html>
