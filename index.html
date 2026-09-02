@@ -433,11 +433,170 @@
                 width: 100%;
             }
         }
+
+        /* Admin Dashboard Styles */
+        .admin-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.2);
+        }
+
+        .admin-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+            padding-bottom: 20px;
+            border-bottom: 3px solid #667eea;
+        }
+
+        .admin-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+
+        .admin-table th {
+            background: #667eea;
+            color: white;
+            padding: 12px;
+            text-align: left;
+            font-weight: 600;
+        }
+
+        .admin-table td {
+            padding: 10px;
+            border-bottom: 1px solid #ddd;
+        }
+
+        .admin-table tr:hover {
+            background: #f8f9fa;
+        }
+
+        .action-btn {
+            padding: 6px 12px;
+            margin: 2px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 12px;
+            transition: all 0.3s;
+        }
+
+        .action-btn-call {
+            background: #28a745;
+            color: white;
+        }
+
+        .action-btn-call:hover {
+            background: #218838;
+        }
+
+        .action-btn-messenger {
+            background: #0084ff;
+            color: white;
+        }
+
+        .action-btn-messenger:hover {
+            background: #0073e6;
+        }
+
+        .action-btn-print {
+            background: #667eea;
+            color: white;
+        }
+
+        .action-btn-print:hover {
+            background: #5568d3;
+        }
+
+        .action-btn-delete {
+            background: #dc3545;
+            color: white;
+        }
+
+        .action-btn-delete:hover {
+            background: #c82333;
+        }
+
+        .status-select {
+            padding: 6px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 12px;
+        }
+
+        .status-badge {
+            padding: 4px 8px;
+            border-radius: 12px;
+            font-size: 11px;
+            font-weight: 600;
+        }
+
+        .status-pending {
+            background: #ffc107;
+            color: #000;
+        }
+
+        .status-contacted {
+            background: #17a2b8;
+            color: white;
+        }
+
+        .status-approved {
+            background: #28a745;
+            color: white;
+        }
+
+        .status-declined {
+            background: #dc3545;
+            color: white;
+        }
+
+        .status-completed {
+            background: #6c757d;
+            color: white;
+        }
+
+        .login-form {
+            max-width: 400px;
+            margin: 100px auto;
+            background: white;
+            padding: 40px;
+            border-radius: 10px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.2);
+        }
+
+        .login-form h2 {
+            text-align: center;
+            margin-bottom: 30px;
+            color: #333;
+        }
+
+        .login-form input {
+            width: 100%;
+            padding: 12px;
+            margin-bottom: 15px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+        }
+
+        #adminView, #loginView {
+            display: none;
+        }
+
+        .control-number {
+            font-weight: bold;
+            color: #667eea;
+        }
     </style>
 </head>
 <body>
     <!-- Screen View Form -->
-    <div class="form-container">
+    <div class="form-container" id="formContainer">
         <div class="form-header">
             <div class="form-header-left">
                 <h1>CITY INFORMATION OFFICE</h1>
@@ -464,12 +623,16 @@
                     <input type="text" id="requestingOffice" name="requestingOffice" required>
                 </div>
                 <div class="form-group">
-                    <label for="contactPerson">Contact Person:</label>
+                    <label for="contactPerson">Contact Person: <span style="color: red;">*</span></label>
                     <input type="text" id="contactPerson" name="contactPerson" required>
                 </div>
                 <div class="form-group">
-                    <label for="contactNo">Contact No.:</label>
-                    <input type="tel" id="contactNo" name="contactNo" required>
+                    <label for="contactNo">Phone/Viber Number: <span style="color: red;">*</span></label>
+                    <input type="tel" id="contactNo" name="contactNo" placeholder="+63 or 09XX XXX XXXX" required>
+                </div>
+                <div class="form-group">
+                    <label for="messengerName">FB Messenger Profile / Name: <span style="color: red;">*</span></label>
+                    <input type="text" id="messengerName" name="messengerName" placeholder="Facebook name or profile link" required>
                 </div>
             </div>
 
@@ -631,9 +794,59 @@
 
             <div class="button-group">
                 <button type="button" class="btn btn-secondary" onclick="resetForm()">Reset Form</button>
-                <button type="button" class="btn btn-primary" onclick="printForm()" id="printButton">Print Form / Generate Document</button>
+                <button type="button" class="btn btn-primary" onclick="submitRequest()" id="submitButton">Submit Request</button>
+                <button type="button" class="btn btn-primary" onclick="printForm()" id="printButton">Print Form (Optional)</button>
             </div>
         </form>
+    </div>
+
+    <!-- Admin Login View -->
+    <div id="loginView">
+        <div class="login-form">
+            <h2>🔐 CIO Admin Login</h2>
+            <input type="password" id="adminPassword" placeholder="Enter admin password" onkeypress="if(event.key==='Enter') loginAdmin()">
+            <button class="btn btn-primary" style="width: 100%;" onclick="loginAdmin()">Login</button>
+            <button class="btn btn-secondary" style="width: 100%; margin-top: 10px;" onclick="showPublicForm()">Back to Form</button>
+        </div>
+    </div>
+
+    <!-- Admin Dashboard View -->
+    <div id="adminView">
+        <div class="admin-container">
+            <div class="admin-header">
+                <div>
+                    <h1>CIO Request Management Dashboard</h1>
+                    <p style="color: #666;">Manage and track all service requests</p>
+                </div>
+                <button class="btn btn-secondary" onclick="logoutAdmin()">Logout</button>
+            </div>
+
+            <div style="margin-bottom: 20px;">
+                <button class="btn btn-primary" onclick="refreshRequests()">🔄 Refresh</button>
+                <button class="btn btn-secondary" onclick="exportRequests()">📥 Export to CSV</button>
+            </div>
+
+            <table class="admin-table" id="requestsTable">
+                <thead>
+                    <tr>
+                        <th>Control #</th>
+                        <th>Date</th>
+                        <th>Requesting Office</th>
+                        <th>Contact Person</th>
+                        <th>Phone</th>
+                        <th>Messenger</th>
+                        <th>Event</th>
+                        <th>Event Date</th>
+                        <th>Services</th>
+                        <th>Status</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody id="requestsTableBody">
+                    <!-- Requests will be populated here -->
+                </tbody>
+            </table>
+        </div>
     </div>
 
     <!-- Print View (Hidden on screen, visible on print) -->
@@ -664,6 +877,10 @@
                 <div class="print-field">
                     <span class="print-field-label">Contact No.:</span>
                     <span class="print-field-value" id="printContactNo1"></span>
+                </div>
+                <div class="print-field">
+                    <span class="print-field-label">FB Messenger:</span>
+                    <span class="print-field-value" id="printMessengerName1"></span>
                 </div>
             </div>
 
@@ -764,6 +981,10 @@
                     <span class="print-field-label">Contact No.:</span>
                     <span class="print-field-value" id="printContactNo2"></span>
                 </div>
+                <div class="print-field">
+                    <span class="print-field-label">FB Messenger:</span>
+                    <span class="print-field-value" id="printMessengerName2"></span>
+                </div>
             </div>
 
             <div class="print-section">
@@ -838,6 +1059,310 @@
     </div>
 
     <script>
+        // Configuration
+        const ADMIN_PASSWORD = 'CIOBago2026'; // Change this to your desired password
+        const EMAILJS_SERVICE_ID = 'YOUR_EMAILJS_SERVICE_ID'; // Get from EmailJS
+        const EMAILJS_TEMPLATE_ID = 'YOUR_EMAILJS_TEMPLATE_ID'; // Get from EmailJS
+        const EMAILJS_PUBLIC_KEY = 'YOUR_EMAILJS_PUBLIC_KEY'; // Get from EmailJS
+
+        // Initialize
+        let requests = JSON.parse(localStorage.getItem('cioRequests')) || [];
+        let currentView = 'form';
+
+        // Check URL hash on load
+        window.addEventListener('DOMContentLoaded', function() {
+            const today = new Date().toISOString().split('T')[0];
+            document.getElementById('formDate').value = today;
+
+            // Add event listeners for conditional fields
+            document.getElementById('videoEditing').addEventListener('change', toggleConditionalField);
+            document.getElementById('socialMediaPosting').addEventListener('change', toggleConditionalField);
+            document.getElementById('copyMaterials').addEventListener('change', toggleConditionalField);
+
+            // Add event listener for acknowledgment checkbox
+            const acknowledgeCheckbox = document.getElementById('acknowledgeNote');
+            const submitButton = document.getElementById('submitButton');
+            const printButton = document.getElementById('printButton');
+            
+            submitButton.disabled = true;
+            printButton.disabled = true;
+            
+            acknowledgeCheckbox.addEventListener('change', function() {
+                submitButton.disabled = !this.checked;
+                printButton.disabled = !this.checked;
+            });
+
+            // Check for admin hash
+            if (window.location.hash === '#admin') {
+                showLoginView();
+            }
+        });
+
+        // Handle hash changes
+        window.addEventListener('hashchange', function() {
+            if (window.location.hash === '#admin') {
+                showLoginView();
+            } else {
+                showPublicForm();
+            }
+        });
+
+        function generateControlNumber() {
+            const date = new Date();
+            const year = date.getFullYear();
+            const month = String(date.getMonth() + 1).padStart(2, '0');
+            const day = String(date.getDate()).padStart(2, '0');
+            const random = Math.floor(Math.random() * 10000).toString().padStart(4, '0');
+            return `CIO-${year}${month}${day}-${random}`;
+        }
+
+        function submitRequest() {
+            const form = document.getElementById('requestForm');
+            if (!form.checkValidity()) {
+                alert('Please fill in all required fields.');
+                form.reportValidity();
+                return;
+            }
+
+            const acknowledgeCheckbox = document.getElementById('acknowledgeNote');
+            if (!acknowledgeCheckbox.checked) {
+                alert('Please read and acknowledge the note before submitting.');
+                acknowledgeCheckbox.focus();
+                return;
+            }
+
+            // Gather form data
+            const formData = {
+                controlNumber: generateControlNumber(),
+                dateSubmitted: new Date().toISOString(),
+                formDate: document.getElementById('formDate').value,
+                requestingOffice: document.getElementById('requestingOffice').value,
+                contactPerson: document.getElementById('contactPerson').value,
+                contactNo: document.getElementById('contactNo').value,
+                messengerName: document.getElementById('messengerName').value,
+                eventActivity: document.getElementById('eventActivity').value,
+                eventDate: document.getElementById('eventDate').value,
+                eventTime: document.getElementById('eventTime').value,
+                eventVenue: document.getElementById('eventVenue').value,
+                services: getSelectedServices(),
+                videoEditingDueDate: document.getElementById('videoEditingDueDate').value,
+                socialMediaDates: document.getElementById('socialMediaDates').value,
+                copyAbout: document.getElementById('copyAbout').value,
+                copyEvent: document.getElementById('copyEvent').value,
+                copyDateTaken: document.getElementById('copyDateTaken').value,
+                status: 'Pending'
+            };
+
+            // Save to localStorage
+            requests.push(formData);
+            localStorage.setItem('cioRequests', JSON.stringify(requests));
+
+            // Send notification (EmailJS or webhook)
+            sendNotification(formData);
+
+            // Show success message
+            alert(`✅ Request submitted successfully!\n\nControl Number: ${formData.controlNumber}\n\nPlease save this control number for your reference. You will be contacted by the CIO team soon.`);
+
+            // Optionally print the form
+            if (confirm('Would you like to print the request form for your records?')) {
+                populatePrintView();
+                window.print();
+            }
+
+            // Reset form
+            form.reset();
+            document.getElementById('formDate').value = new Date().toISOString().split('T')[0];
+            document.getElementById('acknowledgeNote').checked = false;
+            document.getElementById('submitButton').disabled = true;
+            document.getElementById('printButton').disabled = true;
+            document.querySelectorAll('.conditional-field').forEach(field => {
+                field.classList.remove('active');
+            });
+        }
+
+        function getSelectedServices() {
+            const services = [];
+            const checkboxes = document.querySelectorAll('input[name="service"]:checked');
+            checkboxes.forEach(cb => services.push(cb.value));
+            return services;
+        }
+
+        function sendNotification(formData) {
+            // Option 1: EmailJS (Uncomment and configure)
+            /*
+            emailjs.send(EMAILJS_SERVICE_ID, EMAILJS_TEMPLATE_ID, {
+                control_number: formData.controlNumber,
+                requesting_office: formData.requestingOffice,
+                event_name: formData.eventActivity,
+                event_date: formData.eventDate,
+                contact_person: formData.contactPerson,
+                contact_no: formData.contactNo,
+                services: formData.services.join(', ')
+            }, EMAILJS_PUBLIC_KEY);
+            */
+
+            // Option 2: Webhook to Telegram/Discord (Example)
+            // You can configure a webhook URL here
+            const webhookURL = ''; // Add your webhook URL
+            if (webhookURL) {
+                fetch(webhookURL, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        text: `🆕 New CIO Request\n\nControl #: ${formData.controlNumber}\nOffice: ${formData.requestingOffice}\nEvent: ${formData.eventActivity}\nDate: ${formData.eventDate}\nContact: ${formData.contactPerson} (${formData.contactNo})`
+                    })
+                }).catch(err => console.log('Notification failed:', err));
+            }
+        }
+
+        // Admin Functions
+        function showLoginView() {
+            document.getElementById('formContainer').style.display = 'none';
+            document.getElementById('loginView').style.display = 'block';
+            document.getElementById('adminView').style.display = 'none';
+            currentView = 'login';
+        }
+
+        function showPublicForm() {
+            document.getElementById('formContainer').style.display = 'block';
+            document.getElementById('loginView').style.display = 'none';
+            document.getElementById('adminView').style.display = 'none';
+            window.location.hash = '';
+            currentView = 'form';
+        }
+
+        function loginAdmin() {
+            const password = document.getElementById('adminPassword').value;
+            if (password === ADMIN_PASSWORD) {
+                document.getElementById('formContainer').style.display = 'none';
+                document.getElementById('loginView').style.display = 'none';
+                document.getElementById('adminView').style.display = 'block';
+                currentView = 'admin';
+                loadRequests();
+            } else {
+                alert('❌ Invalid password. Please try again.');
+                document.getElementById('adminPassword').value = '';
+            }
+        }
+
+        function logoutAdmin() {
+            showPublicForm();
+        }
+
+        function loadRequests() {
+            requests = JSON.parse(localStorage.getItem('cioRequests')) || [];
+            const tbody = document.getElementById('requestsTableBody');
+            tbody.innerHTML = '';
+
+            if (requests.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="11" style="text-align: center; padding: 20px;">No requests yet</td></tr>';
+                return;
+            }
+
+            requests.reverse().forEach((req, index) => {
+                const actualIndex = requests.length - 1 - index;
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td><span class="control-number">${req.controlNumber}</span></td>
+                    <td>${new Date(req.dateSubmitted).toLocaleDateString()}</td>
+                    <td>${req.requestingOffice}</td>
+                    <td>${req.contactPerson}</td>
+                    <td>${req.contactNo}</td>
+                    <td>${req.messengerName}</td>
+                    <td>${req.eventActivity}</td>
+                    <td>${req.eventDate}</td>
+                    <td style="font-size: 11px;">${req.services.join(', ')}</td>
+                    <td>
+                        <select class="status-select" onchange="updateStatus(${actualIndex}, this.value)">
+                            <option value="Pending" ${req.status === 'Pending' ? 'selected' : ''}>Pending</option>
+                            <option value="Contacted" ${req.status === 'Contacted' ? 'selected' : ''}>Contacted</option>
+                            <option value="Approved" ${req.status === 'Approved' ? 'selected' : ''}>Approved</option>
+                            <option value="Declined" ${req.status === 'Declined' ? 'selected' : ''}>Declined</option>
+                            <option value="Completed" ${req.status === 'Completed' ? 'selected' : ''}>Completed</option>
+                        </select>
+                    </td>
+                    <td>
+                        <button class="action-btn action-btn-call" onclick="callContact('${req.contactNo}')" title="Call">📞</button>
+                        <button class="action-btn action-btn-messenger" onclick="openMessenger('${req.messengerName}')" title="Messenger">💬</button>
+                        <button class="action-btn action-btn-print" onclick="reprintForm(${actualIndex})" title="Reprint">🖨️</button>
+                        <button class="action-btn action-btn-delete" onclick="deleteRequest(${actualIndex})" title="Delete">🗑️</button>
+                    </td>
+                `;
+                tbody.appendChild(row);
+            });
+        }
+
+        function updateStatus(index, newStatus) {
+            requests[index].status = newStatus;
+            localStorage.setItem('cioRequests', JSON.stringify(requests));
+            loadRequests();
+        }
+
+        function callContact(phoneNumber) {
+            window.location.href = `tel:${phoneNumber}`;
+        }
+
+        function openMessenger(messengerName) {
+            // Try to open Messenger or copy name
+            const messengerLink = messengerName.includes('facebook.com') ? messengerName : `https://m.me/${messengerName}`;
+            const newWindow = window.open(messengerLink, '_blank');
+            if (!newWindow) {
+                // If popup blocked, copy to clipboard
+                navigator.clipboard.writeText(messengerName).then(() => {
+                    alert(`📋 Messenger name copied to clipboard:\n${messengerName}`);
+                });
+            }
+        }
+
+        function reprintForm(index) {
+            const req = requests[index];
+            // Populate the form with request data
+            document.getElementById('formDate').value = req.formDate;
+            document.getElementById('requestingOffice').value = req.requestingOffice;
+            document.getElementById('contactPerson').value = req.contactPerson;
+            document.getElementById('contactNo').value = req.contactNo;
+            document.getElementById('eventActivity').value = req.eventActivity;
+            document.getElementById('eventDate').value = req.eventDate;
+            document.getElementById('eventTime').value = req.eventTime;
+            document.getElementById('eventVenue').value = req.eventVenue;
+            
+            populatePrintView();
+            window.print();
+        }
+
+        function deleteRequest(index) {
+            if (confirm('Are you sure you want to delete this request?')) {
+                requests.splice(index, 1);
+                localStorage.setItem('cioRequests', JSON.stringify(requests));
+                loadRequests();
+            }
+        }
+
+        function refreshRequests() {
+            loadRequests();
+            alert('✅ Requests refreshed!');
+        }
+
+        function exportRequests() {
+            if (requests.length === 0) {
+                alert('No requests to export.');
+                return;
+            }
+
+            let csv = 'Control Number,Date Submitted,Requesting Office,Contact Person,Phone,Messenger,Event,Event Date,Services,Status\n';
+            requests.forEach(req => {
+                csv += `"${req.controlNumber}","${new Date(req.dateSubmitted).toLocaleDateString()}","${req.requestingOffice}","${req.contactPerson}","${req.contactNo}","${req.messengerName}","${req.eventActivity}","${req.eventDate}","${req.services.join('; ')}","${req.status}"\n`;
+            });
+
+            const blob = new Blob([csv], { type: 'text/csv' });
+            const url = window.URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `CIO_Requests_${new Date().toISOString().split('T')[0]}.csv`;
+            a.click();
+        }
+
+        // Keep existing functions below
         // Set today's date by default
         document.addEventListener('DOMContentLoaded', function() {
             const today = new Date().toISOString().split('T')[0];
@@ -878,6 +1403,7 @@
             const requestingOffice = document.getElementById('requestingOffice').value;
             const contactPerson = document.getElementById('contactPerson').value;
             const contactNo = document.getElementById('contactNo').value;
+            const messengerName = document.getElementById('messengerName').value;
             const eventActivity = document.getElementById('eventActivity').value;
             const eventDate = document.getElementById('eventDate').value;
             const eventTime = document.getElementById('eventTime').value;
@@ -889,6 +1415,7 @@
                 document.getElementById(`printRequestingOffice${i}`).textContent = requestingOffice;
                 document.getElementById(`printContactPerson${i}`).textContent = contactPerson;
                 document.getElementById(`printContactNo${i}`).textContent = contactNo;
+                document.getElementById(`printMessengerName${i}`).textContent = messengerName;
                 document.getElementById(`printEventActivity${i}`).textContent = eventActivity;
                 document.getElementById(`printEventDate${i}`).textContent = eventDate;
                 document.getElementById(`printEventTime${i}`).textContent = eventTime;
