@@ -178,12 +178,17 @@
             font-weight: 600;
         }
 
+        .btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
         .btn-primary {
             background: #667eea;
             color: white;
         }
 
-        .btn-primary:hover {
+        .btn-primary:hover:not(:disabled) {
             background: #5568d3;
             transform: translateY(-2px);
             box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
@@ -615,9 +620,18 @@
                 <strong>Note:</strong> Please submit requests at least 3 working days before the event, subject to CIO personnel and equipment availability.
             </div>
 
+            <div class="form-group" style="margin-top: 20px;">
+                <div class="checkbox-item" style="display: flex; align-items: flex-start; background: #f8f9fa; padding: 15px; border-radius: 5px; border-left: 4px solid #667eea;">
+                    <input type="checkbox" id="acknowledgeNote" name="acknowledgeNote" style="margin-top: 3px;" required>
+                    <label for="acknowledgeNote" style="margin-left: 10px; cursor: pointer; font-weight: 500;">
+                        I have read and understood that requests must be submitted at least 3 working days before the event, and are subject to CIO personnel and equipment availability.
+                    </label>
+                </div>
+            </div>
+
             <div class="button-group">
                 <button type="button" class="btn btn-secondary" onclick="resetForm()">Reset Form</button>
-                <button type="button" class="btn btn-primary" onclick="printForm()">Print Form / Generate Document</button>
+                <button type="button" class="btn btn-primary" onclick="printForm()" id="printButton">Print Form / Generate Document</button>
             </div>
         </form>
     </div>
@@ -833,6 +847,17 @@
             document.getElementById('videoEditing').addEventListener('change', toggleConditionalField);
             document.getElementById('socialMediaPosting').addEventListener('change', toggleConditionalField);
             document.getElementById('copyMaterials').addEventListener('change', toggleConditionalField);
+
+            // Add event listener for acknowledgment checkbox to enable/disable print button
+            const acknowledgeCheckbox = document.getElementById('acknowledgeNote');
+            const printButton = document.getElementById('printButton');
+            
+            // Initially disable the print button
+            printButton.disabled = true;
+            
+            acknowledgeCheckbox.addEventListener('change', function() {
+                printButton.disabled = !this.checked;
+            });
         });
 
         function toggleConditionalField(event) {
@@ -969,6 +994,14 @@
                 return;
             }
 
+            // Check if acknowledgment checkbox is checked
+            const acknowledgeCheckbox = document.getElementById('acknowledgeNote');
+            if (!acknowledgeCheckbox.checked) {
+                alert('Please read and acknowledge the note before printing the form.');
+                acknowledgeCheckbox.focus();
+                return;
+            }
+
             // Populate print view with form data
             populatePrintView();
 
@@ -986,6 +1019,9 @@
                 document.querySelectorAll('.conditional-field').forEach(field => {
                     field.classList.remove('active');
                 });
+
+                // Uncheck acknowledgment
+                document.getElementById('acknowledgeNote').checked = false;
             }
         }
     </script>
