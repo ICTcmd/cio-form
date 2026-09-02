@@ -1063,6 +1063,11 @@
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
     <script>
+        // Wait for Supabase to load
+        if (typeof window.supabase === 'undefined') {
+            console.error('Supabase library failed to load');
+        }
+        
         // ============================================
         // SUPABASE CONFIGURATION
         // ============================================
@@ -1070,7 +1075,7 @@
         const SUPABASE_ANON_KEY = 'sb_publishable_3Kd460W0EV6xAJuJKtCIuQ_wGtxeuM2';
         
         // Initialize Supabase client
-        const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+        const supabase = window.supabase ? window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY) : null;
         
         // ============================================
         // OTHER CONFIGURATION
@@ -1156,6 +1161,13 @@
             if (!acknowledgeCheckbox.checked) {
                 alert('Please read and acknowledge the note before submitting.');
                 acknowledgeCheckbox.focus();
+                return;
+            }
+
+            // Check if Supabase is available
+            if (!supabase) {
+                alert('❌ Database connection error. Please try again or contact support.');
+                console.error('Supabase client not initialized');
                 return;
             }
 
