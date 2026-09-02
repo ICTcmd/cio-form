@@ -3,14 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>City Information Office - Request Form System</title>
+    <title>City Information Office - Request Form</title>
     <style>
-        /* Reset and Base Styles */
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
 
         body {
             font-family: Arial, sans-serif;
@@ -19,7 +14,6 @@
             min-height: 100vh;
         }
 
-        /* Form Container - Screen View */
         .form-container {
             max-width: 800px;
             margin: 0 auto;
@@ -33,1664 +27,740 @@
             display: flex;
             justify-content: space-between;
             align-items: flex-start;
-            margin-bottom: 30px;
+            margin-bottom: 15px;
+            padding-bottom: 15px;
             border-bottom: 3px solid #667eea;
-            padding-bottom: 20px;
         }
 
-        .form-header-left {
-            flex: 1;
-        }
+        .form-header h1 { font-size: 22px; font-weight: bold; color: #333; }
+        .form-header h2 { font-size: 14px; font-weight: normal; color: #666; }
 
-        .form-header-left h1 {
-            color: #333;
-            font-size: 24px;
-            font-weight: bold;
-            margin-bottom: 5px;
-        }
+        .logo img { width: 70px; height: 70px; object-fit: contain; }
 
-        .form-header-left h2 {
-            color: #666;
-            font-size: 16px;
-            font-weight: normal;
-        }
-
-        .logo-placeholder {
-            width: 80px;
-            height: 80px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-
-        .logo-placeholder img {
-            width: 100%;
-            height: 100%;
-            object-fit: contain;
-        }
-
-        .date-field {
+        .date-row {
             text-align: right;
-            margin-top: 10px;
+            margin-bottom: 15px;
         }
 
-        .form-section {
-            margin-bottom: 30px;
+        .date-row input {
+            padding: 6px 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 14px;
         }
+
+        .form-section { margin-bottom: 25px; }
 
         .form-section h3 {
             background: #667eea;
             color: white;
-            padding: 10px 15px;
-            margin-bottom: 15px;
+            padding: 8px 15px;
+            margin-bottom: 12px;
             border-radius: 5px;
-            font-size: 16px;
+            font-size: 15px;
         }
 
-        .form-group {
-            margin-bottom: 15px;
-        }
+        .form-group { margin-bottom: 12px; }
 
         .form-group label {
             display: block;
-            margin-bottom: 5px;
+            margin-bottom: 4px;
             color: #333;
             font-weight: 500;
+            font-size: 14px;
         }
 
         .form-group input[type="text"],
         .form-group input[type="date"],
         .form-group input[type="time"],
-        .form-group input[type="tel"],
-        .form-group textarea {
+        .form-group input[type="tel"] {
             width: 100%;
-            padding: 10px;
+            padding: 9px;
             border: 1px solid #ddd;
             border-radius: 5px;
             font-size: 14px;
-            transition: border-color 0.3s;
         }
 
-        .form-group input:focus,
-        .form-group textarea:focus {
-            outline: none;
-            border-color: #667eea;
-        }
+        .form-group input:focus { outline: none; border-color: #667eea; }
 
         .form-row {
             display: grid;
             grid-template-columns: 1fr 1fr 1fr;
-            gap: 15px;
+            gap: 12px;
         }
 
         .checkbox-group {
             display: grid;
             grid-template-columns: 1fr 1fr;
-            gap: 10px;
-            margin-bottom: 15px;
+            gap: 8px;
+            margin-bottom: 10px;
         }
 
         .checkbox-item {
             display: flex;
             align-items: center;
+            font-size: 14px;
         }
 
         .checkbox-item input[type="checkbox"] {
-            margin-right: 8px;
-            width: 18px;
-            height: 18px;
+            margin-right: 7px;
+            width: 16px;
+            height: 16px;
             cursor: pointer;
         }
 
-        .checkbox-item label {
-            margin: 0;
-            cursor: pointer;
-            font-weight: normal;
-        }
+        .checkbox-item label { margin: 0; cursor: pointer; font-weight: normal; }
 
         .conditional-field {
             display: none;
             margin-top: 10px;
-            padding: 15px;
+            padding: 12px;
             background: #f8f9fa;
             border-left: 3px solid #667eea;
             border-radius: 3px;
         }
 
-        .conditional-field.active {
-            display: block;
-        }
-
-        .button-group {
-            display: flex;
-            gap: 15px;
-            justify-content: center;
-            margin-top: 30px;
-        }
-
-        .btn {
-            padding: 12px 30px;
-            font-size: 16px;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-            transition: all 0.3s;
-            font-weight: 600;
-        }
-
-        .btn:disabled {
-            opacity: 0.5;
-            cursor: not-allowed;
-        }
-
-        .btn-primary {
-            background: #667eea;
-            color: white;
-        }
-
-        .btn-primary:hover:not(:disabled) {
-            background: #5568d3;
-            transform: translateY(-2px);
-            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
-        }
-
-        .btn-secondary {
-            background: #6c757d;
-            color: white;
-        }
-
-        .btn-secondary:hover {
-            background: #5a6268;
-        }
+        .conditional-field.active { display: block; }
 
         .note {
             background: #fff3cd;
             border: 1px solid #ffc107;
-            padding: 15px;
+            padding: 12px 15px;
             border-radius: 5px;
             margin-top: 20px;
             font-size: 14px;
             color: #856404;
         }
 
-        /* Print Layout Styles */
-        .print-view {
-            display: none;
+        .acknowledge-box {
+            display: flex;
+            align-items: flex-start;
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 5px;
+            border-left: 4px solid #667eea;
+            margin-top: 15px;
         }
 
+        .acknowledge-box input[type="checkbox"] {
+            margin-top: 3px;
+            margin-right: 10px;
+            width: 18px;
+            height: 18px;
+            cursor: pointer;
+        }
+
+        .acknowledge-box label {
+            cursor: pointer;
+            font-weight: 500;
+            font-size: 14px;
+            color: #333;
+        }
+
+        .button-group {
+            display: flex;
+            gap: 12px;
+            justify-content: center;
+            margin-top: 25px;
+        }
+
+        .btn {
+            padding: 12px 28px;
+            font-size: 15px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s;
+        }
+
+        .btn:disabled { opacity: 0.5; cursor: not-allowed; }
+
+        .btn-primary { background: #667eea; color: white; }
+        .btn-primary:hover:not(:disabled) {
+            background: #5568d3;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(102,126,234,0.4);
+        }
+
+        .btn-secondary { background: #6c757d; color: white; }
+        .btn-secondary:hover { background: #5a6268; }
+
+        /* Toast Notification */
+        .toast {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            padding: 15px 25px;
+            border-radius: 8px;
+            color: white;
+            font-weight: 600;
+            font-size: 15px;
+            z-index: 9999;
+            display: none;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.2);
+        }
+
+        .toast.success { background: #28a745; }
+        .toast.error { background: #dc3545; }
+        .toast.show { display: block; animation: slideIn 0.3s ease; }
+
+        @keyframes slideIn {
+            from { transform: translateX(100px); opacity: 0; }
+            to { transform: translateX(0); opacity: 1; }
+        }
+
+        /* Print Styles */
+        .print-view { display: none; }
+
         @media print {
-            @page {
-                size: landscape;
-                margin: 10mm;
-            }
-
-            body {
-                background: white;
-                padding: 0;
-                margin: 0;
-            }
-
-            .form-container,
-            .button-group,
-            .note {
-                display: none !important;
-            }
-
+            @page { size: landscape; margin: 10mm; }
+            body { background: white; padding: 0; }
+            .form-container, .button-group, .note, .toast { display: none !important; }
             .print-view {
                 display: flex !important;
                 width: 100%;
-                height: 100vh;
                 gap: 0;
             }
-
             .print-copy {
                 flex: 1;
                 padding: 15px;
                 border-right: 1px dashed #999;
                 font-size: 10px;
-                page-break-inside: avoid;
             }
-
-            .print-copy:last-child {
-                border-right: none;
-            }
-
+            .print-copy:last-child { border-right: none; }
             .print-header {
                 display: flex;
                 justify-content: space-between;
                 align-items: flex-start;
-                margin-bottom: 15px;
-                padding-bottom: 10px;
+                margin-bottom: 12px;
+                padding-bottom: 8px;
                 border-bottom: 2px solid #000;
             }
-
-            .print-header-left {
-                flex: 1;
-            }
-
-            .print-header h1 {
-                font-size: 14px;
-                margin-bottom: 3px;
-                font-weight: bold;
-            }
-
-            .print-header h2 {
-                font-size: 10px;
-                font-weight: normal;
-                margin-bottom: 8px;
-            }
-
-            .print-logo {
-                width: 50px;
-                height: 50px;
-                display: flex;
-                align-items: center;
-                justify-content: center;
-            }
-
-            .print-logo img {
-                width: 100%;
-                height: 100%;
-                object-fit: contain;
-            }
-
-            .print-date {
-                text-align: right;
-                margin-top: 10px;
-                font-size: 9px;
-            }
-
-            .print-section {
-                margin-bottom: 12px;
-            }
-
+            .print-logo { width: 50px; height: 50px; }
+            .print-logo img { width: 100%; height: 100%; object-fit: contain; }
+            .print-header h1 { font-size: 13px; font-weight: bold; }
+            .print-header h2 { font-size: 9px; font-weight: normal; }
+            .print-date { text-align: right; font-size: 9px; margin-top: 8px; }
+            .print-section { margin-bottom: 10px; }
             .print-section h3 {
                 background: #000;
                 color: white;
-                padding: 4px 8px;
-                margin-bottom: 8px;
-                font-size: 11px;
-                font-weight: bold;
-            }
-
-            .print-field {
-                margin-bottom: 6px;
-                font-size: 9px;
-                display: flex;
-            }
-
-            .print-field-label {
-                font-weight: bold;
-                margin-right: 5px;
-                min-width: 100px;
-            }
-
-            .print-field-value {
-                flex: 1;
-                border-bottom: 1px solid #333;
-                min-height: 14px;
-            }
-
-            .print-checkbox-grid {
-                display: grid;
-                grid-template-columns: 1fr 1fr;
-                gap: 4px;
-                margin-bottom: 8px;
-            }
-
-            .print-checkbox {
-                display: flex;
-                align-items: center;
-                font-size: 9px;
-            }
-
-            .print-checkbox-box {
-                width: 10px;
-                height: 10px;
-                border: 1px solid #000;
-                margin-right: 4px;
-                display: inline-flex;
-                align-items: center;
-                justify-content: center;
-                font-size: 8px;
-            }
-
-            .print-checkbox-box.checked::after {
-                content: '✓';
-            }
-
-            .print-conditional {
-                margin-top: 8px;
-                padding: 6px;
-                background: #f0f0f0;
-                border-left: 2px solid #000;
-            }
-
-            .print-footer {
-                margin-top: 15px;
-                padding-top: 10px;
-                border-top: 1px solid #333;
-            }
-
-            .print-signature {
-                text-align: center;
-                margin-top: 30px;
-                padding-top: 5px;
-                border-top: 1px solid #000;
-                width: 60%;
-                margin-left: auto;
-                margin-right: auto;
+                padding: 3px 8px;
                 font-size: 10px;
                 font-weight: bold;
-            }
-
-            .print-note {
-                font-size: 8px;
-                margin-top: 10px;
-                text-align: center;
-                font-style: italic;
-            }
-
-            .print-row {
-                display: grid;
-                grid-template-columns: 1fr 1fr 1fr;
-                gap: 8px;
                 margin-bottom: 6px;
             }
-
-            .print-cio-section {
-                margin-top: 12px;
-                padding: 8px;
-                border: 1px solid #000;
-            }
-
-            .print-cio-row {
+            .print-field {
                 display: flex;
-                align-items: center;
-                margin-bottom: 4px;
+                margin-bottom: 5px;
                 font-size: 9px;
             }
+            .print-field-label { font-weight: bold; margin-right: 4px; min-width: 90px; }
+            .print-field-value { flex: 1; border-bottom: 1px solid #333; min-height: 12px; }
+            .print-row { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 6px; margin-bottom: 5px; }
+            .print-checkbox-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 3px; }
+            .print-checkbox { display: flex; align-items: center; font-size: 9px; }
+            .print-checkbox-box {
+                width: 9px; height: 9px;
+                border: 1px solid #000;
+                margin-right: 3px;
+                display: inline-flex; align-items: center; justify-content: center;
+                font-size: 7px;
+            }
+            .print-checkbox-box.checked::after { content: '✓'; }
+            .print-conditional {
+                margin-top: 6px; padding: 5px;
+                background: #f0f0f0;
+                border-left: 2px solid #000;
+                font-size: 9px;
+            }
+            .print-cio-section { margin-top: 10px; padding: 8px; border: 1px solid #000; }
+            .print-cio-row { display: flex; align-items: center; margin-bottom: 4px; font-size: 9px; }
+            .print-signature {
+                text-align: center; margin-top: 25px;
+                padding-top: 5px; border-top: 1px solid #000;
+                width: 60%; margin-left: auto; margin-right: auto;
+                font-size: 10px; font-weight: bold;
+            }
+            .print-note { font-size: 8px; margin-top: 8px; text-align: center; font-style: italic; }
         }
 
         @media (max-width: 768px) {
-            .form-container {
-                padding: 20px;
-            }
-
-            .form-row {
-                grid-template-columns: 1fr;
-            }
-
-            .checkbox-group {
-                grid-template-columns: 1fr;
-            }
-
-            .button-group {
-                flex-direction: column;
-            }
-
-            .btn {
-                width: 100%;
-            }
-        }
-
-        /* Admin Dashboard Styles */
-        .admin-container {
-            max-width: 1200px;
-            margin: 0 auto;
-            background: white;
-            padding: 30px;
-            border-radius: 10px;
-            box-shadow: 0 10px 40px rgba(0,0,0,0.2);
-        }
-
-        .admin-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 30px;
-            padding-bottom: 20px;
-            border-bottom: 3px solid #667eea;
-        }
-
-        .admin-table {
-            width: 100%;
-            border-collapse: collapse;
-            margin-top: 20px;
-        }
-
-        .admin-table th {
-            background: #667eea;
-            color: white;
-            padding: 12px;
-            text-align: left;
-            font-weight: 600;
-        }
-
-        .admin-table td {
-            padding: 10px;
-            border-bottom: 1px solid #ddd;
-        }
-
-        .admin-table tr:hover {
-            background: #f8f9fa;
-        }
-
-        .action-btn {
-            padding: 6px 12px;
-            margin: 2px;
-            border: none;
-            border-radius: 4px;
-            cursor: pointer;
-            font-size: 12px;
-            transition: all 0.3s;
-        }
-
-        .action-btn-call {
-            background: #28a745;
-            color: white;
-        }
-
-        .action-btn-call:hover {
-            background: #218838;
-        }
-
-        .action-btn-messenger {
-            background: #0084ff;
-            color: white;
-        }
-
-        .action-btn-messenger:hover {
-            background: #0073e6;
-        }
-
-        .action-btn-print {
-            background: #667eea;
-            color: white;
-        }
-
-        .action-btn-print:hover {
-            background: #5568d3;
-        }
-
-        .action-btn-delete {
-            background: #dc3545;
-            color: white;
-        }
-
-        .action-btn-delete:hover {
-            background: #c82333;
-        }
-
-        .status-select {
-            padding: 6px;
-            border: 1px solid #ddd;
-            border-radius: 4px;
-            font-size: 12px;
-        }
-
-        .status-badge {
-            padding: 4px 8px;
-            border-radius: 12px;
-            font-size: 11px;
-            font-weight: 600;
-        }
-
-        .status-pending {
-            background: #ffc107;
-            color: #000;
-        }
-
-        .status-contacted {
-            background: #17a2b8;
-            color: white;
-        }
-
-        .status-approved {
-            background: #28a745;
-            color: white;
-        }
-
-        .status-declined {
-            background: #dc3545;
-            color: white;
-        }
-
-        .status-completed {
-            background: #6c757d;
-            color: white;
-        }
-
-        .login-form {
-            max-width: 400px;
-            margin: 100px auto;
-            background: white;
-            padding: 40px;
-            border-radius: 10px;
-            box-shadow: 0 10px 40px rgba(0,0,0,0.2);
-        }
-
-        .login-form h2 {
-            text-align: center;
-            margin-bottom: 30px;
-            color: #333;
-        }
-
-        .login-form input {
-            width: 100%;
-            padding: 12px;
-            margin-bottom: 15px;
-            border: 1px solid #ddd;
-            border-radius: 5px;
-        }
-
-        #adminView, #loginView {
-            display: none;
-        }
-
-        .control-number {
-            font-weight: bold;
-            color: #667eea;
+            .form-container { padding: 20px; }
+            .form-row { grid-template-columns: 1fr; }
+            .checkbox-group { grid-template-columns: 1fr; }
+            .button-group { flex-direction: column; }
+            .btn { width: 100%; }
         }
     </style>
 </head>
 <body>
-    <!-- Screen View Form -->
-    <div class="form-container" id="formContainer">
-        <div class="form-header">
-            <div class="form-header-left">
+
+<!-- Toast Notification -->
+<div class="toast" id="toast"></div>
+
+<!-- Screen View Form -->
+<div class="form-container">
+    <div class="form-header">
+        <div>
+            <h1>CITY INFORMATION OFFICE</h1>
+            <h2>CITY GOVERNMENT OF BAGO</h2>
+        </div>
+        <div class="logo">
+            <img src="cio-logo.jpg" alt="CIO Logo">
+        </div>
+    </div>
+
+    <div class="date-row">
+        <label style="font-weight:600;">DATE: </label>
+        <input type="date" id="formDate" required>
+    </div>
+
+    <form id="requestForm">
+        <!-- REQUEST FORM -->
+        <div class="form-section">
+            <h3>REQUEST FORM</h3>
+            <div class="form-group">
+                <label>Requesting Office: <span style="color:red">*</span></label>
+                <input type="text" id="requestingOffice" required>
+            </div>
+            <div class="form-group">
+                <label>Contact Person: <span style="color:red">*</span></label>
+                <input type="text" id="contactPerson" required>
+            </div>
+            <div class="form-group">
+                <label>Phone/Viber Number: <span style="color:red">*</span></label>
+                <input type="tel" id="contactNo" placeholder="+63 or 09XX XXX XXXX" required>
+            </div>
+            <div class="form-group">
+                <label>FB Messenger Profile / Name: <span style="color:red">*</span></label>
+                <input type="text" id="messengerName" placeholder="Facebook name or profile link" required>
+            </div>
+        </div>
+
+        <!-- EVENT DETAILS -->
+        <div class="form-section">
+            <h3>EVENT DETAILS</h3>
+            <div class="form-group">
+                <label>Event/Activity: <span style="color:red">*</span></label>
+                <input type="text" id="eventActivity" required>
+            </div>
+            <div class="form-row">
+                <div class="form-group">
+                    <label>Date: <span style="color:red">*</span></label>
+                    <input type="date" id="eventDate" required>
+                </div>
+                <div class="form-group">
+                    <label>Time: <span style="color:red">*</span></label>
+                    <input type="time" id="eventTime" required>
+                </div>
+                <div class="form-group">
+                    <label>Venue: <span style="color:red">*</span></label>
+                    <input type="text" id="eventVenue" required>
+                </div>
+            </div>
+        </div>
+
+        <!-- SERVICE REQUESTED -->
+        <div class="form-section">
+            <h3>SERVICE REQUESTED <span style="color:#ffc107">*</span></h3>
+            <p style="font-size:13px;color:#666;margin-bottom:10px;">Please select at least one service:</p>
+            <div class="checkbox-group">
+                <div class="checkbox-item">
+                    <input type="checkbox" id="graphicDesign" value="Graphic/ Lay-out Design">
+                    <label for="graphicDesign">Graphic/ Lay-out Design</label>
+                </div>
+                <div class="checkbox-item">
+                    <input type="checkbox" id="radioGuesting" value="Radio Guesting">
+                    <label for="radioGuesting">Radio Guesting</label>
+                </div>
+                <div class="checkbox-item">
+                    <input type="checkbox" id="photoCoverage" value="Photo Coverage">
+                    <label for="photoCoverage">Photo Coverage</label>
+                </div>
+                <div class="checkbox-item">
+                    <input type="checkbox" id="videoEditing" value="Video Editing">
+                    <label for="videoEditing">Video Editing</label>
+                </div>
+                <div class="checkbox-item">
+                    <input type="checkbox" id="videoCoverage" value="Video Coverage">
+                    <label for="videoCoverage">Video Coverage</label>
+                </div>
+                <div class="checkbox-item">
+                    <input type="checkbox" id="socialMediaPosting" value="Social Media Posting">
+                    <label for="socialMediaPosting">Social Media Posting</label>
+                </div>
+                <div class="checkbox-item">
+                    <input type="checkbox" id="videoCoverageInterview" value="Video Coverage with Interview">
+                    <label for="videoCoverageInterview">Video Coverage with Interview</label>
+                </div>
+                <div class="checkbox-item">
+                    <input type="checkbox" id="copyMaterials" value="Copy of Photo/Video Materials">
+                    <label for="copyMaterials">Copy of Photo/Video Materials</label>
+                </div>
+                <div class="checkbox-item">
+                    <input type="checkbox" id="drone" value="Drone">
+                    <label for="drone">Drone</label>
+                </div>
+            </div>
+
+            <!-- Conditional: Video Editing -->
+            <div id="videoEditingFields" class="conditional-field">
+                <div class="form-group">
+                    <label>Due Date:</label>
+                    <input type="date" id="videoEditingDueDate">
+                </div>
+            </div>
+
+            <!-- Conditional: Social Media Posting -->
+            <div id="socialMediaFields" class="conditional-field">
+                <div class="form-group">
+                    <label>Posting Dates:</label>
+                    <input type="text" id="socialMediaDates" placeholder="Enter posting dates">
+                </div>
+            </div>
+
+            <!-- Conditional: Copy of Materials -->
+            <div id="copyMaterialsFields" class="conditional-field">
+                <div class="form-group">
+                    <label>About:</label>
+                    <input type="text" id="copyAbout">
+                </div>
+                <div class="form-group">
+                    <label>Event:</label>
+                    <input type="text" id="copyEvent">
+                </div>
+                <div class="form-group">
+                    <label>Date Taken:</label>
+                    <input type="date" id="copyDateTaken">
+                </div>
+            </div>
+        </div>
+
+        <div class="note">
+            <strong>Note:</strong> Please submit requests at least 3 working days before the event, subject to CIO personnel and equipment availability.
+        </div>
+
+        <div class="acknowledge-box" style="margin-top:15px;">
+            <input type="checkbox" id="acknowledgeNote">
+            <label for="acknowledgeNote">
+                I have read and understood that requests must be submitted at least <strong>3 working days</strong> before the event, and are subject to CIO personnel and equipment availability.
+            </label>
+        </div>
+
+        <div class="button-group">
+            <button type="button" class="btn btn-secondary" onclick="resetForm()">Reset Form</button>
+            <button type="button" class="btn btn-primary" id="submitButton" disabled onclick="submitRequest()">Submit Request</button>
+            <button type="button" class="btn btn-primary" id="printButton" disabled onclick="printForm()">Print Form</button>
+        </div>
+    </form>
+</div>
+
+<!-- Print View -->
+<div class="print-view" id="printView">
+    <!-- Left Copy -->
+    <div class="print-copy">
+        <div class="print-header">
+            <div>
                 <h1>CITY INFORMATION OFFICE</h1>
                 <h2>CITY GOVERNMENT OF BAGO</h2>
             </div>
-            <div class="logo-placeholder">
-                <img src="cio-logo.jpg" alt="CIO Logo">
+            <div class="print-logo"><img src="cio-logo.jpg" alt="CIO"></div>
+        </div>
+        <div class="print-date">DATE: <span id="p1Date"></span></div>
+
+        <div class="print-section">
+            <h3>REQUEST FORM</h3>
+            <div class="print-field"><span class="print-field-label">Requesting Office:</span><span class="print-field-value" id="p1Office"></span></div>
+            <div class="print-field"><span class="print-field-label">Contact Person:</span><span class="print-field-value" id="p1Contact"></span></div>
+            <div class="print-field"><span class="print-field-label">Contact No.:</span><span class="print-field-value" id="p1Phone"></span></div>
+            <div class="print-field"><span class="print-field-label">FB Messenger:</span><span class="print-field-value" id="p1Messenger"></span></div>
+        </div>
+
+        <div class="print-section">
+            <h3>EVENT DETAILS</h3>
+            <div class="print-field"><span class="print-field-label">Event/Activity:</span><span class="print-field-value" id="p1Event"></span></div>
+            <div class="print-row">
+                <div class="print-field"><span class="print-field-label">Date:</span><span class="print-field-value" id="p1EventDate"></span></div>
+                <div class="print-field"><span class="print-field-label">Time:</span><span class="print-field-value" id="p1EventTime"></span></div>
+                <div class="print-field"><span class="print-field-label">Venue:</span><span class="print-field-value" id="p1Venue"></span></div>
             </div>
         </div>
 
-        <div class="date-field">
-            <div class="form-group">
-                <label for="formDate">DATE:</label>
-                <input type="date" id="formDate" name="formDate" required>
+        <div class="print-section">
+            <h3>SERVICE REQUESTED</h3>
+            <div class="print-checkbox-grid" id="p1Services"></div>
+            <div id="p1Conditional"></div>
+        </div>
+
+        <div class="print-section">
+            <div class="print-cio-section">
+                <h3 style="margin:0 0 6px 0;">FOR CIO USE</h3>
+                <div class="print-cio-row">
+                    <strong style="margin-right:8px;">Request Status:</strong>
+                    <span class="print-checkbox-box"></span><span style="margin-right:8px;">Approved</span>
+                    <span class="print-checkbox-box"></span><span>Declined</span>
+                </div>
+                <div class="print-field"><span class="print-field-label">Remarks:</span><span class="print-field-value"></span></div>
+                <div class="print-cio-row" style="margin-top:5px;">
+                    <strong style="margin-right:8px;">Progress Status:</strong>
+                    <span class="print-checkbox-box"></span><span style="margin-right:8px;">Completed</span>
+                    <span class="print-checkbox-box"></span><span style="margin-right:8px;">Ongoing</span>
+                    <span class="print-checkbox-box"></span><span>Deferred</span>
+                </div>
+                <div class="print-field"><span class="print-field-label">Remarks:</span><span class="print-field-value"></span></div>
+                <div class="print-field"><span class="print-field-label">Assigned Personnel:</span><span class="print-field-value"></span></div>
             </div>
         </div>
 
-        <form id="requestForm">
-            <!-- Request Form Section -->
-            <div class="form-section">
-                <h3>REQUEST FORM</h3>
-                <div class="form-group">
-                    <label for="requestingOffice">Requesting Office:</label>
-                    <input type="text" id="requestingOffice" name="requestingOffice" required>
-                </div>
-                <div class="form-group">
-                    <label for="contactPerson">Contact Person: <span style="color: red;">*</span></label>
-                    <input type="text" id="contactPerson" name="contactPerson" required>
-                </div>
-                <div class="form-group">
-                    <label for="contactNo">Phone/Viber Number: <span style="color: red;">*</span></label>
-                    <input type="tel" id="contactNo" name="contactNo" placeholder="+63 or 09XX XXX XXXX" required>
-                </div>
-                <div class="form-group">
-                    <label for="messengerName">FB Messenger Profile / Name: <span style="color: red;">*</span></label>
-                    <input type="text" id="messengerName" name="messengerName" placeholder="Facebook name or profile link" required>
-                </div>
-            </div>
-
-            <!-- Event Details Section -->
-            <div class="form-section">
-                <h3>EVENT DETAILS</h3>
-                <div class="form-group">
-                    <label for="eventActivity">Event/Activity: <span style="color: red;">*</span></label>
-                    <input type="text" id="eventActivity" name="eventActivity" required>
-                </div>
-                <div class="form-row">
-                    <div class="form-group">
-                        <label for="eventDate">Date: <span style="color: red;">*</span></label>
-                        <input type="date" id="eventDate" name="eventDate" required>
-                    </div>
-                    <div class="form-group">
-                        <label for="eventTime">Time: <span style="color: red;">*</span></label>
-                        <input type="time" id="eventTime" name="eventTime" required>
-                    </div>
-                    <div class="form-group">
-                        <label for="eventVenue">Venue: <span style="color: red;">*</span></label>
-                        <input type="text" id="eventVenue" name="eventVenue" required>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Service Requested Section -->
-            <div class="form-section">
-                <h3>SERVICE REQUESTED <span style="color: red;">*</span></h3>
-                <p style="font-size: 14px; color: #666; margin-bottom: 10px;">Please select at least one service:</p>
-                <div class="checkbox-group">
-                    <div class="checkbox-item">
-                        <input type="checkbox" id="graphicDesign" name="service" value="Graphic/ Lay-out Design">
-                        <label for="graphicDesign">Graphic/ Lay-out Design</label>
-                    </div>
-                    <div class="checkbox-item">
-                        <input type="checkbox" id="radioGuesting" name="service" value="Radio Guesting">
-                        <label for="radioGuesting">Radio Guesting</label>
-                    </div>
-                    <div class="checkbox-item">
-                        <input type="checkbox" id="photoCoverage" name="service" value="Photo Coverage">
-                        <label for="photoCoverage">Photo Coverage</label>
-                    </div>
-                    <div class="checkbox-item">
-                        <input type="checkbox" id="videoEditing" name="service" value="Video Editing">
-                        <label for="videoEditing">Video Editing</label>
-                    </div>
-                    <div class="checkbox-item">
-                        <input type="checkbox" id="videoCoverage" name="service" value="Video Coverage">
-                        <label for="videoCoverage">Video Coverage</label>
-                    </div>
-                    <div class="checkbox-item">
-                        <input type="checkbox" id="socialMediaPosting" name="service" value="Social Media Posting">
-                        <label for="socialMediaPosting">Social Media Posting</label>
-                    </div>
-                    <div class="checkbox-item">
-                        <input type="checkbox" id="videoCoverageInterview" name="service" value="Video Coverage with Interview">
-                        <label for="videoCoverageInterview">Video Coverage with Interview</label>
-                    </div>
-                    <div class="checkbox-item">
-                        <input type="checkbox" id="copyMaterials" name="service" value="Copy of Photo/Video Materials">
-                        <label for="copyMaterials">Copy of Photo/Video Materials</label>
-                    </div>
-                    <div class="checkbox-item">
-                        <input type="checkbox" id="drone" name="service" value="Drone">
-                        <label for="drone">Drone</label>
-                    </div>
-                </div>
-
-                <!-- Conditional Fields -->
-                <div id="videoEditingFields" class="conditional-field">
-                    <div class="form-group">
-                        <label for="videoEditingDueDate">Due Date:</label>
-                        <input type="date" id="videoEditingDueDate" name="videoEditingDueDate">
-                    </div>
-                </div>
-
-                <div id="socialMediaFields" class="conditional-field">
-                    <div class="form-group">
-                        <label for="socialMediaDates">Posting Dates:</label>
-                        <input type="text" id="socialMediaDates" name="socialMediaDates" placeholder="Enter posting dates">
-                    </div>
-                </div>
-
-                <div id="copyMaterialsFields" class="conditional-field">
-                    <div class="form-group">
-                        <label for="copyAbout">About:</label>
-                        <input type="text" id="copyAbout" name="copyAbout">
-                    </div>
-                    <div class="form-group">
-                        <label for="copyEvent">Event:</label>
-                        <input type="text" id="copyEvent" name="copyEvent">
-                    </div>
-                    <div class="form-group">
-                        <label for="copyDateTaken">Date Taken:</label>
-                        <input type="date" id="copyDateTaken" name="copyDateTaken">
-                    </div>
-                </div>
-            </div>
-
-            <!-- For CIO Use Section -->
-            <div class="form-section">
-                <h3>FOR CIO USE</h3>
-                <div class="form-group">
-                    <label>Request Status:</label>
-                    <div class="checkbox-group">
-                        <div class="checkbox-item">
-                            <input type="checkbox" id="statusApproved" name="requestStatus" value="Approved">
-                            <label for="statusApproved">Approved</label>
-                        </div>
-                        <div class="checkbox-item">
-                            <input type="checkbox" id="statusDeclined" name="requestStatus" value="Declined">
-                            <label for="statusDeclined">Declined</label>
-                        </div>
-                    </div>
-                </div>
-                <div class="form-group">
-                    <label for="requestRemarks">Remarks:</label>
-                    <input type="text" id="requestRemarks" name="requestRemarks">
-                </div>
-                <div class="form-group">
-                    <label>Progress Status:</label>
-                    <div class="checkbox-group">
-                        <div class="checkbox-item">
-                            <input type="checkbox" id="progressCompleted" name="progressStatus" value="Completed">
-                            <label for="progressCompleted">Completed</label>
-                        </div>
-                        <div class="checkbox-item">
-                            <input type="checkbox" id="progressOngoing" name="progressStatus" value="Ongoing">
-                            <label for="progressOngoing">Ongoing</label>
-                        </div>
-                        <div class="checkbox-item">
-                            <input type="checkbox" id="progressDeferred" name="progressStatus" value="Deferred">
-                            <label for="progressDeferred">Deferred</label>
-                        </div>
-                    </div>
-                </div>
-                <div class="form-group">
-                    <label for="progressRemarks">Remarks:</label>
-                    <input type="text" id="progressRemarks" name="progressRemarks">
-                </div>
-                <div class="form-group">
-                    <label for="assignedPersonnel">Assigned Personnel:</label>
-                    <input type="text" id="assignedPersonnel" name="assignedPersonnel">
-                </div>
-            </div>
-
-            <div class="note">
-                <strong>Note:</strong> Please submit requests at least 3 working days before the event, subject to CIO personnel and equipment availability.
-            </div>
-
-            <div class="form-group" style="margin-top: 20px;">
-                <div class="checkbox-item" style="display: flex; align-items: flex-start; background: #f8f9fa; padding: 15px; border-radius: 5px; border-left: 4px solid #667eea;">
-                    <input type="checkbox" id="acknowledgeNote" name="acknowledgeNote" style="margin-top: 3px;" required>
-                    <label for="acknowledgeNote" style="margin-left: 10px; cursor: pointer; font-weight: 500;">
-                        I have read and understood that requests must be submitted at least 3 working days before the event, and are subject to CIO personnel and equipment availability.
-                    </label>
-                </div>
-            </div>
-
-            <div class="button-group">
-                <button type="button" class="btn btn-secondary" onclick="resetForm()">Reset Form</button>
-                <button type="button" class="btn btn-primary" onclick="submitRequest()" id="submitButton">Submit Request</button>
-                <button type="button" class="btn btn-primary" onclick="printForm()" id="printButton">Print Form (Optional)</button>
-            </div>
-        </form>
+        <div class="print-signature">CITY INFORMATION OFFICER</div>
+        <div class="print-note">Note: Please submit requests at least 3 working days before the event, subject to CIO personnel and equipment availability.</div>
     </div>
 
-    <!-- Admin Login View -->
-    <div id="loginView">
-        <div class="login-form">
-            <h2>🔐 CIO Admin Login</h2>
-            <input type="password" id="adminPassword" placeholder="Enter admin password" onkeypress="if(event.key==='Enter') loginAdmin()">
-            <button class="btn btn-primary" style="width: 100%;" onclick="loginAdmin()">Login</button>
-            <button class="btn btn-secondary" style="width: 100%; margin-top: 10px;" onclick="showPublicForm()">Back to Form</button>
+    <!-- Right Copy (duplicate) -->
+    <div class="print-copy">
+        <div class="print-header">
+            <div>
+                <h1>CITY INFORMATION OFFICE</h1>
+                <h2>CITY GOVERNMENT OF BAGO</h2>
+            </div>
+            <div class="print-logo"><img src="cio-logo.jpg" alt="CIO"></div>
         </div>
+        <div class="print-date">DATE: <span id="p2Date"></span></div>
+
+        <div class="print-section">
+            <h3>REQUEST FORM</h3>
+            <div class="print-field"><span class="print-field-label">Requesting Office:</span><span class="print-field-value" id="p2Office"></span></div>
+            <div class="print-field"><span class="print-field-label">Contact Person:</span><span class="print-field-value" id="p2Contact"></span></div>
+            <div class="print-field"><span class="print-field-label">Contact No.:</span><span class="print-field-value" id="p2Phone"></span></div>
+            <div class="print-field"><span class="print-field-label">FB Messenger:</span><span class="print-field-value" id="p2Messenger"></span></div>
+        </div>
+
+        <div class="print-section">
+            <h3>EVENT DETAILS</h3>
+            <div class="print-field"><span class="print-field-label">Event/Activity:</span><span class="print-field-value" id="p2Event"></span></div>
+            <div class="print-row">
+                <div class="print-field"><span class="print-field-label">Date:</span><span class="print-field-value" id="p2EventDate"></span></div>
+                <div class="print-field"><span class="print-field-label">Time:</span><span class="print-field-value" id="p2EventTime"></span></div>
+                <div class="print-field"><span class="print-field-label">Venue:</span><span class="print-field-value" id="p2Venue"></span></div>
+            </div>
+        </div>
+
+        <div class="print-section">
+            <h3>SERVICE REQUESTED</h3>
+            <div class="print-checkbox-grid" id="p2Services"></div>
+            <div id="p2Conditional"></div>
+        </div>
+
+        <div class="print-section">
+            <div class="print-cio-section">
+                <h3 style="margin:0 0 6px 0;">FOR CIO USE</h3>
+                <div class="print-cio-row">
+                    <strong style="margin-right:8px;">Request Status:</strong>
+                    <span class="print-checkbox-box"></span><span style="margin-right:8px;">Approved</span>
+                    <span class="print-checkbox-box"></span><span>Declined</span>
+                </div>
+                <div class="print-field"><span class="print-field-label">Remarks:</span><span class="print-field-value"></span></div>
+                <div class="print-cio-row" style="margin-top:5px;">
+                    <strong style="margin-right:8px;">Progress Status:</strong>
+                    <span class="print-checkbox-box"></span><span style="margin-right:8px;">Completed</span>
+                    <span class="print-checkbox-box"></span><span style="margin-right:8px;">Ongoing</span>
+                    <span class="print-checkbox-box"></span><span>Deferred</span>
+                </div>
+                <div class="print-field"><span class="print-field-label">Remarks:</span><span class="print-field-value"></span></div>
+                <div class="print-field"><span class="print-field-label">Assigned Personnel:</span><span class="print-field-value"></span></div>
+            </div>
+        </div>
+
+        <div class="print-signature">CITY INFORMATION OFFICER</div>
+        <div class="print-note">Note: Please submit requests at least 3 working days before the event, subject to CIO personnel and equipment availability.</div>
     </div>
+</div>
 
-    <!-- Admin Dashboard View -->
-    <div id="adminView">
-        <div class="admin-container">
-            <div class="admin-header">
-                <div>
-                    <h1>CIO Request Management Dashboard</h1>
-                    <p style="color: #666;">Manage and track all service requests</p>
-                </div>
-                <button class="btn btn-secondary" onclick="logoutAdmin()">Logout</button>
-            </div>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script>
+    const SUPABASE_URL = 'https://jnfkfzjhgbktovvvqbuk.supabase.co';
+    const SUPABASE_ANON_KEY = 'sb_publishable_3Kd460W0EV6xAJuJKtCIuQ_wGtxeuM2';
+    const sb = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
-            <div style="margin-bottom: 20px;">
-                <button class="btn btn-primary" onclick="refreshRequests()">🔄 Refresh</button>
-                <button class="btn btn-secondary" onclick="exportRequests()">📥 Export to CSV</button>
-            </div>
+    // Set today's date
+    document.getElementById('formDate').value = new Date().toISOString().split('T')[0];
 
-            <table class="admin-table" id="requestsTable">
-                <thead>
-                    <tr>
-                        <th>Control #</th>
-                        <th>Date</th>
-                        <th>Requesting Office</th>
-                        <th>Contact Person</th>
-                        <th>Phone</th>
-                        <th>Messenger</th>
-                        <th>Event</th>
-                        <th>Event Date</th>
-                        <th>Services</th>
-                        <th>Status</th>
-                        <th>Actions</th>
-                    </tr>
-                </thead>
-                <tbody id="requestsTableBody">
-                    <!-- Requests will be populated here -->
-                </tbody>
-            </table>
-        </div>
-    </div>
+    // Conditional fields toggle
+    document.getElementById('videoEditing').addEventListener('change', function() {
+        document.getElementById('videoEditingFields').classList.toggle('active', this.checked);
+    });
+    document.getElementById('socialMediaPosting').addEventListener('change', function() {
+        document.getElementById('socialMediaFields').classList.toggle('active', this.checked);
+    });
+    document.getElementById('copyMaterials').addEventListener('change', function() {
+        document.getElementById('copyMaterialsFields').classList.toggle('active', this.checked);
+    });
 
-    <!-- Print View (Hidden on screen, visible on print) -->
-    <div class="print-view" id="printView">
-        <!-- Left Copy -->
-        <div class="print-copy">
-            <div class="print-header">
-                <div class="print-header-left">
-                    <h1>CITY INFORMATION OFFICE</h1>
-                    <h2>CITY GOVERNMENT OF BAGO</h2>
-                </div>
-                <div class="print-logo">
-                    <img src="cio-logo.jpg" alt="CIO Logo">
-                </div>
-            </div>
-            <div class="print-date">DATE: <span id="printDate1"></span></div>
+    // Acknowledge checkbox enables buttons
+    document.getElementById('acknowledgeNote').addEventListener('change', function() {
+        document.getElementById('submitButton').disabled = !this.checked;
+        document.getElementById('printButton').disabled = !this.checked;
+    });
 
-            <div class="print-section">
-                <h3>REQUEST FORM</h3>
-                <div class="print-field">
-                    <span class="print-field-label">Requesting Office:</span>
-                    <span class="print-field-value" id="printRequestingOffice1"></span>
-                </div>
-                <div class="print-field">
-                    <span class="print-field-label">Contact Person:</span>
-                    <span class="print-field-value" id="printContactPerson1"></span>
-                </div>
-                <div class="print-field">
-                    <span class="print-field-label">Contact No.:</span>
-                    <span class="print-field-value" id="printContactNo1"></span>
-                </div>
-                <div class="print-field">
-                    <span class="print-field-label">FB Messenger:</span>
-                    <span class="print-field-value" id="printMessengerName1"></span>
-                </div>
-            </div>
+    // Toast notification
+    function showToast(message, type) {
+        const toast = document.getElementById('toast');
+        toast.textContent = message;
+        toast.className = 'toast ' + type + ' show';
+        setTimeout(() => { toast.className = 'toast'; }, 4000);
+    }
 
-            <div class="print-section">
-                <h3>EVENT DETAILS</h3>
-                <div class="print-field">
-                    <span class="print-field-label">Event/Activity:</span>
-                    <span class="print-field-value" id="printEventActivity1"></span>
-                </div>
-                <div class="print-row">
-                    <div class="print-field">
-                        <span class="print-field-label">Date:</span>
-                        <span class="print-field-value" id="printEventDate1"></span>
-                    </div>
-                    <div class="print-field">
-                        <span class="print-field-label">Time:</span>
-                        <span class="print-field-value" id="printEventTime1"></span>
-                    </div>
-                    <div class="print-field">
-                        <span class="print-field-label">Venue:</span>
-                        <span class="print-field-value" id="printEventVenue1"></span>
-                    </div>
-                </div>
-            </div>
+    // Generate control number
+    function generateControlNumber() {
+        const d = new Date();
+        const pad = n => String(n).padStart(2,'0');
+        const date = d.getFullYear() + pad(d.getMonth()+1) + pad(d.getDate());
+        const rand = Math.floor(Math.random() * 10000).toString().padStart(4,'0');
+        return 'CIO-' + date + '-' + rand;
+    }
 
-            <div class="print-section">
-                <h3>SERVICE REQUESTED</h3>
-                <div class="print-checkbox-grid" id="printServiceGrid1"></div>
-                <div id="printConditional1"></div>
-            </div>
+    // Get selected services
+    function getSelectedServices() {
+        const ids = ['graphicDesign','radioGuesting','photoCoverage','videoEditing',
+                     'videoCoverage','socialMediaPosting','videoCoverageInterview',
+                     'copyMaterials','drone'];
+        return ids.filter(id => document.getElementById(id).checked)
+                  .map(id => document.getElementById(id).value);
+    }
 
-            <div class="print-section">
-                <div class="print-cio-section">
-                    <h3 style="margin: 0 0 8px 0;">FOR CIO USE</h3>
-                    <div class="print-cio-row">
-                        <span style="font-weight: bold; margin-right: 10px;">Request Status:</span>
-                        <span class="print-checkbox-box" id="printStatusApproved1"></span>
-                        <span style="margin-right: 10px;">Approved</span>
-                        <span class="print-checkbox-box" id="printStatusDeclined1"></span>
-                        <span>Declined</span>
-                    </div>
-                    <div class="print-field">
-                        <span class="print-field-label">Remarks:</span>
-                        <span class="print-field-value" id="printRequestRemarks1"></span>
-                    </div>
-                    <div class="print-cio-row" style="margin-top: 6px;">
-                        <span style="font-weight: bold; margin-right: 10px;">Progress Status:</span>
-                        <span class="print-checkbox-box" id="printProgressCompleted1"></span>
-                        <span style="margin-right: 8px;">Completed</span>
-                        <span class="print-checkbox-box" id="printProgressOngoing1"></span>
-                        <span style="margin-right: 8px;">Ongoing</span>
-                        <span class="print-checkbox-box" id="printProgressDeferred1"></span>
-                        <span>Deferred</span>
-                    </div>
-                    <div class="print-field">
-                        <span class="print-field-label">Remarks:</span>
-                        <span class="print-field-value" id="printProgressRemarks1"></span>
-                    </div>
-                    <div class="print-field">
-                        <span class="print-field-label">Assigned Personnel:</span>
-                        <span class="print-field-value" id="printAssignedPersonnel1"></span>
-                    </div>
-                </div>
-            </div>
-
-            <div class="print-footer">
-                <div class="print-signature">CITY INFORMATION OFFICER</div>
-                <div class="print-note">
-                    Note: Please submit requests at least 3 working days before the event, subject to CIO personnel and equipment availability.
-                </div>
-            </div>
-        </div>
-
-        <!-- Right Copy (Duplicate) -->
-        <div class="print-copy">
-            <div class="print-header">
-                <div class="print-header-left">
-                    <h1>CITY INFORMATION OFFICE</h1>
-                    <h2>CITY GOVERNMENT OF BAGO</h2>
-                </div>
-                <div class="print-logo">
-                    <img src="cio-logo.jpg" alt="CIO Logo">
-                </div>
-            </div>
-            <div class="print-date">DATE: <span id="printDate2"></span></div>
-
-            <div class="print-section">
-                <h3>REQUEST FORM</h3>
-                <div class="print-field">
-                    <span class="print-field-label">Requesting Office:</span>
-                    <span class="print-field-value" id="printRequestingOffice2"></span>
-                </div>
-                <div class="print-field">
-                    <span class="print-field-label">Contact Person:</span>
-                    <span class="print-field-value" id="printContactPerson2"></span>
-                </div>
-                <div class="print-field">
-                    <span class="print-field-label">Contact No.:</span>
-                    <span class="print-field-value" id="printContactNo2"></span>
-                </div>
-                <div class="print-field">
-                    <span class="print-field-label">FB Messenger:</span>
-                    <span class="print-field-value" id="printMessengerName2"></span>
-                </div>
-            </div>
-
-            <div class="print-section">
-                <h3>EVENT DETAILS</h3>
-                <div class="print-field">
-                    <span class="print-field-label">Event/Activity:</span>
-                    <span class="print-field-value" id="printEventActivity2"></span>
-                </div>
-                <div class="print-row">
-                    <div class="print-field">
-                        <span class="print-field-label">Date:</span>
-                        <span class="print-field-value" id="printEventDate2"></span>
-                    </div>
-                    <div class="print-field">
-                        <span class="print-field-label">Time:</span>
-                        <span class="print-field-value" id="printEventTime2"></span>
-                    </div>
-                    <div class="print-field">
-                        <span class="print-field-label">Venue:</span>
-                        <span class="print-field-value" id="printEventVenue2"></span>
-                    </div>
-                </div>
-            </div>
-
-            <div class="print-section">
-                <h3>SERVICE REQUESTED</h3>
-                <div class="print-checkbox-grid" id="printServiceGrid2"></div>
-                <div id="printConditional2"></div>
-            </div>
-
-            <div class="print-section">
-                <div class="print-cio-section">
-                    <h3 style="margin: 0 0 8px 0;">FOR CIO USE</h3>
-                    <div class="print-cio-row">
-                        <span style="font-weight: bold; margin-right: 10px;">Request Status:</span>
-                        <span class="print-checkbox-box" id="printStatusApproved2"></span>
-                        <span style="margin-right: 10px;">Approved</span>
-                        <span class="print-checkbox-box" id="printStatusDeclined2"></span>
-                        <span>Declined</span>
-                    </div>
-                    <div class="print-field">
-                        <span class="print-field-label">Remarks:</span>
-                        <span class="print-field-value" id="printRequestRemarks2"></span>
-                    </div>
-                    <div class="print-cio-row" style="margin-top: 6px;">
-                        <span style="font-weight: bold; margin-right: 10px;">Progress Status:</span>
-                        <span class="print-checkbox-box" id="printProgressCompleted2"></span>
-                        <span style="margin-right: 8px;">Completed</span>
-                        <span class="print-checkbox-box" id="printProgressOngoing2"></span>
-                        <span style="margin-right: 8px;">Ongoing</span>
-                        <span class="print-checkbox-box" id="printProgressDeferred2"></span>
-                        <span>Deferred</span>
-                    </div>
-                    <div class="print-field">
-                        <span class="print-field-label">Remarks:</span>
-                        <span class="print-field-value" id="printProgressRemarks2"></span>
-                    </div>
-                    <div class="print-field">
-                        <span class="print-field-label">Assigned Personnel:</span>
-                        <span class="print-field-value" id="printAssignedPersonnel2"></span>
-                    </div>
-                </div>
-            </div>
-
-            <div class="print-footer">
-                <div class="print-signature">CITY INFORMATION OFFICER</div>
-                <div class="print-note">
-                    Note: Please submit requests at least 3 working days before the event, subject to CIO personnel and equipment availability.
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- Supabase JS Client -->
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-
-    <script>
-        // Wait for Supabase to load
-        if (typeof window.supabase === 'undefined') {
-            console.error('Supabase library failed to load');
-        }
-        
-        // ============================================
-        // SUPABASE CONFIGURATION
-        // ============================================
-        const SUPABASE_URL = 'https://jnfkfzjhgbktovvvqbuk.supabase.co';
-        const SUPABASE_ANON_KEY = 'sb_publishable_3Kd460W0EV6xAJuJKtCIuQ_wGtxeuM2';
-        
-        // Initialize Supabase client
-        const supabase = window.supabase ? window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY) : null;
-        
-        // ============================================
-        // OTHER CONFIGURATION
-        // ============================================
-        const ADMIN_PASSWORD = 'CIOBago2026'; // Change this to your desired password
-        const EMAILJS_SERVICE_ID = 'YOUR_EMAILJS_SERVICE_ID'; // Get from EmailJS
-        const EMAILJS_TEMPLATE_ID = 'YOUR_EMAILJS_TEMPLATE_ID'; // Get from EmailJS
-        const EMAILJS_PUBLIC_KEY = 'YOUR_EMAILJS_PUBLIC_KEY'; // Get from EmailJS
-
-        // Initialize
-        let requests = [];
-        let currentView = 'form';
-        let realtimeSubscription = null;
-
-        // Immediate hash check (before DOM loads)
-        if (window.location.hash === '#admin') {
-            currentView = 'login';
+    // Submit request
+    async function submitRequest() {
+        const form = document.getElementById('requestForm');
+        if (!form.checkValidity()) {
+            form.reportValidity();
+            return;
         }
 
-        // Check URL hash on load
-        window.addEventListener('DOMContentLoaded', function() {
-            const today = new Date().toISOString().split('T')[0];
-            document.getElementById('formDate').value = today;
+        const services = getSelectedServices();
+        if (services.length === 0) {
+            alert('Please select at least one service.');
+            return;
+        }
 
-            // Add event listeners for conditional fields
-            document.getElementById('videoEditing').addEventListener('change', toggleConditionalField);
-            document.getElementById('socialMediaPosting').addEventListener('change', toggleConditionalField);
-            document.getElementById('copyMaterials').addEventListener('change', toggleConditionalField);
+        const submitBtn = document.getElementById('submitButton');
+        submitBtn.disabled = true;
+        submitBtn.textContent = '⏳ Submitting...';
 
-            // Add event listener for acknowledgment checkbox
-            const acknowledgeCheckbox = document.getElementById('acknowledgeNote');
-            const submitButton = document.getElementById('submitButton');
-            const printButton = document.getElementById('printButton');
-            
-            submitButton.disabled = true;
-            printButton.disabled = true;
-            
-            acknowledgeCheckbox.addEventListener('change', function() {
-                submitButton.disabled = !this.checked;
-                printButton.disabled = !this.checked;
-            });
+        const data = {
+            control_number: generateControlNumber(),
+            form_date: document.getElementById('formDate').value,
+            requesting_office: document.getElementById('requestingOffice').value,
+            contact_person: document.getElementById('contactPerson').value,
+            contact_no: document.getElementById('contactNo').value,
+            messenger_name: document.getElementById('messengerName').value,
+            event_activity: document.getElementById('eventActivity').value,
+            event_date: document.getElementById('eventDate').value,
+            event_time: document.getElementById('eventTime').value,
+            event_venue: document.getElementById('eventVenue').value,
+            services: services,
+            video_editing_due_date: document.getElementById('videoEditingDueDate').value || null,
+            social_media_dates: document.getElementById('socialMediaDates').value || null,
+            copy_about: document.getElementById('copyAbout').value || null,
+            copy_event: document.getElementById('copyEvent').value || null,
+            copy_date_taken: document.getElementById('copyDateTaken').value || null,
+            status: 'Pending'
+        };
 
-            // Check for admin hash
-            if (window.location.hash === '#admin' || currentView === 'login') {
-                showLoginView();
+        try {
+            const { error } = await sb.from('requests').insert([data]);
+            if (error) throw error;
+
+            showToast('✅ Request submitted! Control #: ' + data.control_number, 'success');
+
+            setTimeout(() => {
+                alert('✅ Request Submitted Successfully!\n\nControl Number: ' + data.control_number + '\n\nPlease save this number for your reference.\nThe CIO team will contact you soon.');
+            }, 300);
+
+            // Reset form
+            form.reset();
+            document.getElementById('formDate').value = new Date().toISOString().split('T')[0];
+            document.getElementById('acknowledgeNote').checked = false;
+            document.getElementById('submitButton').disabled = true;
+            document.getElementById('printButton').disabled = true;
+            document.querySelectorAll('.conditional-field').forEach(f => f.classList.remove('active'));
+
+        } catch (err) {
+            console.error(err);
+            showToast('❌ Error: ' + err.message, 'error');
+            alert('❌ Submission failed.\n\nError: ' + err.message + '\n\nPlease try again or contact support.');
+        } finally {
+            submitBtn.disabled = false;
+            submitBtn.textContent = 'Submit Request';
+        }
+    }
+
+    // Print form
+    function printForm() {
+        const services = getSelectedServices();
+        if (services.length === 0) {
+            alert('Please select at least one service before printing.');
+            return;
+        }
+
+        const allServices = [
+            { id: 'graphicDesign', label: 'Graphic/ Lay-out Design' },
+            { id: 'radioGuesting', label: 'Radio Guesting' },
+            { id: 'photoCoverage', label: 'Photo Coverage' },
+            { id: 'videoEditing', label: 'Video Editing' },
+            { id: 'videoCoverage', label: 'Video Coverage' },
+            { id: 'socialMediaPosting', label: 'Social Media Posting' },
+            { id: 'videoCoverageInterview', label: 'Video Coverage with Interview' },
+            { id: 'copyMaterials', label: 'Copy of Photo/Video Materials' },
+            { id: 'drone', label: 'Drone' }
+        ];
+
+        for (let i = 1; i <= 2; i++) {
+            const p = i === 1 ? 'p1' : 'p2';
+            document.getElementById(p+'Date').textContent = document.getElementById('formDate').value;
+            document.getElementById(p+'Office').textContent = document.getElementById('requestingOffice').value;
+            document.getElementById(p+'Contact').textContent = document.getElementById('contactPerson').value;
+            document.getElementById(p+'Phone').textContent = document.getElementById('contactNo').value;
+            document.getElementById(p+'Messenger').textContent = document.getElementById('messengerName').value;
+            document.getElementById(p+'Event').textContent = document.getElementById('eventActivity').value;
+            document.getElementById(p+'EventDate').textContent = document.getElementById('eventDate').value;
+            document.getElementById(p+'EventTime').textContent = document.getElementById('eventTime').value;
+            document.getElementById(p+'Venue').textContent = document.getElementById('eventVenue').value;
+
+            const grid = document.getElementById(p+'Services');
+            grid.innerHTML = allServices.map(s => {
+                const checked = document.getElementById(s.id).checked ? 'checked' : '';
+                return `<div class="print-checkbox"><span class="print-checkbox-box ${checked}"></span>${s.label}</div>`;
+            }).join('');
+
+            let cond = '';
+            if (document.getElementById('videoEditing').checked) {
+                cond += `<div class="print-conditional"><strong>FOR VIDEO EDITING</strong><br>Due Date: ${document.getElementById('videoEditingDueDate').value}</div>`;
             }
-        });
-
-        // Handle hash changes
-        window.addEventListener('hashchange', function() {
-            if (window.location.hash === '#admin') {
-                showLoginView();
-            } else {
-                showPublicForm();
+            if (document.getElementById('socialMediaPosting').checked) {
+                cond += `<div class="print-conditional"><strong>FOR SOCIAL MEDIA POSTING</strong><br>Posting Dates: ${document.getElementById('socialMediaDates').value}</div>`;
             }
-        });
-
-        function generateControlNumber() {
-            const date = new Date();
-            const year = date.getFullYear();
-            const month = String(date.getMonth() + 1).padStart(2, '0');
-            const day = String(date.getDate()).padStart(2, '0');
-            const random = Math.floor(Math.random() * 10000).toString().padStart(4, '0');
-            return `CIO-${year}${month}${day}-${random}`;
-        }
-
-        async function submitRequest() {
-            const form = document.getElementById('requestForm');
-            if (!form.checkValidity()) {
-                alert('Please fill in all required fields.');
-                form.reportValidity();
-                return;
+            if (document.getElementById('copyMaterials').checked) {
+                cond += `<div class="print-conditional"><strong>FOR COPY OF PHOTO/VIDEO MATERIALS</strong><br>About: ${document.getElementById('copyAbout').value} | Event: ${document.getElementById('copyEvent').value} | Date Taken: ${document.getElementById('copyDateTaken').value}</div>`;
             }
-
-            // Check if at least one service is selected
-            const selectedServices = getSelectedServices();
-            if (selectedServices.length === 0) {
-                alert('Please select at least one service.');
-                return;
-            }
-
-            const acknowledgeCheckbox = document.getElementById('acknowledgeNote');
-            if (!acknowledgeCheckbox.checked) {
-                alert('Please read and acknowledge the note before submitting.');
-                acknowledgeCheckbox.focus();
-                return;
-            }
-
-            // Check if Supabase is available
-            if (!supabase) {
-                alert('❌ Database connection error. Please try again or contact support.');
-                console.error('Supabase client not initialized');
-                return;
-            }
-
-            // Disable submit button to prevent double submission
-            const submitButton = document.getElementById('submitButton');
-            submitButton.disabled = true;
-            submitButton.textContent = 'Submitting...';
-
-            // Gather form data
-            const formData = {
-                control_number: generateControlNumber(),
-                form_date: document.getElementById('formDate').value,
-                requesting_office: document.getElementById('requestingOffice').value,
-                contact_person: document.getElementById('contactPerson').value,
-                contact_no: document.getElementById('contactNo').value,
-                messenger_name: document.getElementById('messengerName').value,
-                event_activity: document.getElementById('eventActivity').value,
-                event_date: document.getElementById('eventDate').value,
-                event_time: document.getElementById('eventTime').value,
-                event_venue: document.getElementById('eventVenue').value,
-                services: selectedServices,
-                video_editing_due_date: document.getElementById('videoEditingDueDate').value || null,
-                social_media_dates: document.getElementById('socialMediaDates').value || null,
-                copy_about: document.getElementById('copyAbout').value || null,
-                copy_event: document.getElementById('copyEvent').value || null,
-                copy_date_taken: document.getElementById('copyDateTaken').value || null,
-                status: 'Pending'
-            };
-
-            try {
-                // Insert into Supabase
-                const { data, error } = await supabase
-                    .from('requests')
-                    .insert([formData])
-                    .select();
-
-                if (error) throw error;
-
-                // Send notification
-                sendNotification(formData);
-
-                // Show success message
-                alert(`✅ Request submitted successfully!\n\nControl Number: ${formData.control_number}\n\nPlease save this control number for your reference. You will be contacted by the CIO team soon.`);
-
-                // Optionally print the form
-                if (confirm('Would you like to print the request form for your records?')) {
-                    populatePrintView();
-                    window.print();
-                }
-
-                // Reset form
-                form.reset();
-                document.getElementById('formDate').value = new Date().toISOString().split('T')[0];
-                document.getElementById('acknowledgeNote').checked = false;
-                document.getElementById('submitButton').disabled = true;
-                document.getElementById('printButton').disabled = true;
-                document.querySelectorAll('.conditional-field').forEach(field => {
-                    field.classList.remove('active');
-                });
-
-            } catch (error) {
-                console.error('Error submitting request:', error);
-                alert('❌ Error submitting request. Please try again or contact support.\n\nError: ' + error.message);
-            } finally {
-                // Re-enable button
-                submitButton.disabled = false;
-                submitButton.textContent = 'Submit Request';
-            }
+            document.getElementById(p+'Conditional').innerHTML = cond;
         }
 
-        function getSelectedServices() {
-            const services = [];
-            const checkboxes = document.querySelectorAll('input[name="service"]:checked');
-            checkboxes.forEach(cb => services.push(cb.value));
-            return services;
+        window.print();
+    }
+
+    // Reset form
+    function resetForm() {
+        if (confirm('Reset all fields?')) {
+            document.getElementById('requestForm').reset();
+            document.getElementById('formDate').value = new Date().toISOString().split('T')[0];
+            document.getElementById('acknowledgeNote').checked = false;
+            document.getElementById('submitButton').disabled = true;
+            document.getElementById('printButton').disabled = true;
+            document.querySelectorAll('.conditional-field').forEach(f => f.classList.remove('active'));
         }
-
-        function sendNotification(formData) {
-            // Option 1: EmailJS (Uncomment and configure)
-            /*
-            emailjs.send(EMAILJS_SERVICE_ID, EMAILJS_TEMPLATE_ID, {
-                control_number: formData.controlNumber,
-                requesting_office: formData.requestingOffice,
-                event_name: formData.eventActivity,
-                event_date: formData.eventDate,
-                contact_person: formData.contactPerson,
-                contact_no: formData.contactNo,
-                services: formData.services.join(', ')
-            }, EMAILJS_PUBLIC_KEY);
-            */
-
-            // Option 2: Webhook to Telegram/Discord (Example)
-            // You can configure a webhook URL here
-            const webhookURL = ''; // Add your webhook URL
-            if (webhookURL) {
-                fetch(webhookURL, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({
-                        text: `🆕 New CIO Request\n\nControl #: ${formData.controlNumber}\nOffice: ${formData.requestingOffice}\nEvent: ${formData.eventActivity}\nDate: ${formData.eventDate}\nContact: ${formData.contactPerson} (${formData.contactNo})`
-                    })
-                }).catch(err => console.log('Notification failed:', err));
-            }
-        }
-
-        // Admin Functions
-        function showLoginView() {
-            document.getElementById('formContainer').style.display = 'none';
-            document.getElementById('loginView').style.display = 'block';
-            document.getElementById('adminView').style.display = 'none';
-            currentView = 'login';
-        }
-
-        function showPublicForm() {
-            document.getElementById('formContainer').style.display = 'block';
-            document.getElementById('loginView').style.display = 'none';
-            document.getElementById('adminView').style.display = 'none';
-            window.location.hash = '';
-            currentView = 'form';
-        }
-
-        function loginAdmin() {
-            const password = document.getElementById('adminPassword').value;
-            if (password === ADMIN_PASSWORD) {
-                document.getElementById('formContainer').style.display = 'none';
-                document.getElementById('loginView').style.display = 'none';
-                document.getElementById('adminView').style.display = 'block';
-                currentView = 'admin';
-                loadRequests();
-            } else {
-                alert('❌ Invalid password. Please try again.');
-                document.getElementById('adminPassword').value = '';
-            }
-        }
-
-        function logoutAdmin() {
-            showPublicForm();
-        }
-
-        async function loadRequests() {
-            try {
-                // Fetch all requests from Supabase
-                const { data, error } = await supabase
-                    .from('requests')
-                    .select('*')
-                    .order('created_at', { ascending: false });
-
-                if (error) throw error;
-
-                requests = data || [];
-                const tbody = document.getElementById('requestsTableBody');
-                tbody.innerHTML = '';
-
-                if (requests.length === 0) {
-                    tbody.innerHTML = '<tr><td colspan="11" style="text-align: center; padding: 20px;">No requests yet</td></tr>';
-                    return;
-                }
-
-                requests.forEach((req, index) => {
-                    const row = document.createElement('tr');
-                    row.innerHTML = `
-                        <td><span class="control-number">${req.control_number}</span></td>
-                        <td>${new Date(req.created_at).toLocaleDateString()}</td>
-                        <td>${req.requesting_office}</td>
-                        <td>${req.contact_person}</td>
-                        <td>${req.contact_no}</td>
-                        <td>${req.messenger_name}</td>
-                        <td>${req.event_activity}</td>
-                        <td>${req.event_date}</td>
-                        <td style="font-size: 11px;">${Array.isArray(req.services) ? req.services.join(', ') : req.services}</td>
-                        <td>
-                            <select class="status-select" onchange="updateStatus('${req.id}', this.value)">
-                                <option value="Pending" ${req.status === 'Pending' ? 'selected' : ''}>Pending</option>
-                                <option value="Contacted" ${req.status === 'Contacted' ? 'selected' : ''}>Contacted</option>
-                                <option value="Approved" ${req.status === 'Approved' ? 'selected' : ''}>Approved</option>
-                                <option value="Declined" ${req.status === 'Declined' ? 'selected' : ''}>Declined</option>
-                                <option value="Completed" ${req.status === 'Completed' ? 'selected' : ''}>Completed</option>
-                            </select>
-                        </td>
-                        <td>
-                            <button class="action-btn action-btn-call" onclick="callContact('${req.contact_no}')" title="Call">📞</button>
-                            <button class="action-btn action-btn-messenger" onclick="openMessenger('${req.messenger_name}')" title="Messenger">💬</button>
-                            <button class="action-btn action-btn-print" onclick="reprintForm('${req.id}')" title="Reprint">🖨️</button>
-                            <button class="action-btn action-btn-delete" onclick="deleteRequest('${req.id}')" title="Delete">🗑️</button>
-                        </td>
-                    `;
-                    tbody.appendChild(row);
-                });
-
-                // Subscribe to real-time updates if not already subscribed
-                subscribeToRealtimeUpdates();
-
-            } catch (error) {
-                console.error('Error loading requests:', error);
-                alert('Error loading requests: ' + error.message);
-            }
-        }
-
-        // Real-time subscription for instant updates
-        function subscribeToRealtimeUpdates() {
-            if (realtimeSubscription) return; // Already subscribed
-
-            realtimeSubscription = supabase
-                .channel('requests-channel')
-                .on('postgres_changes', {
-                    event: '*',
-                    schema: 'public',
-                    table: 'requests'
-                }, (payload) => {
-                    console.log('Real-time update:', payload);
-                    // Reload requests when changes occur
-                    if (currentView === 'admin') {
-                        loadRequests();
-                    }
-                })
-                .subscribe();
-        }
-
-        async function updateStatus(requestId, newStatus) {
-            try {
-                const { data, error } = await supabase
-                    .from('requests')
-                    .update({ status: newStatus })
-                    .eq('id', requestId);
-
-                if (error) throw error;
-
-                // Reload to reflect changes
-                await loadRequests();
-            } catch (error) {
-                console.error('Error updating status:', error);
-                alert('Error updating status: ' + error.message);
-            }
-        }
-
-        function callContact(phoneNumber) {
-            window.location.href = `tel:${phoneNumber}`;
-        }
-
-        function openMessenger(messengerName) {
-            // Try to open Messenger or copy name
-            const messengerLink = messengerName.includes('facebook.com') ? messengerName : `https://m.me/${messengerName}`;
-            const newWindow = window.open(messengerLink, '_blank');
-            if (!newWindow) {
-                // If popup blocked, copy to clipboard
-                navigator.clipboard.writeText(messengerName).then(() => {
-                    alert(`📋 Messenger name copied to clipboard:\n${messengerName}`);
-                });
-            }
-        }
-
-        async function reprintForm(requestId) {
-            try {
-                // Fetch the specific request
-                const { data, error } = await supabase
-                    .from('requests')
-                    .select('*')
-                    .eq('id', requestId)
-                    .single();
-
-                if (error) throw error;
-
-                const req = data;
-                // Populate the form with request data
-                document.getElementById('formDate').value = req.form_date;
-                document.getElementById('requestingOffice').value = req.requesting_office;
-                document.getElementById('contactPerson').value = req.contact_person;
-                document.getElementById('contactNo').value = req.contact_no;
-                document.getElementById('messengerName').value = req.messenger_name;
-                document.getElementById('eventActivity').value = req.event_activity;
-                document.getElementById('eventDate').value = req.event_date;
-                document.getElementById('eventTime').value = req.event_time;
-                document.getElementById('eventVenue').value = req.event_venue;
-                
-                populatePrintView();
-                window.print();
-            } catch (error) {
-                console.error('Error fetching request for reprint:', error);
-                alert('Error loading request: ' + error.message);
-            }
-        }
-
-        async function deleteRequest(requestId) {
-            if (!confirm('Are you sure you want to delete this request?')) return;
-
-            try {
-                const { error } = await supabase
-                    .from('requests')
-                    .delete()
-                    .eq('id', requestId);
-
-                if (error) throw error;
-
-                await loadRequests();
-                alert('✅ Request deleted successfully!');
-            } catch (error) {
-                console.error('Error deleting request:', error);
-                alert('Error deleting request: ' + error.message);
-            }
-        }
-
-        function refreshRequests() {
-            loadRequests();
-        }
-
-        async function exportRequests() {
-            if (requests.length === 0) {
-                alert('No requests to export.');
-                return;
-            }
-
-            let csv = 'Control Number,Date Submitted,Requesting Office,Contact Person,Phone,Messenger,Event,Event Date,Services,Status\n';
-            requests.forEach(req => {
-                const services = Array.isArray(req.services) ? req.services.join('; ') : req.services;
-                csv += `"${req.control_number}","${new Date(req.created_at).toLocaleDateString()}","${req.requesting_office}","${req.contact_person}","${req.contact_no}","${req.messenger_name}","${req.event_activity}","${req.event_date}","${services}","${req.status}"\n`;
-            });
-
-            const blob = new Blob([csv], { type: 'text/csv' });
-            const url = window.URL.createObjectURL(blob);
-            const a = document.createElement('a');
-            a.href = url;
-            a.download = `CIO_Requests_${new Date().toISOString().split('T')[0]}.csv`;
-            a.click();
-        }
-
-        // Keep existing functions below
-        function toggleConditionalField(event) {
-        // Set today's date by default
-        document.addEventListener('DOMContentLoaded', function() {
-            const today = new Date().toISOString().split('T')[0];
-            document.getElementById('formDate').value = today;
-
-            // Add event listeners for conditional fields
-            document.getElementById('videoEditing').addEventListener('change', toggleConditionalField);
-            document.getElementById('socialMediaPosting').addEventListener('change', toggleConditionalField);
-            document.getElementById('copyMaterials').addEventListener('change', toggleConditionalField);
-
-            // Add event listener for acknowledgment checkbox to enable/disable print button
-            const acknowledgeCheckbox = document.getElementById('acknowledgeNote');
-            const printButton = document.getElementById('printButton');
-            
-            // Initially disable the print button
-            printButton.disabled = true;
-            
-            acknowledgeCheckbox.addEventListener('change', function() {
-                printButton.disabled = !this.checked;
-            });
-        });
-
-        function toggleConditionalField(event) {
-            const checkbox = event.target;
-            const fieldId = checkbox.id + 'Fields';
-            const field = document.getElementById(fieldId);
-            
-            if (checkbox.checked) {
-                field.classList.add('active');
-            } else {
-                field.classList.remove('active');
-            }
-        }
-
-        function populatePrintView() {
-            // Get form data
-            const formDate = document.getElementById('formDate').value;
-            const requestingOffice = document.getElementById('requestingOffice').value;
-            const contactPerson = document.getElementById('contactPerson').value;
-            const contactNo = document.getElementById('contactNo').value;
-            const messengerName = document.getElementById('messengerName').value;
-            const eventActivity = document.getElementById('eventActivity').value;
-            const eventDate = document.getElementById('eventDate').value;
-            const eventTime = document.getElementById('eventTime').value;
-            const eventVenue = document.getElementById('eventVenue').value;
-
-            // Populate both copies (1 and 2)
-            for (let i = 1; i <= 2; i++) {
-                document.getElementById(`printDate${i}`).textContent = formDate;
-                document.getElementById(`printRequestingOffice${i}`).textContent = requestingOffice;
-                document.getElementById(`printContactPerson${i}`).textContent = contactPerson;
-                document.getElementById(`printContactNo${i}`).textContent = contactNo;
-                document.getElementById(`printMessengerName${i}`).textContent = messengerName;
-                document.getElementById(`printEventActivity${i}`).textContent = eventActivity;
-                document.getElementById(`printEventDate${i}`).textContent = eventDate;
-                document.getElementById(`printEventTime${i}`).textContent = eventTime;
-                document.getElementById(`printEventVenue${i}`).textContent = eventVenue;
-
-                // Populate service checkboxes
-                const serviceGrid = document.getElementById(`printServiceGrid${i}`);
-                serviceGrid.innerHTML = '';
-                
-                const services = [
-                    { id: 'graphicDesign', label: 'Graphic/ Lay-out Design' },
-                    { id: 'radioGuesting', label: 'Radio Guesting' },
-                    { id: 'photoCoverage', label: 'Photo Coverage' },
-                    { id: 'videoEditing', label: 'Video Editing' },
-                    { id: 'videoCoverage', label: 'Video Coverage' },
-                    { id: 'socialMediaPosting', label: 'Social Media Posting' },
-                    { id: 'videoCoverageInterview', label: 'Video Coverage with Interview' },
-                    { id: 'copyMaterials', label: 'Copy of Photo/Video Materials' },
-                    { id: 'drone', label: 'Drone' }
-                ];
-
-                services.forEach(service => {
-                    const checkbox = document.getElementById(service.id);
-                    const div = document.createElement('div');
-                    div.className = 'print-checkbox';
-                    div.innerHTML = `
-                        <span class="print-checkbox-box ${checkbox.checked ? 'checked' : ''}"></span>
-                        ${service.label}
-                    `;
-                    serviceGrid.appendChild(div);
-                });
-
-                // Populate conditional fields
-                const conditionalDiv = document.getElementById(`printConditional${i}`);
-                conditionalDiv.innerHTML = '';
-
-                if (document.getElementById('videoEditing').checked) {
-                    const dueDate = document.getElementById('videoEditingDueDate').value;
-                    conditionalDiv.innerHTML += `
-                        <div class="print-conditional">
-                            <strong>FOR VIDEO EDITING</strong><br>
-                            Due Date: ${dueDate}
-                        </div>
-                    `;
-                }
-
-                if (document.getElementById('socialMediaPosting').checked) {
-                    const postingDates = document.getElementById('socialMediaDates').value;
-                    conditionalDiv.innerHTML += `
-                        <div class="print-conditional">
-                            <strong>FOR SOCIAL MEDIA POSTING</strong><br>
-                            Posting Dates: ${postingDates}
-                        </div>
-                    `;
-                }
-
-                if (document.getElementById('copyMaterials').checked) {
-                    const about = document.getElementById('copyAbout').value;
-                    const event = document.getElementById('copyEvent').value;
-                    const dateTaken = document.getElementById('copyDateTaken').value;
-                    conditionalDiv.innerHTML += `
-                        <div class="print-conditional">
-                            <strong>FOR COPY OF PHOTO/VIDEO MATERIALS</strong><br>
-                            About: ${about} | Event: ${event} | Date Taken: ${dateTaken}
-                        </div>
-                    `;
-                }
-
-                // Populate CIO Use section
-                const requestRemarks = document.getElementById('requestRemarks').value;
-                const progressRemarks = document.getElementById('progressRemarks').value;
-                const assignedPersonnel = document.getElementById('assignedPersonnel').value;
-
-                document.getElementById(`printRequestRemarks${i}`).textContent = requestRemarks;
-                document.getElementById(`printProgressRemarks${i}`).textContent = progressRemarks;
-                document.getElementById(`printAssignedPersonnel${i}`).textContent = assignedPersonnel;
-
-                // Status checkboxes
-                if (document.getElementById('statusApproved').checked) {
-                    document.getElementById(`printStatusApproved${i}`).classList.add('checked');
-                }
-                if (document.getElementById('statusDeclined').checked) {
-                    document.getElementById(`printStatusDeclined${i}`).classList.add('checked');
-                }
-                if (document.getElementById('progressCompleted').checked) {
-                    document.getElementById(`printProgressCompleted${i}`).classList.add('checked');
-                }
-                if (document.getElementById('progressOngoing').checked) {
-                    document.getElementById(`printProgressOngoing${i}`).classList.add('checked');
-                }
-                if (document.getElementById('progressDeferred').checked) {
-                    document.getElementById(`printProgressDeferred${i}`).classList.add('checked');
-                }
-            }
-        }
-
-        function printForm() {
-            // Validate required fields
-            const form = document.getElementById('requestForm');
-            if (!form.checkValidity()) {
-                alert('Please fill in all required fields before printing.');
-                form.reportValidity();
-                return;
-            }
-
-            // Check if at least one service is selected
-            const selectedServices = getSelectedServices();
-            if (selectedServices.length === 0) {
-                alert('Please select at least one service before printing.');
-                return;
-            }
-
-            // Check if acknowledgment checkbox is checked
-            const acknowledgeCheckbox = document.getElementById('acknowledgeNote');
-            if (!acknowledgeCheckbox.checked) {
-                alert('Please read and acknowledge the note before printing the form.');
-                acknowledgeCheckbox.focus();
-                return;
-            }
-
-            // Populate print view with form data
-            populatePrintView();
-
-            // Trigger print
-            window.print();
-        }
-
-        function resetForm() {
-            if (confirm('Are you sure you want to reset the form? All entered data will be cleared.')) {
-                document.getElementById('requestForm').reset();
-                const today = new Date().toISOString().split('T')[0];
-                document.getElementById('formDate').value = today;
-                
-                // Hide conditional fields
-                document.querySelectorAll('.conditional-field').forEach(field => {
-                    field.classList.remove('active');
-                });
-
-                // Uncheck acknowledgment
-                document.getElementById('acknowledgeNote').checked = false;
-            }
-        }
-    </script>
+    }
+</script>
 </body>
-</html>
 </html>
