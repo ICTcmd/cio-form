@@ -1085,6 +1085,11 @@
         let currentView = 'form';
         let realtimeSubscription = null;
 
+        // Immediate hash check (before DOM loads)
+        if (window.location.hash === '#admin') {
+            currentView = 'login';
+        }
+
         // Check URL hash on load
         window.addEventListener('DOMContentLoaded', function() {
             const today = new Date().toISOString().split('T')[0];
@@ -1109,7 +1114,7 @@
             });
 
             // Check for admin hash
-            if (window.location.hash === '#admin') {
+            if (window.location.hash === '#admin' || currentView === 'login') {
                 showLoginView();
             }
         });
