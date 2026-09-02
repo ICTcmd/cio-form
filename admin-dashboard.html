@@ -188,7 +188,7 @@
                 <h1>🎯 CIO Request Management Dashboard</h1>
                 <p>Manage and track all service requests</p>
             </div>
-            <button class="btn btn-secondary" onclick="logout()">Logout</button>
+            <button class="btn btn-secondary" onclick="if(confirm('Logout from admin dashboard?')) logout()">Logout</button>
         </div>
 
         <div class="toolbar">
@@ -413,10 +413,8 @@
         }
 
         function logout() {
-            if (confirm('Are you sure you want to logout?')) {
-                sessionStorage.removeItem('adminLoggedIn');
-                window.location.href = 'admin-login.html';
-            }
+            sessionStorage.removeItem('adminLoggedIn');
+            window.location.href = 'admin-login.html';
         }
     </script>
 </body>
