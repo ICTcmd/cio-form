@@ -640,20 +640,20 @@
             <div class="form-section">
                 <h3>EVENT DETAILS</h3>
                 <div class="form-group">
-                    <label for="eventActivity">Event/Activity:</label>
+                    <label for="eventActivity">Event/Activity: <span style="color: red;">*</span></label>
                     <input type="text" id="eventActivity" name="eventActivity" required>
                 </div>
                 <div class="form-row">
                     <div class="form-group">
-                        <label for="eventDate">Date:</label>
+                        <label for="eventDate">Date: <span style="color: red;">*</span></label>
                         <input type="date" id="eventDate" name="eventDate" required>
                     </div>
                     <div class="form-group">
-                        <label for="eventTime">Time:</label>
+                        <label for="eventTime">Time: <span style="color: red;">*</span></label>
                         <input type="time" id="eventTime" name="eventTime" required>
                     </div>
                     <div class="form-group">
-                        <label for="eventVenue">Venue:</label>
+                        <label for="eventVenue">Venue: <span style="color: red;">*</span></label>
                         <input type="text" id="eventVenue" name="eventVenue" required>
                     </div>
                 </div>
@@ -661,7 +661,8 @@
 
             <!-- Service Requested Section -->
             <div class="form-section">
-                <h3>SERVICE REQUESTED</h3>
+                <h3>SERVICE REQUESTED <span style="color: red;">*</span></h3>
+                <p style="font-size: 14px; color: #666; margin-bottom: 10px;">Please select at least one service:</p>
                 <div class="checkbox-group">
                     <div class="checkbox-item">
                         <input type="checkbox" id="graphicDesign" name="service" value="Graphic/ Lay-out Design">
@@ -1124,6 +1125,13 @@
                 return;
             }
 
+            // Check if at least one service is selected
+            const selectedServices = getSelectedServices();
+            if (selectedServices.length === 0) {
+                alert('Please select at least one service.');
+                return;
+            }
+
             const acknowledgeCheckbox = document.getElementById('acknowledgeNote');
             if (!acknowledgeCheckbox.checked) {
                 alert('Please read and acknowledge the note before submitting.');
@@ -1518,6 +1526,13 @@
             if (!form.checkValidity()) {
                 alert('Please fill in all required fields before printing.');
                 form.reportValidity();
+                return;
+            }
+
+            // Check if at least one service is selected
+            const selectedServices = getSelectedServices();
+            if (selectedServices.length === 0) {
+                alert('Please select at least one service before printing.');
                 return;
             }
 
