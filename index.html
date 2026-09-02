@@ -1059,16 +1059,31 @@
         </div>
     </div>
 
+    <!-- Supabase JS Client -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
     <script>
-        // Configuration
+        // ============================================
+        // SUPABASE CONFIGURATION
+        // ============================================
+        const SUPABASE_URL = 'YOUR_SUPABASE_URL'; // Replace with your URL
+        const SUPABASE_ANON_KEY = 'YOUR_SUPABASE_ANON_KEY'; // Replace with your anon key
+        
+        // Initialize Supabase client
+        const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+        
+        // ============================================
+        // OTHER CONFIGURATION
+        // ============================================
         const ADMIN_PASSWORD = 'CIOBago2026'; // Change this to your desired password
         const EMAILJS_SERVICE_ID = 'YOUR_EMAILJS_SERVICE_ID'; // Get from EmailJS
         const EMAILJS_TEMPLATE_ID = 'YOUR_EMAILJS_TEMPLATE_ID'; // Get from EmailJS
         const EMAILJS_PUBLIC_KEY = 'YOUR_EMAILJS_PUBLIC_KEY'; // Get from EmailJS
 
         // Initialize
-        let requests = JSON.parse(localStorage.getItem('cioRequests')) || [];
+        let requests = [];
         let currentView = 'form';
+        let realtimeSubscription = null;
 
         // Check URL hash on load
         window.addEventListener('DOMContentLoaded', function() {
@@ -1117,7 +1132,7 @@
             return `CIO-${year}${month}${day}-${random}`;
         }
 
-        function submitRequest() {
+        async function submitRequest() {
             const form = document.getElementById('requestForm');
             if (!form.checkValidity()) {
                 alert('Please fill in all required fields.');
@@ -1139,53 +1154,71 @@
                 return;
             }
 
+            // Disable submit button to prevent double submission
+            const submitButton = document.getElementById('submitButton');
+            submitButton.disabled = true;
+            submitButton.textContent = 'Submitting...';
+
             // Gather form data
             const formData = {
-                controlNumber: generateControlNumber(),
-                dateSubmitted: new Date().toISOString(),
-                formDate: document.getElementById('formDate').value,
-                requestingOffice: document.getElementById('requestingOffice').value,
-                contactPerson: document.getElementById('contactPerson').value,
-                contactNo: document.getElementById('contactNo').value,
-                messengerName: document.getElementById('messengerName').value,
-                eventActivity: document.getElementById('eventActivity').value,
-                eventDate: document.getElementById('eventDate').value,
-                eventTime: document.getElementById('eventTime').value,
-                eventVenue: document.getElementById('eventVenue').value,
-                services: getSelectedServices(),
-                videoEditingDueDate: document.getElementById('videoEditingDueDate').value,
-                socialMediaDates: document.getElementById('socialMediaDates').value,
-                copyAbout: document.getElementById('copyAbout').value,
-                copyEvent: document.getElementById('copyEvent').value,
-                copyDateTaken: document.getElementById('copyDateTaken').value,
+                control_number: generateControlNumber(),
+                form_date: document.getElementById('formDate').value,
+                requesting_office: document.getElementById('requestingOffice').value,
+                contact_person: document.getElementById('contactPerson').value,
+                contact_no: document.getElementById('contactNo').value,
+                messenger_name: document.getElementById('messengerName').value,
+                event_activity: document.getElementById('eventActivity').value,
+                event_date: document.getElementById('eventDate').value,
+                event_time: document.getElementById('eventTime').value,
+                event_venue: document.getElementById('eventVenue').value,
+                services: selectedServices,
+                video_editing_due_date: document.getElementById('videoEditingDueDate').value || null,
+                social_media_dates: document.getElementById('socialMediaDates').value || null,
+                copy_about: document.getElementById('copyAbout').value || null,
+                copy_event: document.getElementById('copyEvent').value || null,
+                copy_date_taken: document.getElementById('copyDateTaken').value || null,
                 status: 'Pending'
             };
 
-            // Save to localStorage
-            requests.push(formData);
-            localStorage.setItem('cioRequests', JSON.stringify(requests));
+            try {
+                // Insert into Supabase
+                const { data, error } = await supabase
+                    .from('requests')
+                    .insert([formData])
+                    .select();
 
-            // Send notification (EmailJS or webhook)
-            sendNotification(formData);
+                if (error) throw error;
 
-            // Show success message
-            alert(`✅ Request submitted successfully!\n\nControl Number: ${formData.controlNumber}\n\nPlease save this control number for your reference. You will be contacted by the CIO team soon.`);
+                // Send notification
+                sendNotification(formData);
 
-            // Optionally print the form
-            if (confirm('Would you like to print the request form for your records?')) {
-                populatePrintView();
-                window.print();
+                // Show success message
+                alert(`✅ Request submitted successfully!\n\nControl Number: ${formData.control_number}\n\nPlease save this control number for your reference. You will be contacted by the CIO team soon.`);
+
+                // Optionally print the form
+                if (confirm('Would you like to print the request form for your records?')) {
+                    populatePrintView();
+                    window.print();
+                }
+
+                // Reset form
+                form.reset();
+                document.getElementById('formDate').value = new Date().toISOString().split('T')[0];
+                document.getElementById('acknowledgeNote').checked = false;
+                document.getElementById('submitButton').disabled = true;
+                document.getElementById('printButton').disabled = true;
+                document.querySelectorAll('.conditional-field').forEach(field => {
+                    field.classList.remove('active');
+                });
+
+            } catch (error) {
+                console.error('Error submitting request:', error);
+                alert('❌ Error submitting request. Please try again or contact support.\n\nError: ' + error.message);
+            } finally {
+                // Re-enable button
+                submitButton.disabled = false;
+                submitButton.textContent = 'Submit Request';
             }
-
-            // Reset form
-            form.reset();
-            document.getElementById('formDate').value = new Date().toISOString().split('T')[0];
-            document.getElementById('acknowledgeNote').checked = false;
-            document.getElementById('submitButton').disabled = true;
-            document.getElementById('printButton').disabled = true;
-            document.querySelectorAll('.conditional-field').forEach(field => {
-                field.classList.remove('active');
-            });
         }
 
         function getSelectedServices() {
@@ -1257,53 +1290,100 @@
             showPublicForm();
         }
 
-        function loadRequests() {
-            requests = JSON.parse(localStorage.getItem('cioRequests')) || [];
-            const tbody = document.getElementById('requestsTableBody');
-            tbody.innerHTML = '';
+        async function loadRequests() {
+            try {
+                // Fetch all requests from Supabase
+                const { data, error } = await supabase
+                    .from('requests')
+                    .select('*')
+                    .order('created_at', { ascending: false });
 
-            if (requests.length === 0) {
-                tbody.innerHTML = '<tr><td colspan="11" style="text-align: center; padding: 20px;">No requests yet</td></tr>';
-                return;
+                if (error) throw error;
+
+                requests = data || [];
+                const tbody = document.getElementById('requestsTableBody');
+                tbody.innerHTML = '';
+
+                if (requests.length === 0) {
+                    tbody.innerHTML = '<tr><td colspan="11" style="text-align: center; padding: 20px;">No requests yet</td></tr>';
+                    return;
+                }
+
+                requests.forEach((req, index) => {
+                    const row = document.createElement('tr');
+                    row.innerHTML = `
+                        <td><span class="control-number">${req.control_number}</span></td>
+                        <td>${new Date(req.created_at).toLocaleDateString()}</td>
+                        <td>${req.requesting_office}</td>
+                        <td>${req.contact_person}</td>
+                        <td>${req.contact_no}</td>
+                        <td>${req.messenger_name}</td>
+                        <td>${req.event_activity}</td>
+                        <td>${req.event_date}</td>
+                        <td style="font-size: 11px;">${Array.isArray(req.services) ? req.services.join(', ') : req.services}</td>
+                        <td>
+                            <select class="status-select" onchange="updateStatus('${req.id}', this.value)">
+                                <option value="Pending" ${req.status === 'Pending' ? 'selected' : ''}>Pending</option>
+                                <option value="Contacted" ${req.status === 'Contacted' ? 'selected' : ''}>Contacted</option>
+                                <option value="Approved" ${req.status === 'Approved' ? 'selected' : ''}>Approved</option>
+                                <option value="Declined" ${req.status === 'Declined' ? 'selected' : ''}>Declined</option>
+                                <option value="Completed" ${req.status === 'Completed' ? 'selected' : ''}>Completed</option>
+                            </select>
+                        </td>
+                        <td>
+                            <button class="action-btn action-btn-call" onclick="callContact('${req.contact_no}')" title="Call">📞</button>
+                            <button class="action-btn action-btn-messenger" onclick="openMessenger('${req.messenger_name}')" title="Messenger">💬</button>
+                            <button class="action-btn action-btn-print" onclick="reprintForm('${req.id}')" title="Reprint">🖨️</button>
+                            <button class="action-btn action-btn-delete" onclick="deleteRequest('${req.id}')" title="Delete">🗑️</button>
+                        </td>
+                    `;
+                    tbody.appendChild(row);
+                });
+
+                // Subscribe to real-time updates if not already subscribed
+                subscribeToRealtimeUpdates();
+
+            } catch (error) {
+                console.error('Error loading requests:', error);
+                alert('Error loading requests: ' + error.message);
             }
-
-            requests.reverse().forEach((req, index) => {
-                const actualIndex = requests.length - 1 - index;
-                const row = document.createElement('tr');
-                row.innerHTML = `
-                    <td><span class="control-number">${req.controlNumber}</span></td>
-                    <td>${new Date(req.dateSubmitted).toLocaleDateString()}</td>
-                    <td>${req.requestingOffice}</td>
-                    <td>${req.contactPerson}</td>
-                    <td>${req.contactNo}</td>
-                    <td>${req.messengerName}</td>
-                    <td>${req.eventActivity}</td>
-                    <td>${req.eventDate}</td>
-                    <td style="font-size: 11px;">${req.services.join(', ')}</td>
-                    <td>
-                        <select class="status-select" onchange="updateStatus(${actualIndex}, this.value)">
-                            <option value="Pending" ${req.status === 'Pending' ? 'selected' : ''}>Pending</option>
-                            <option value="Contacted" ${req.status === 'Contacted' ? 'selected' : ''}>Contacted</option>
-                            <option value="Approved" ${req.status === 'Approved' ? 'selected' : ''}>Approved</option>
-                            <option value="Declined" ${req.status === 'Declined' ? 'selected' : ''}>Declined</option>
-                            <option value="Completed" ${req.status === 'Completed' ? 'selected' : ''}>Completed</option>
-                        </select>
-                    </td>
-                    <td>
-                        <button class="action-btn action-btn-call" onclick="callContact('${req.contactNo}')" title="Call">📞</button>
-                        <button class="action-btn action-btn-messenger" onclick="openMessenger('${req.messengerName}')" title="Messenger">💬</button>
-                        <button class="action-btn action-btn-print" onclick="reprintForm(${actualIndex})" title="Reprint">🖨️</button>
-                        <button class="action-btn action-btn-delete" onclick="deleteRequest(${actualIndex})" title="Delete">🗑️</button>
-                    </td>
-                `;
-                tbody.appendChild(row);
-            });
         }
 
-        function updateStatus(index, newStatus) {
-            requests[index].status = newStatus;
-            localStorage.setItem('cioRequests', JSON.stringify(requests));
-            loadRequests();
+        // Real-time subscription for instant updates
+        function subscribeToRealtimeUpdates() {
+            if (realtimeSubscription) return; // Already subscribed
+
+            realtimeSubscription = supabase
+                .channel('requests-channel')
+                .on('postgres_changes', {
+                    event: '*',
+                    schema: 'public',
+                    table: 'requests'
+                }, (payload) => {
+                    console.log('Real-time update:', payload);
+                    // Reload requests when changes occur
+                    if (currentView === 'admin') {
+                        loadRequests();
+                    }
+                })
+                .subscribe();
+        }
+
+        async function updateStatus(requestId, newStatus) {
+            try {
+                const { data, error } = await supabase
+                    .from('requests')
+                    .update({ status: newStatus })
+                    .eq('id', requestId);
+
+                if (error) throw error;
+
+                // Reload to reflect changes
+                await loadRequests();
+            } catch (error) {
+                console.error('Error updating status:', error);
+                alert('Error updating status: ' + error.message);
+            }
         }
 
         function callContact(phoneNumber) {
@@ -1322,36 +1402,61 @@
             }
         }
 
-        function reprintForm(index) {
-            const req = requests[index];
-            // Populate the form with request data
-            document.getElementById('formDate').value = req.formDate;
-            document.getElementById('requestingOffice').value = req.requestingOffice;
-            document.getElementById('contactPerson').value = req.contactPerson;
-            document.getElementById('contactNo').value = req.contactNo;
-            document.getElementById('eventActivity').value = req.eventActivity;
-            document.getElementById('eventDate').value = req.eventDate;
-            document.getElementById('eventTime').value = req.eventTime;
-            document.getElementById('eventVenue').value = req.eventVenue;
-            
-            populatePrintView();
-            window.print();
+        async function reprintForm(requestId) {
+            try {
+                // Fetch the specific request
+                const { data, error } = await supabase
+                    .from('requests')
+                    .select('*')
+                    .eq('id', requestId)
+                    .single();
+
+                if (error) throw error;
+
+                const req = data;
+                // Populate the form with request data
+                document.getElementById('formDate').value = req.form_date;
+                document.getElementById('requestingOffice').value = req.requesting_office;
+                document.getElementById('contactPerson').value = req.contact_person;
+                document.getElementById('contactNo').value = req.contact_no;
+                document.getElementById('messengerName').value = req.messenger_name;
+                document.getElementById('eventActivity').value = req.event_activity;
+                document.getElementById('eventDate').value = req.event_date;
+                document.getElementById('eventTime').value = req.event_time;
+                document.getElementById('eventVenue').value = req.event_venue;
+                
+                populatePrintView();
+                window.print();
+            } catch (error) {
+                console.error('Error fetching request for reprint:', error);
+                alert('Error loading request: ' + error.message);
+            }
         }
 
-        function deleteRequest(index) {
-            if (confirm('Are you sure you want to delete this request?')) {
-                requests.splice(index, 1);
-                localStorage.setItem('cioRequests', JSON.stringify(requests));
-                loadRequests();
+        async function deleteRequest(requestId) {
+            if (!confirm('Are you sure you want to delete this request?')) return;
+
+            try {
+                const { error } = await supabase
+                    .from('requests')
+                    .delete()
+                    .eq('id', requestId);
+
+                if (error) throw error;
+
+                await loadRequests();
+                alert('✅ Request deleted successfully!');
+            } catch (error) {
+                console.error('Error deleting request:', error);
+                alert('Error deleting request: ' + error.message);
             }
         }
 
         function refreshRequests() {
             loadRequests();
-            alert('✅ Requests refreshed!');
         }
 
-        function exportRequests() {
+        async function exportRequests() {
             if (requests.length === 0) {
                 alert('No requests to export.');
                 return;
@@ -1359,7 +1464,8 @@
 
             let csv = 'Control Number,Date Submitted,Requesting Office,Contact Person,Phone,Messenger,Event,Event Date,Services,Status\n';
             requests.forEach(req => {
-                csv += `"${req.controlNumber}","${new Date(req.dateSubmitted).toLocaleDateString()}","${req.requestingOffice}","${req.contactPerson}","${req.contactNo}","${req.messengerName}","${req.eventActivity}","${req.eventDate}","${req.services.join('; ')}","${req.status}"\n`;
+                const services = Array.isArray(req.services) ? req.services.join('; ') : req.services;
+                csv += `"${req.control_number}","${new Date(req.created_at).toLocaleDateString()}","${req.requesting_office}","${req.contact_person}","${req.contact_no}","${req.messenger_name}","${req.event_activity}","${req.event_date}","${services}","${req.status}"\n`;
             });
 
             const blob = new Blob([csv], { type: 'text/csv' });
@@ -1371,6 +1477,7 @@
         }
 
         // Keep existing functions below
+        function toggleConditionalField(event) {
         // Set today's date by default
         document.addEventListener('DOMContentLoaded', function() {
             const today = new Date().toISOString().split('T')[0];
