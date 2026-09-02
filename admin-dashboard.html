@@ -188,7 +188,7 @@
                 <h1>🎯 CIO Request Management Dashboard</h1>
                 <p>Manage and track all service requests</p>
             </div>
-            <button class="btn btn-secondary" onclick="if(confirm('Logout from admin dashboard?')) logout()">Logout</button>
+            <button class="btn btn-secondary" id="logoutBtn">Logout</button>
         </div>
 
         <div class="toolbar">
@@ -243,6 +243,14 @@
         // Load requests on page load
         window.addEventListener('DOMContentLoaded', function() {
             loadRequests();
+            
+            // Setup logout button
+            document.getElementById('logoutBtn').addEventListener('click', function() {
+                if (confirm('Logout from admin dashboard?')) {
+                    sessionStorage.removeItem('adminLoggedIn');
+                    window.location.href = 'admin-login.html';
+                }
+            });
         });
 
         async function loadRequests() {
@@ -410,11 +418,6 @@
             a.href = url;
             a.download = `CIO_Requests_${new Date().toISOString().split('T')[0]}.csv`;
             a.click();
-        }
-
-        function logout() {
-            sessionStorage.removeItem('adminLoggedIn');
-            window.location.href = 'admin-login.html';
         }
     </script>
 </body>
