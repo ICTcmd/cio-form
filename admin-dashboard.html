@@ -314,14 +314,13 @@
         function subscribeToRealtimeUpdates() {
             if (realtimeSubscription) return;
 
-            realtimeSubscription = supabase
+            realtimeSubscription = sb
                 .channel('requests-channel')
                 .on('postgres_changes', {
                     event: '*',
                     schema: 'public',
                     table: 'requests'
-                }, (payload) => {
-                    console.log('Real-time update:', payload);
+                }, () => {
                     loadRequests();
                 })
                 .subscribe();
