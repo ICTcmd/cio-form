@@ -222,15 +222,11 @@
         </div>
     </div>
 
-    <!-- Supabase JS Client -->
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-
     <script>
-        // Supabase Configuration
         const SUPABASE_URL = 'https://jnfkfzjhgbktovvvqbuk.supabase.co';
         const SUPABASE_ANON_KEY = 'sb_publishable_3Kd460W0EV6xAJuJKtCIuQ_wGtxeuM2';
-        
-        const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+        const sb = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
         
         let requests = [];
         let realtimeSubscription = null;
@@ -255,7 +251,7 @@
 
         async function loadRequests() {
             try {
-                const { data, error } = await supabase
+                const { data, error } = await sb
                     .from('requests')
                     .select('*')
                     .order('created_at', { ascending: false });
@@ -333,7 +329,7 @@
 
         async function updateStatus(requestId, newStatus) {
             try {
-                const { error } = await supabase
+                const { error } = await sb
                     .from('requests')
                     .update({ status: newStatus })
                     .eq('id', requestId);
@@ -385,7 +381,7 @@
             if (!confirm('Are you sure you want to delete this request?')) return;
 
             try {
-                const { error } = await supabase
+                const { error } = await sb
                     .from('requests')
                     .delete()
                     .eq('id', requestId);
