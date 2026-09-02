@@ -30,20 +30,26 @@
         }
 
         .form-header {
-            text-align: center;
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
             margin-bottom: 30px;
             border-bottom: 3px solid #667eea;
             padding-bottom: 20px;
         }
 
-        .form-header h1 {
+        .form-header-left {
+            flex: 1;
+        }
+
+        .form-header-left h1 {
             color: #333;
             font-size: 24px;
             font-weight: bold;
             margin-bottom: 5px;
         }
 
-        .form-header h2 {
+        .form-header-left h2 {
             color: #666;
             font-size: 16px;
             font-weight: normal;
@@ -52,7 +58,6 @@
         .logo-placeholder {
             width: 80px;
             height: 80px;
-            margin: 0 auto 15px;
             display: flex;
             align-items: center;
             justify-content: center;
@@ -62,6 +67,11 @@
             width: 100%;
             height: 100%;
             object-fit: contain;
+        }
+
+        .date-field {
+            text-align: right;
+            margin-top: 10px;
         }
 
         .form-section {
@@ -241,10 +251,16 @@
             }
 
             .print-header {
-                text-align: center;
+                display: flex;
+                justify-content: space-between;
+                align-items: flex-start;
                 margin-bottom: 15px;
                 padding-bottom: 10px;
                 border-bottom: 2px solid #000;
+            }
+
+            .print-header-left {
+                flex: 1;
             }
 
             .print-header h1 {
@@ -262,7 +278,6 @@
             .print-logo {
                 width: 50px;
                 height: 50px;
-                margin: 0 auto 8px;
                 display: flex;
                 align-items: center;
                 justify-content: center;
@@ -276,7 +291,7 @@
 
             .print-date {
                 text-align: right;
-                margin-top: 5px;
+                margin-top: 10px;
                 font-size: 9px;
             }
 
@@ -419,20 +434,23 @@
     <!-- Screen View Form -->
     <div class="form-container">
         <div class="form-header">
+            <div class="form-header-left">
+                <h1>CITY INFORMATION OFFICE</h1>
+                <h2>CITY GOVERNMENT OF BAGO</h2>
+            </div>
             <div class="logo-placeholder">
                 <img src="cio-logo.jpg" alt="CIO Logo">
             </div>
-            <h1>CITY INFORMATION OFFICE</h1>
-            <h2>City Government of Bago</h2>
+        </div>
+
+        <div class="date-field">
+            <div class="form-group">
+                <label for="formDate">DATE:</label>
+                <input type="date" id="formDate" name="formDate" required>
+            </div>
         </div>
 
         <form id="requestForm">
-            <!-- Date -->
-            <div class="form-group">
-                <label for="formDate">Date:</label>
-                <input type="date" id="formDate" name="formDate" required>
-            </div>
-
             <!-- Request Form Section -->
             <div class="form-section">
                 <h3>REQUEST FORM</h3>
@@ -609,13 +627,15 @@
         <!-- Left Copy -->
         <div class="print-copy">
             <div class="print-header">
+                <div class="print-header-left">
+                    <h1>CITY INFORMATION OFFICE</h1>
+                    <h2>CITY GOVERNMENT OF BAGO</h2>
+                </div>
                 <div class="print-logo">
                     <img src="cio-logo.jpg" alt="CIO Logo">
                 </div>
-                <h1>CITY INFORMATION OFFICE</h1>
-                <h2>CITY GOVERNMENT OF BAGO</h2>
-                <div class="print-date">DATE: <span id="printDate1"></span></div>
             </div>
+            <div class="print-date">DATE: <span id="printDate1"></span></div>
 
             <div class="print-section">
                 <h3>REQUEST FORM</h3>
@@ -706,13 +726,15 @@
         <!-- Right Copy (Duplicate) -->
         <div class="print-copy">
             <div class="print-header">
+                <div class="print-header-left">
+                    <h1>CITY INFORMATION OFFICE</h1>
+                    <h2>CITY GOVERNMENT OF BAGO</h2>
+                </div>
                 <div class="print-logo">
                     <img src="cio-logo.jpg" alt="CIO Logo">
                 </div>
-                <h1>CITY INFORMATION OFFICE</h1>
-                <h2>CITY GOVERNMENT OF BAGO</h2>
-                <div class="print-date">DATE: <span id="printDate2"></span></div>
             </div>
+            <div class="print-date">DATE: <span id="printDate2"></span></div>
 
             <div class="print-section">
                 <h3>REQUEST FORM</h3>
