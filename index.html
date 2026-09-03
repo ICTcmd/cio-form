@@ -946,9 +946,52 @@
     .footer {
         background: var(--navy);
         color: rgba(255,255,255,0.4);
-        text-align: center;
-        padding: 28px 24px;
+        padding: 32px 40px;
         font-size: 13px;
+    }
+
+    .footer-inner {
+        max-width: 1400px;
+        margin: 0 auto;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 20px;
+        flex-wrap: wrap;
+    }
+
+    .footer-logos {
+        display: flex;
+        align-items: center;
+        gap: 16px;
+    }
+
+    .footer-bago-logo {
+        height: 48px;
+        width: auto;
+        object-fit: contain;
+        opacity: 0.85;
+    }
+
+    .footer-cio-logo {
+        height: 36px;
+        width: auto;
+        object-fit: contain;
+        background: white;
+        padding: 3px 7px;
+        border-radius: 6px;
+        opacity: 0.9;
+    }
+
+    .footer-divider {
+        width: 1px;
+        height: 32px;
+        background: rgba(255,255,255,0.15);
+    }
+
+    .footer-text {
+        text-align: center;
+        flex: 1;
     }
 
     .footer strong { color: rgba(255,255,255,0.7); }
@@ -1106,17 +1149,17 @@
             </div>
         </div>
 
-        <!-- CENTER: Nav links -->
-        <ul class="nav-links">
-            <li><a href="#services">Services</a></li>
-            <li><a href="#tracker">Track Request</a></li>
-            <li><a href="#request-form">Submit Form</a></li>
-            <li><a href="admin-login.html" class="nav-login">Staff Login</a></li>
-        </ul>
-
-        <!-- RIGHT: CIO logo -->
-        <div class="nav-emblem">
-            <img src="cio-logo.jpg" alt="CIO Logo">
+        <!-- RIGHT: Nav links + CIO logo -->
+        <div style="display:flex;align-items:center;gap:16px;">
+            <ul class="nav-links">
+                <li><a href="#services">Services</a></li>
+                <li><a href="#tracker">Track Request</a></li>
+                <li><a href="#request-form">Submit Form</a></li>
+                <li><a href="admin-login.html" class="nav-login">Staff Login</a></li>
+            </ul>
+            <div class="nav-emblem">
+                <img src="cio-logo.jpg" alt="CIO Logo">
+            </div>
         </div>
     </div>
 </nav>
@@ -1475,7 +1518,16 @@
      FOOTER
 ============================================================ -->
 <footer class="footer no-print">
-    <strong>City Information Office</strong> — City Government of Bago &nbsp;|&nbsp; All rights reserved &copy; 2026
+    <div class="footer-inner">
+        <div class="footer-logos">
+            <img src="bago-city-logo.png" alt="Bago City" class="footer-bago-logo">
+            <div class="footer-divider"></div>
+            <img src="cio-logo.jpg" alt="CIO" class="footer-cio-logo">
+        </div>
+        <div class="footer-text">
+            <strong>City Information Office</strong> — City Government of Bago &nbsp;|&nbsp; All rights reserved &copy; 2026
+        </div>
+    </div>
 </footer>
 
 <!-- ============================================================
