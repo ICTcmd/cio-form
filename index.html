@@ -1438,6 +1438,30 @@
                             <input type="checkbox" id="drone" value="Drone">
                             <label for="drone">Drone</label>
                         </div>
+                        <div class="checkbox-item">
+                            <input type="checkbox" id="liveStreaming" value="Live Streaming">
+                            <label for="liveStreaming">Live Streaming</label>
+                        </div>
+                        <div class="checkbox-item">
+                            <input type="checkbox" id="tarpaulinDesign" value="Tarpaulin / Streamer Design">
+                            <label for="tarpaulinDesign">Tarpaulin / Streamer Design</label>
+                        </div>
+                        <div class="checkbox-item">
+                            <input type="checkbox" id="pressRelease" value="Press Release / Write-up">
+                            <label for="pressRelease">Press Release / Write-up</label>
+                        </div>
+                        <div class="checkbox-item" style="grid-column: 1 / -1;">
+                            <input type="checkbox" id="others" value="Others">
+                            <label for="others">Others — please specify:</label>
+                        </div>
+                    </div>
+
+                    <!-- Others specify field -->
+                    <div id="othersFields" class="conditional-field">
+                        <div class="cond-title">📝 Please Specify</div>
+                        <div class="form-group" style="margin:0;">
+                            <input type="text" id="othersSpecify" placeholder="Describe the service you need...">
+                        </div>
                     </div>
 
                     <!-- Conditional: Video Editing -->
@@ -1479,6 +1503,19 @@
                 </div>
 
                 <!-- NOTE -->
+                <!-- Remarks -->
+                <div class="form-block">
+                    <div class="form-block-header">
+                        <span class="accent-bar"></span>
+                        <div class="form-block-icon">📝</div>
+                        <h3>REMARKS / ADDITIONAL INSTRUCTIONS</h3>
+                    </div>
+                    <div class="form-group">
+                        <label for="remarks">Remarks <span style="color:var(--slate-400);font-weight:400;">(optional)</span></label>
+                        <textarea id="remarks" name="remarks" rows="3" placeholder="Any special instructions, additional notes, or specific requirements for this request..." style="width:100%;padding:10px 14px;border:1.5px solid var(--slate-200);border-radius:var(--radius-sm);font-size:14px;color:var(--navy);font-family:'Plus Jakarta Sans',sans-serif;outline:none;resize:vertical;transition:all 0.2s;background:var(--slate-50);line-height:1.6;"></textarea>
+                    </div>
+                </div>
+
                 <div class="note-box">
                     <span class="note-icon">⚠️</span>
                     <p><strong>Important:</strong> Please submit requests at least <strong>3 working days</strong> before the event, subject to CIO personnel and equipment availability.</p>
@@ -1545,6 +1582,9 @@
     document.getElementById('copyMaterials').addEventListener('change', function () {
         document.getElementById('copyMaterialsFields').classList.toggle('active', this.checked);
     });
+    document.getElementById('others').addEventListener('change', function () {
+        document.getElementById('othersFields').classList.toggle('active', this.checked);
+    });
 
     // ---- Acknowledge checkbox ----
     document.getElementById('acknowledgeNote').addEventListener('change', function () {
@@ -1571,9 +1611,17 @@
     function getSelectedServices() {
         const ids = ['graphicDesign','radioGuesting','photoCoverage','videoEditing',
                      'videoCoverage','socialMediaPosting','videoCoverageInterview',
-                     'copyMaterials','drone'];
+                     'copyMaterials','drone','liveStreaming','tarpaulinDesign',
+                     'pressRelease','others'];
         return ids.filter(id => document.getElementById(id).checked)
-                  .map(id => document.getElementById(id).value);
+                  .map(id => {
+                      const val = document.getElementById(id).value;
+                      if (id === 'others') {
+                          const specify = document.getElementById('othersSpecify').value.trim();
+                          return specify ? `Others: ${specify}` : 'Others';
+                      }
+                      return val;
+                  });
     }
 
     // ---- SUBMIT ----
@@ -1606,6 +1654,7 @@
             copy_about: document.getElementById('copyAbout').value || null,
             copy_event: document.getElementById('copyEvent').value || null,
             copy_date_taken: document.getElementById('copyDateTaken').value || null,
+            remarks: document.getElementById('remarks').value || null,
             status: 'Pending'
         };
 
@@ -1626,6 +1675,8 @@
             btn.disabled = true;
             document.getElementById('printButton').disabled = true;
             document.querySelectorAll('.conditional-field').forEach(f => f.classList.remove('active'));
+            document.getElementById('othersSpecify').value = '';
+            document.getElementById('remarks').value = '';
 
         } catch (err) {
             console.error(err);
