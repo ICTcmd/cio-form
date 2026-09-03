@@ -101,9 +101,9 @@
     }
 
     .nav-emblem {
-        height: 40px;
+        height: 48px;
         width: auto;
-        border-radius: 8px;
+        border-radius: 6px;
         overflow: hidden;
         flex-shrink: 0;
         background: white;
@@ -115,6 +115,26 @@
         width: auto;
         display: block;
         object-fit: contain;
+    }
+
+    .nav-emblem-bago {
+        height: 52px;
+        width: auto;
+        flex-shrink: 0;
+    }
+
+    .nav-emblem-bago img {
+        height: 100%;
+        width: auto;
+        display: block;
+        object-fit: contain;
+    }
+
+    .nav-divider {
+        width: 1px;
+        height: 36px;
+        background: rgba(255,255,255,0.15);
+        flex-shrink: 0;
     }
 
     .nav-brand-text { line-height: 1.2; }
@@ -1074,22 +1094,29 @@
 ============================================================ -->
 <nav class="navbar no-print">
     <div class="navbar-inner">
-        <div style="display:flex;align-items:center;gap:12px;">
-            <div class="nav-emblem">
-                <img src="cio-logo.jpg" alt="CIO Logo">
+        <!-- LEFT: Bago City logo + text -->
+        <div style="display:flex;align-items:center;gap:14px;">
+            <div class="nav-emblem-bago">
+                <img src="bago-city-logo.png" alt="Bago City Logo">
             </div>
+            <div class="nav-divider"></div>
             <div class="nav-brand-text">
                 <span>CITY INFORMATION OFFICE</span>
                 <span>City Government of Bago</span>
             </div>
         </div>
-        <div style="display:flex;align-items:center;gap:6px;">
-            <ul class="nav-links">
-                <li><a href="#services">Services</a></li>
-                <li><a href="#tracker">Track Request</a></li>
-                <li><a href="#request-form">Submit Form</a></li>
-                <li><a href="admin-login.html" class="nav-login">Staff Login</a></li>
-            </ul>
+
+        <!-- CENTER: Nav links -->
+        <ul class="nav-links">
+            <li><a href="#services">Services</a></li>
+            <li><a href="#tracker">Track Request</a></li>
+            <li><a href="#request-form">Submit Form</a></li>
+            <li><a href="admin-login.html" class="nav-login">Staff Login</a></li>
+        </ul>
+
+        <!-- RIGHT: CIO logo -->
+        <div class="nav-emblem">
+            <img src="cio-logo.jpg" alt="CIO Logo">
         </div>
     </div>
 </nav>
