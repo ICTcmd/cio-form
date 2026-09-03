@@ -957,13 +957,6 @@
         align-items: center;
         justify-content: space-between;
         gap: 20px;
-        flex-wrap: wrap;
-    }
-
-    .footer-logos {
-        display: flex;
-        align-items: center;
-        gap: 16px;
     }
 
     .footer-bago-logo {
@@ -971,6 +964,7 @@
         width: auto;
         object-fit: contain;
         opacity: 0.85;
+        flex-shrink: 0;
     }
 
     .footer-cio-logo {
@@ -981,12 +975,7 @@
         padding: 3px 7px;
         border-radius: 6px;
         opacity: 0.9;
-    }
-
-    .footer-divider {
-        width: 1px;
-        height: 32px;
-        background: rgba(255,255,255,0.15);
+        flex-shrink: 0;
     }
 
     .footer-text {
@@ -1519,14 +1508,11 @@
 ============================================================ -->
 <footer class="footer no-print">
     <div class="footer-inner">
-        <div class="footer-logos">
-            <img src="bago-city-logo.png" alt="Bago City" class="footer-bago-logo">
-            <div class="footer-divider"></div>
-            <img src="cio-logo.jpg" alt="CIO" class="footer-cio-logo">
-        </div>
+        <img src="bago-city-logo.png" alt="Bago City" class="footer-bago-logo">
         <div class="footer-text">
             <strong>City Information Office</strong> — City Government of Bago &nbsp;|&nbsp; All rights reserved &copy; 2026
         </div>
+        <img src="cio-logo.jpg" alt="CIO" class="footer-cio-logo">
     </div>
 </footer>
 
