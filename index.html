@@ -143,12 +143,53 @@
     }
 
     /* ============================================
-       HERO SECTION
+       HERO SLIDESHOW
     ============================================ */
+    .hero-slides {
+        position: absolute;
+        inset: 0;
+        z-index: 0;
+    }
+
+    .hero-slide {
+        position: absolute;
+        inset: 0;
+        opacity: 0;
+        transition: opacity 1.5s ease-in-out;
+        pointer-events: none;
+    }
+
+    .hero-slide.active { opacity: 1; }
+
+    .hero-slide img {
+        width: 100%; height: 100%;
+        object-fit: cover;
+        object-position: center;
+        display: block;
+        pointer-events: none;
+        transform: scale(1.08);
+        transition: transform 10s ease-out;
+    }
+
+    .hero-slide.active img { transform: scale(1); }
+
+    .hero-slide-overlay {
+        position: absolute;
+        inset: 0;
+        background: linear-gradient(
+            160deg,
+            rgba(7,11,24,0.88) 0%,
+            rgba(10,18,40,0.82) 50%,
+            rgba(15,23,42,0.90) 100%
+        );
+        backdrop-filter: blur(2px);
+        -webkit-backdrop-filter: blur(2px);
+        pointer-events: none;
+    }
     .hero {
         padding-top: 68px;
         min-height: 100vh;
-        background: linear-gradient(160deg, var(--navy) 0%, #162040 45%, #1a2a5e 100%);
+        background: var(--navy);
         display: flex; flex-direction: column;
         justify-content: center; align-items: center;
         text-align: center;
@@ -156,12 +197,7 @@
         overflow: hidden;
     }
 
-    .hero::before {
-        content: '';
-        position: absolute; inset: 0;
-        background: radial-gradient(ellipse 80% 60% at 50% 30%, rgba(29,78,216,0.18) 0%, transparent 70%);
-        pointer-events: none;
-    }
+    .hero::before { display: none; }
 
     .hero-grid-overlay {
         position: absolute; inset: 0;
@@ -986,7 +1022,39 @@
 <!-- ============================================================
      HERO
 ============================================================ -->
-<section class="hero no-print">
+<section class="hero no-print" id="hero">
+    <!-- Background Slideshow -->
+    <div class="hero-slides" id="heroSlides">
+        <div class="hero-slide active" id="slide-0">
+            <img src="camera.jpg" alt="CIO Camera">
+            <div class="hero-slide-overlay"></div>
+        </div>
+        <div class="hero-slide" id="slide-1">
+            <img src="camera 2.jpg" alt="CIO Camera 2">
+            <div class="hero-slide-overlay"></div>
+        </div>
+        <div class="hero-slide" id="slide-2">
+            <img src="drone.jpg" alt="CIO Drone">
+            <div class="hero-slide-overlay"></div>
+        </div>
+        <div class="hero-slide" id="slide-3">
+            <img src="camera 3.jpg" alt="CIO Camera 3">
+            <div class="hero-slide-overlay"></div>
+        </div>
+        <div class="hero-slide" id="slide-4">
+            <img src="drone 2.jpg" alt="CIO Drone 2">
+            <div class="hero-slide-overlay"></div>
+        </div>
+        <div class="hero-slide" id="slide-5">
+            <img src="bon-bon.jpg" alt="CIO Coverage">
+            <div class="hero-slide-overlay"></div>
+        </div>
+        <div class="hero-slide" id="slide-6">
+            <img src="camera 4.jpg" alt="CIO Camera 4">
+            <div class="hero-slide-overlay"></div>
+        </div>
+    </div>
+
     <div class="hero-grid-overlay"></div>
     <div class="hero-inner">
         <div class="hero-badge">
@@ -1458,7 +1526,21 @@
         window.print();
     }
 
-    // ---- RESET ----
+    // ---- HERO SLIDESHOW ----
+    (function () {
+        const slides = document.querySelectorAll('.hero-slide');
+        let current = 0;
+
+        // Trigger initial scale animation
+        slides[0].querySelector('img').style.transform = 'scale(1)';
+
+        setInterval(function () {
+            slides[current].classList.remove('active');
+            current = (current + 1) % slides.length;
+            slides[current].classList.add('active');
+        }, 5000);
+    })();
+
     function resetForm() {
         if (!confirm('Reset all fields?')) return;
         document.getElementById('requestForm').reset();
