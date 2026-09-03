@@ -217,13 +217,13 @@
 
     .hero-badge {
         display: inline-flex; align-items: center; gap: 8px;
-        background: rgba(29,78,216,0.18);
-        border: 1px solid rgba(59,130,246,0.3);
+        background: rgba(255,255,255,0.08);
+        border: 1px solid rgba(255,255,255,0.15);
         border-radius: 100px;
-        padding: 6px 16px;
-        font-size: 12px; font-weight: 600;
-        color: #93C5FD;
-        letter-spacing: 0.8px;
+        padding: 7px 18px;
+        font-size: 11px; font-weight: 600;
+        color: rgba(255,255,255,0.75);
+        letter-spacing: 2.5px;
         text-transform: uppercase;
         margin-bottom: 28px;
     }
@@ -233,29 +233,37 @@
         background: #60A5FA;
         border-radius: 50%;
         animation: pulse-dot 2s infinite;
+        flex-shrink: 0;
     }
 
     @keyframes pulse-dot {
         0%, 100% { opacity: 1; transform: scale(1); }
-        50% { opacity: 0.5; transform: scale(0.8); }
+        50% { opacity: 0.4; transform: scale(0.7); }
     }
 
     .hero h1 {
-        font-size: clamp(32px, 5vw, 58px);
-        font-weight: 900;
+        font-size: clamp(30px, 4.5vw, 54px);
+        font-weight: 800;
         color: white;
-        line-height: 1.1;
-        letter-spacing: -1.5px;
+        line-height: 1.12;
+        letter-spacing: -1.2px;
         margin-bottom: 20px;
     }
 
-    .hero h1 span { color: #60A5FA; }
+    .hero h1 .gradient-text {
+        background: linear-gradient(90deg, #60A5FA 0%, #A5B4FC 100%);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+    }
 
     .hero p {
-        font-size: 16px; font-weight: 400;
-        color: rgba(255,255,255,0.6);
-        max-width: 580px; margin: 0 auto 36px;
-        line-height: 1.7;
+        font-size: clamp(15px, 1.8vw, 18px);
+        font-weight: 400;
+        color: #E2E8F0;
+        max-width: 620px;
+        margin: 0 auto 36px;
+        line-height: 1.75;
     }
 
     .hero-chips {
@@ -267,23 +275,29 @@
     }
 
     .hero-chip {
-        display: flex; align-items: center; gap: 8px;
-        background: rgba(255,255,255,0.08);
-        border: 1px solid rgba(255,255,255,0.18);
+        display: inline-flex; align-items: center; gap: 7px;
+        background: rgba(255,255,255,0.10);
+        backdrop-filter: blur(12px);
+        -webkit-backdrop-filter: blur(12px);
+        border: 1px solid rgba(255,255,255,0.15);
         border-radius: 100px;
-        padding: 9px 20px;
-        font-size: 14px; font-weight: 600;
-        color: rgba(255,255,255,0.92);
-        transition: all 0.2s;
+        padding: 7px 16px;
+        font-size: 12px; font-weight: 500;
+        color: #CBD5E1;
         cursor: default;
         white-space: nowrap;
+        transition: all 0.2s;
     }
 
     .hero-chip:hover {
-        background: rgba(255,255,255,0.15);
-        border-color: rgba(255,255,255,0.35);
+        background: rgba(255,255,255,0.16);
         color: white;
         transform: translateY(-2px);
+    }
+
+    .hero-chip svg {
+        width: 14px; height: 14px;
+        flex-shrink: 0; opacity: 0.85;
     }
 
     .hero-actions {
@@ -292,40 +306,48 @@
     }
 
     .btn-hero-primary {
-        display: inline-flex; align-items: center; gap: 8px;
+        display: inline-flex; align-items: center; gap: 9px;
         background: #2563EB;
         color: white;
-        padding: 15px 32px;
-        border-radius: var(--radius-md);
-        font-size: 15px; font-weight: 700;
+        padding: 14px 26px;
+        border-radius: 12px;
+        font-size: 15px; font-weight: 600;
         text-decoration: none;
         border: none; cursor: pointer;
+        font-family: 'Inter', sans-serif;
         transition: all 0.2s;
-        box-shadow: 0 8px 32px rgba(37,99,235,0.45), 0 2px 8px rgba(37,99,235,0.3);
+        box-shadow: 0 8px 32px rgba(37,99,235,0.40);
         letter-spacing: 0.1px;
     }
 
     .btn-hero-primary:hover {
         background: #3B82F6;
         transform: translateY(-2px);
-        box-shadow: 0 12px 40px rgba(59,130,246,0.55), 0 4px 12px rgba(37,99,235,0.35);
+        box-shadow: 0 12px 40px rgba(59,130,246,0.50);
+    }
+
+    .btn-hero-primary svg, .btn-hero-secondary svg {
+        width: 17px; height: 17px; flex-shrink: 0;
     }
 
     .btn-hero-secondary {
-        display: inline-flex; align-items: center; gap: 8px;
-        background: rgba(255,255,255,0.07);
-        color: rgba(255,255,255,0.85);
-        padding: 14px 28px;
-        border-radius: var(--radius-md);
-        font-size: 15px; font-weight: 600;
+        display: inline-flex; align-items: center; gap: 9px;
+        background: rgba(255,255,255,0.10);
+        backdrop-filter: blur(12px);
+        -webkit-backdrop-filter: blur(12px);
+        color: white;
+        padding: 14px 26px;
+        border-radius: 12px;
+        font-size: 15px; font-weight: 500;
         text-decoration: none;
-        border: 1px solid rgba(255,255,255,0.15);
+        border: 1px solid rgba(255,255,255,0.20);
         cursor: pointer;
+        font-family: 'Inter', sans-serif;
         transition: all 0.2s;
     }
 
     .btn-hero-secondary:hover {
-        background: rgba(255,255,255,0.12);
+        background: rgba(255,255,255,0.18);
         color: white;
         transform: translateY(-2px);
     }
@@ -1064,22 +1086,36 @@
     <div class="hero-inner">
         <div class="hero-badge">
             <div class="hero-badge-dot"></div>
-            Official LGU Media & Coverage Services
+            City Government of Bago &bull; CIO Portal
         </div>
-        <h1>Official Media, Coverage<br>&amp; <span>Broadcasting Services</span></h1>
+        <h1>Digital Media, Coverage &<br><span class="gradient-text">Broadcasting Services</span></h1>
         <p>Streamlining official event coverage, broadcast requests, video production, and graphic design for Bago City LGU offices and partner agencies.</p>
         <div class="hero-chips">
-            <div class="hero-chip">📸 Photo Coverage</div>
-            <div class="hero-chip">🎥 Video Production</div>
-            <div class="hero-chip">📻 Radio Guesting</div>
-            <div class="hero-chip">🎨 Graphic Design</div>
+            <div class="hero-chip">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg>
+                Photo Coverage
+            </div>
+            <div class="hero-chip">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="23 7 16 12 23 17 23 7"/><rect x="1" y="5" width="15" height="14" rx="2" ry="2"/></svg>
+                Video Production
+            </div>
+            <div class="hero-chip">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/><line x1="12" y1="19" x2="12" y2="23"/><line x1="8" y1="23" x2="16" y2="23"/></svg>
+                Radio Guesting
+            </div>
+            <div class="hero-chip">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="13.5" cy="6.5" r=".5"/><circle cx="17.5" cy="10.5" r=".5"/><circle cx="8.5" cy="7.5" r=".5"/><circle cx="6.5" cy="12.5" r=".5"/><path d="M12 2C6.5 2 2 6.5 2 12s4.5 10 10 10c.926 0 1.648-.746 1.648-1.688 0-.437-.18-.835-.437-1.125-.29-.289-.438-.652-.438-1.125a1.64 1.64 0 0 1 1.668-1.668h1.996c3.051 0 5.555-2.503 5.555-5.554C21.965 6.012 17.461 2 12 2z"/></svg>
+                Graphic Design
+            </div>
         </div>
         <div class="hero-actions">
             <a href="#request-form" class="btn-hero-primary">
-                📋 Fill Out Request Form
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>
+                Fill Out Request Form
             </a>
             <a href="#tracker" class="btn-hero-secondary">
-                🔍 Check Request Status
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+                Check Request Status
             </a>
         </div>
     </div>
