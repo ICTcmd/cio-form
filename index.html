@@ -3,581 +3,1273 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>City Information Office - Request Form</title>
+    <title>City Information Office — City Government of Bago</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
     <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; }
+    /* ============================================
+       DESIGN TOKENS
+    ============================================ */
+    :root {
+        --navy:       #0F172A;
+        --navy-light: #1E293B;
+        --blue:       #1D4ED8;
+        --blue-light: #3B82F6;
+        --blue-pale:  #EFF6FF;
+        --gold:       #D97706;
+        --gold-light: #FEF3C7;
+        --slate-50:   #F8FAFC;
+        --slate-100:  #F1F5F9;
+        --slate-200:  #E2E8F0;
+        --slate-300:  #CBD5E1;
+        --slate-400:  #94A3B8;
+        --slate-600:  #475569;
+        --slate-700:  #334155;
+        --slate-900:  #0F172A;
+        --white:      #FFFFFF;
+        --success:    #059669;
+        --danger:     #DC2626;
+        --shadow-sm:  0 1px 3px rgba(0,0,0,0.08), 0 1px 2px rgba(0,0,0,0.04);
+        --shadow-md:  0 4px 16px rgba(0,0,0,0.08), 0 2px 6px rgba(0,0,0,0.04);
+        --shadow-lg:  0 10px 40px rgba(0,0,0,0.1), 0 4px 12px rgba(0,0,0,0.05);
+        --shadow-xl:  0 20px 60px rgba(0,0,0,0.12);
+        --radius-sm:  8px;
+        --radius-md:  12px;
+        --radius-lg:  16px;
+        --radius-xl:  24px;
+    }
 
-        body {
-            font-family: Arial, sans-serif;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            padding: 20px;
-            min-height: 100vh;
-        }
+    /* ============================================
+       RESET & BASE
+    ============================================ */
+    *, *::before, *::after { margin:0; padding:0; box-sizing:border-box; }
 
-        .form-container {
-            max-width: 800px;
-            margin: 0 auto;
-            background: white;
-            padding: 30px;
-            border-radius: 10px;
-            box-shadow: 0 10px 40px rgba(0,0,0,0.2);
-        }
+    html { scroll-behavior: smooth; }
 
-        .form-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: flex-start;
-            margin-bottom: 15px;
-            padding-bottom: 15px;
-            border-bottom: 3px solid #667eea;
-        }
+    body {
+        font-family: 'Inter', system-ui, -apple-system, sans-serif;
+        background: var(--slate-50);
+        color: var(--navy);
+        line-height: 1.6;
+        -webkit-font-smoothing: antialiased;
+    }
 
-        .form-header h1 { font-size: 22px; font-weight: bold; color: #333; }
-        .form-header h2 { font-size: 14px; font-weight: normal; color: #666; }
+    /* ============================================
+       NO-PRINT (hides all landing elements on print)
+    ============================================ */
+    .no-print { }
 
-        .logo img { width: 70px; height: 70px; object-fit: contain; }
+    /* ============================================
+       NAVBAR
+    ============================================ */
+    .navbar {
+        position: fixed;
+        top: 0; left: 0; right: 0;
+        z-index: 1000;
+        background: rgba(15,23,42,0.92);
+        backdrop-filter: blur(16px);
+        -webkit-backdrop-filter: blur(16px);
+        border-bottom: 1px solid rgba(255,255,255,0.08);
+        padding: 0 32px;
+        height: 68px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+    }
 
-        .date-row {
-            text-align: right;
-            margin-bottom: 15px;
-        }
+    .nav-brand {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        text-decoration: none;
+    }
 
-        .date-row input {
-            padding: 6px 10px;
-            border: 1px solid #ddd;
-            border-radius: 5px;
-            font-size: 14px;
-        }
+    .nav-emblem {
+        width: 42px; height: 42px;
+        background: linear-gradient(135deg, var(--blue) 0%, var(--blue-light) 100%);
+        border-radius: 10px;
+        display: flex; align-items: center; justify-content: center;
+        font-size: 18px; font-weight: 900; color: white;
+        letter-spacing: -1px;
+        border: 1.5px solid rgba(255,255,255,0.2);
+    }
 
-        .form-section { margin-bottom: 25px; }
+    .nav-brand-text { line-height: 1.2; }
 
-        .form-section h3 {
-            background: #667eea;
-            color: white;
-            padding: 8px 15px;
-            margin-bottom: 12px;
-            border-radius: 5px;
-            font-size: 15px;
-        }
+    .nav-brand-text span:first-child {
+        display: block;
+        font-size: 13px; font-weight: 700;
+        color: white; letter-spacing: 0.3px;
+    }
 
-        .form-group { margin-bottom: 12px; }
+    .nav-brand-text span:last-child {
+        display: block;
+        font-size: 11px; font-weight: 400;
+        color: rgba(255,255,255,0.5);
+    }
 
-        .form-group label {
-            display: block;
-            margin-bottom: 4px;
-            color: #333;
-            font-weight: 500;
-            font-size: 14px;
-        }
+    .nav-links {
+        display: flex; align-items: center; gap: 6px;
+        list-style: none;
+    }
 
-        .form-group input[type="text"],
-        .form-group input[type="date"],
-        .form-group input[type="time"],
-        .form-group input[type="tel"] {
-            width: 100%;
-            padding: 9px;
-            border: 1px solid #ddd;
-            border-radius: 5px;
-            font-size: 14px;
-        }
+    .nav-links a {
+        text-decoration: none;
+        font-size: 13px; font-weight: 500;
+        color: rgba(255,255,255,0.65);
+        padding: 7px 14px;
+        border-radius: var(--radius-sm);
+        transition: all 0.2s;
+    }
 
-        .form-group input:focus { outline: none; border-color: #667eea; }
+    .nav-links a:hover { color: white; background: rgba(255,255,255,0.08); }
 
-        .form-row {
-            display: grid;
-            grid-template-columns: 1fr 1fr 1fr;
-            gap: 12px;
-        }
+    .nav-links .nav-login {
+        color: var(--gold);
+        border: 1px solid rgba(217,119,6,0.35);
+        background: rgba(217,119,6,0.08);
+    }
 
-        .checkbox-group {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 8px;
-            margin-bottom: 10px;
-        }
+    .nav-links .nav-login:hover {
+        background: rgba(217,119,6,0.15);
+        color: var(--gold);
+    }
 
-        .checkbox-item {
-            display: flex;
-            align-items: center;
-            font-size: 14px;
-        }
+    /* ============================================
+       HERO SECTION
+    ============================================ */
+    .hero {
+        padding-top: 68px;
+        min-height: 100vh;
+        background: linear-gradient(160deg, var(--navy) 0%, #162040 45%, #1a2a5e 100%);
+        display: flex; flex-direction: column;
+        justify-content: center; align-items: center;
+        text-align: center;
+        position: relative;
+        overflow: hidden;
+    }
 
-        .checkbox-item input[type="checkbox"] {
-            margin-right: 7px;
-            width: 16px;
-            height: 16px;
-            cursor: pointer;
-        }
+    .hero::before {
+        content: '';
+        position: absolute; inset: 0;
+        background: radial-gradient(ellipse 80% 60% at 50% 30%, rgba(29,78,216,0.18) 0%, transparent 70%);
+        pointer-events: none;
+    }
 
-        .checkbox-item label { margin: 0; cursor: pointer; font-weight: normal; }
+    .hero-grid-overlay {
+        position: absolute; inset: 0;
+        background-image:
+            linear-gradient(rgba(255,255,255,0.025) 1px, transparent 1px),
+            linear-gradient(90deg, rgba(255,255,255,0.025) 1px, transparent 1px);
+        background-size: 48px 48px;
+        pointer-events: none;
+    }
 
-        .conditional-field {
-            display: none;
-            margin-top: 10px;
-            padding: 12px;
-            background: #f8f9fa;
-            border-left: 3px solid #667eea;
-            border-radius: 3px;
-        }
+    .hero-inner {
+        position: relative; z-index: 1;
+        max-width: 820px;
+        padding: 60px 24px 80px;
+    }
 
-        .conditional-field.active { display: block; }
+    .hero-badge {
+        display: inline-flex; align-items: center; gap: 8px;
+        background: rgba(29,78,216,0.18);
+        border: 1px solid rgba(59,130,246,0.3);
+        border-radius: 100px;
+        padding: 6px 16px;
+        font-size: 12px; font-weight: 600;
+        color: #93C5FD;
+        letter-spacing: 0.8px;
+        text-transform: uppercase;
+        margin-bottom: 28px;
+    }
 
-        .note {
-            background: #fff3cd;
-            border: 1px solid #ffc107;
-            padding: 12px 15px;
-            border-radius: 5px;
-            margin-top: 20px;
-            font-size: 14px;
-            color: #856404;
-        }
+    .hero-badge-dot {
+        width: 6px; height: 6px;
+        background: #60A5FA;
+        border-radius: 50%;
+        animation: pulse-dot 2s infinite;
+    }
 
-        .acknowledge-box {
-            display: flex;
-            align-items: flex-start;
-            background: #f8f9fa;
-            padding: 15px;
-            border-radius: 5px;
-            border-left: 4px solid #667eea;
-            margin-top: 15px;
-        }
+    @keyframes pulse-dot {
+        0%, 100% { opacity: 1; transform: scale(1); }
+        50% { opacity: 0.5; transform: scale(0.8); }
+    }
 
-        .acknowledge-box input[type="checkbox"] {
-            margin-top: 3px;
-            margin-right: 10px;
-            width: 18px;
-            height: 18px;
-            cursor: pointer;
-        }
+    .hero h1 {
+        font-size: clamp(32px, 5vw, 58px);
+        font-weight: 900;
+        color: white;
+        line-height: 1.1;
+        letter-spacing: -1.5px;
+        margin-bottom: 20px;
+    }
 
-        .acknowledge-box label {
-            cursor: pointer;
-            font-weight: 500;
-            font-size: 14px;
-            color: #333;
-        }
+    .hero h1 span { color: #60A5FA; }
 
-        .button-group {
-            display: flex;
-            gap: 12px;
-            justify-content: center;
-            margin-top: 25px;
-        }
+    .hero p {
+        font-size: 16px; font-weight: 400;
+        color: rgba(255,255,255,0.6);
+        max-width: 580px; margin: 0 auto 36px;
+        line-height: 1.7;
+    }
 
-        .btn {
-            padding: 12px 28px;
-            font-size: 15px;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-            font-weight: 600;
-            transition: all 0.3s;
-        }
+    .hero-chips {
+        display: flex; flex-wrap: wrap;
+        justify-content: center; gap: 10px;
+        margin-bottom: 44px;
+    }
 
-        .btn:disabled { opacity: 0.5; cursor: not-allowed; }
+    .hero-chip {
+        display: flex; align-items: center; gap: 7px;
+        background: rgba(255,255,255,0.07);
+        border: 1px solid rgba(255,255,255,0.12);
+        border-radius: 100px;
+        padding: 8px 16px;
+        font-size: 13px; font-weight: 500;
+        color: rgba(255,255,255,0.8);
+        transition: all 0.2s;
+        cursor: default;
+    }
 
-        .btn-primary { background: #667eea; color: white; }
-        .btn-primary:hover:not(:disabled) {
-            background: #5568d3;
-            transform: translateY(-2px);
-            box-shadow: 0 5px 15px rgba(102,126,234,0.4);
-        }
+    .hero-chip:hover {
+        background: rgba(255,255,255,0.12);
+        border-color: rgba(255,255,255,0.25);
+        color: white;
+        transform: translateY(-2px);
+    }
 
-        .btn-secondary { background: #6c757d; color: white; }
-        .btn-secondary:hover { background: #5a6268; }
+    .hero-actions {
+        display: flex; gap: 12px;
+        justify-content: center; flex-wrap: wrap;
+    }
 
-        /* Toast Notification */
+    .btn-hero-primary {
+        display: inline-flex; align-items: center; gap: 8px;
+        background: var(--blue);
+        color: white;
+        padding: 14px 28px;
+        border-radius: var(--radius-md);
+        font-size: 15px; font-weight: 600;
+        text-decoration: none;
+        border: none; cursor: pointer;
+        transition: all 0.2s;
+        box-shadow: 0 4px 20px rgba(29,78,216,0.4);
+    }
+
+    .btn-hero-primary:hover {
+        background: #1e40af;
+        transform: translateY(-2px);
+        box-shadow: 0 8px 30px rgba(29,78,216,0.5);
+    }
+
+    .btn-hero-secondary {
+        display: inline-flex; align-items: center; gap: 8px;
+        background: rgba(255,255,255,0.07);
+        color: rgba(255,255,255,0.85);
+        padding: 14px 28px;
+        border-radius: var(--radius-md);
+        font-size: 15px; font-weight: 600;
+        text-decoration: none;
+        border: 1px solid rgba(255,255,255,0.15);
+        cursor: pointer;
+        transition: all 0.2s;
+    }
+
+    .btn-hero-secondary:hover {
+        background: rgba(255,255,255,0.12);
+        color: white;
+        transform: translateY(-2px);
+    }
+
+    .hero-scroll {
+        position: absolute; bottom: 32px; left: 50%;
+        transform: translateX(-50%);
+        display: flex; flex-direction: column; align-items: center;
+        gap: 6px; color: rgba(255,255,255,0.3);
+        font-size: 11px; font-weight: 500; letter-spacing: 1px;
+        text-transform: uppercase;
+        animation: bounce-slow 2s infinite;
+    }
+
+    @keyframes bounce-slow {
+        0%, 100% { transform: translateX(-50%) translateY(0); }
+        50% { transform: translateX(-50%) translateY(6px); }
+    }
+
+    /* ============================================
+       SECTION SHARED
+    ============================================ */
+    .section { padding: 80px 24px; }
+
+    .section-inner { max-width: 1160px; margin: 0 auto; }
+
+    .section-tag {
+        display: inline-flex; align-items: center; gap: 6px;
+        background: var(--blue-pale);
+        color: var(--blue);
+        border-radius: 100px;
+        padding: 5px 14px;
+        font-size: 11px; font-weight: 700;
+        letter-spacing: 0.8px; text-transform: uppercase;
+        margin-bottom: 14px;
+    }
+
+    .section-title {
+        font-size: clamp(24px, 3vw, 36px);
+        font-weight: 800; color: var(--navy);
+        letter-spacing: -0.8px;
+        margin-bottom: 10px;
+    }
+
+    .section-subtitle {
+        font-size: 15px; color: var(--slate-600);
+        max-width: 520px; line-height: 1.7;
+        margin-bottom: 48px;
+    }
+
+    /* ============================================
+       SERVICES SHOWCASE
+    ============================================ */
+    .services-section { background: white; }
+
+    .services-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+        gap: 20px;
+    }
+
+    .service-card {
+        background: var(--slate-50);
+        border: 1px solid var(--slate-200);
+        border-radius: var(--radius-xl);
+        padding: 28px;
+        transition: all 0.25s;
+        position: relative;
+        overflow: hidden;
+        cursor: default;
+    }
+
+    .service-card::before {
+        content: '';
+        position: absolute; top: 0; left: 0; right: 0;
+        height: 3px;
+        background: linear-gradient(90deg, var(--blue), var(--blue-light));
+        opacity: 0;
+        transition: opacity 0.25s;
+    }
+
+    .service-card:hover {
+        border-color: var(--blue-light);
+        box-shadow: var(--shadow-lg);
+        transform: translateY(-4px);
+        background: white;
+    }
+
+    .service-card:hover::before { opacity: 1; }
+
+    .service-icon {
+        width: 52px; height: 52px;
+        background: var(--blue-pale);
+        border-radius: var(--radius-md);
+        display: flex; align-items: center; justify-content: center;
+        font-size: 24px;
+        margin-bottom: 18px;
+        transition: all 0.25s;
+    }
+
+    .service-card:hover .service-icon {
+        background: var(--blue);
+        transform: scale(1.05);
+    }
+
+    .service-card h3 {
+        font-size: 16px; font-weight: 700;
+        color: var(--navy); margin-bottom: 8px;
+    }
+
+    .service-card p {
+        font-size: 13px; color: var(--slate-600);
+        line-height: 1.65;
+    }
+
+    /* ============================================
+       STATUS TRACKER
+    ============================================ */
+    .tracker-section {
+        background: linear-gradient(135deg, var(--navy) 0%, #1e3a6e 100%);
+        padding: 60px 24px;
+    }
+
+    .tracker-inner {
+        max-width: 680px; margin: 0 auto; text-align: center;
+    }
+
+    .tracker-inner h2 {
+        font-size: 28px; font-weight: 800;
+        color: white; margin-bottom: 8px;
+        letter-spacing: -0.5px;
+    }
+
+    .tracker-inner p {
+        font-size: 14px; color: rgba(255,255,255,0.55);
+        margin-bottom: 28px;
+    }
+
+    .tracker-card {
+        background: rgba(255,255,255,0.06);
+        border: 1px solid rgba(255,255,255,0.1);
+        border-radius: var(--radius-xl);
+        padding: 28px;
+        backdrop-filter: blur(8px);
+    }
+
+    .tracker-input-row {
+        display: flex; gap: 10px;
+    }
+
+    .tracker-input {
+        flex: 1;
+        padding: 13px 18px;
+        background: rgba(255,255,255,0.08);
+        border: 1px solid rgba(255,255,255,0.15);
+        border-radius: var(--radius-md);
+        font-size: 14px; font-weight: 500;
+        color: white;
+        outline: none;
+        font-family: 'Inter', sans-serif;
+        transition: all 0.2s;
+    }
+
+    .tracker-input::placeholder { color: rgba(255,255,255,0.35); }
+    .tracker-input:focus { border-color: var(--blue-light); background: rgba(255,255,255,0.12); }
+
+    .tracker-btn {
+        padding: 13px 24px;
+        background: var(--blue);
+        color: white; border: none;
+        border-radius: var(--radius-md);
+        font-size: 14px; font-weight: 600;
+        cursor: pointer; font-family: 'Inter', sans-serif;
+        transition: all 0.2s;
+        white-space: nowrap;
+    }
+
+    .tracker-btn:hover { background: #1e40af; transform: translateY(-1px); }
+
+    .tracker-result {
+        margin-top: 16px;
+        display: none;
+    }
+
+    .tracker-result.show { display: block; }
+
+    .status-badge {
+        display: inline-flex; align-items: center; gap: 8px;
+        padding: 10px 20px;
+        border-radius: 100px;
+        font-size: 14px; font-weight: 600;
+    }
+
+    .status-badge.pending   { background: rgba(217,119,6,0.15); color: #FCD34D; border: 1px solid rgba(217,119,6,0.3); }
+    .status-badge.contacted { background: rgba(59,130,246,0.15); color: #93C5FD; border: 1px solid rgba(59,130,246,0.3); }
+    .status-badge.approved  { background: rgba(5,150,105,0.15); color: #6EE7B7; border: 1px solid rgba(5,150,105,0.3); }
+    .status-badge.declined  { background: rgba(220,38,38,0.15); color: #FCA5A5; border: 1px solid rgba(220,38,38,0.3); }
+    .status-badge.completed { background: rgba(100,116,139,0.15); color: #CBD5E1; border: 1px solid rgba(100,116,139,0.3); }
+    .status-badge.not-found { background: rgba(220,38,38,0.15); color: #FCA5A5; border: 1px solid rgba(220,38,38,0.3); }
+
+    .tracker-detail {
+        margin-top: 14px;
+        background: rgba(255,255,255,0.05);
+        border-radius: var(--radius-md);
+        padding: 16px 20px;
+        text-align: left;
+        font-size: 13px; color: rgba(255,255,255,0.7);
+        line-height: 1.8;
+    }
+
+    /* ============================================
+       FORM SECTION
+    ============================================ */
+    .form-section-wrapper {
+        background: var(--slate-50);
+        padding: 80px 24px;
+    }
+
+    .form-card {
+        max-width: 820px; margin: 0 auto;
+        background: white;
+        border-radius: var(--radius-xl);
+        box-shadow: var(--shadow-xl);
+        overflow: hidden;
+        border: 1px solid var(--slate-200);
+    }
+
+    .form-card-header {
+        background: linear-gradient(135deg, var(--navy) 0%, #1e3a6e 100%);
+        padding: 32px 40px;
+        display: flex; justify-content: space-between; align-items: center;
+    }
+
+    .form-card-header-left h2 {
+        font-size: 22px; font-weight: 800;
+        color: white; margin-bottom: 4px;
+    }
+
+    .form-card-header-left p {
+        font-size: 13px; color: rgba(255,255,255,0.55);
+    }
+
+    .form-header-logo {
+        width: 60px; height: 60px;
+        object-fit: contain;
+        border-radius: 10px;
+    }
+
+    .form-card-body { padding: 40px; }
+
+    .date-row {
+        display: flex; justify-content: flex-end;
+        align-items: center; gap: 10px;
+        margin-bottom: 28px;
+    }
+
+    .date-row label {
+        font-size: 13px; font-weight: 600;
+        color: var(--slate-600);
+    }
+
+    .date-row input {
+        padding: 9px 14px;
+        border: 1.5px solid var(--slate-200);
+        border-radius: var(--radius-sm);
+        font-size: 13px;
+        color: var(--navy);
+        font-family: 'Inter', sans-serif;
+        outline: none;
+        transition: border-color 0.2s;
+    }
+
+    .date-row input:focus { border-color: var(--blue); }
+
+    /* Form Section Headers */
+    .form-block { margin-bottom: 32px; }
+
+    .form-block-header {
+        display: flex; align-items: center; gap: 10px;
+        margin-bottom: 18px;
+        padding-bottom: 12px;
+        border-bottom: 1.5px solid var(--slate-100);
+    }
+
+    .form-block-icon {
+        width: 32px; height: 32px;
+        background: var(--blue-pale);
+        border-radius: var(--radius-sm);
+        display: flex; align-items: center; justify-content: center;
+        font-size: 15px;
+    }
+
+    .form-block-header h3 {
+        font-size: 15px; font-weight: 700;
+        color: var(--navy);
+    }
+
+    .form-block-header span.accent-bar {
+        height: 18px; width: 3px;
+        background: var(--blue);
+        border-radius: 2px;
+        margin-right: 2px;
+    }
+
+    /* Form Fields */
+    .form-group { margin-bottom: 16px; }
+
+    .form-group label {
+        display: block;
+        font-size: 13px; font-weight: 600;
+        color: var(--slate-700);
+        margin-bottom: 6px;
+    }
+
+    .form-group label .req { color: var(--danger); margin-left: 2px; }
+
+    .form-group input[type="text"],
+    .form-group input[type="date"],
+    .form-group input[type="time"],
+    .form-group input[type="tel"] {
+        width: 100%;
+        padding: 10px 14px;
+        border: 1.5px solid var(--slate-200);
+        border-radius: var(--radius-sm);
+        font-size: 14px;
+        color: var(--navy);
+        font-family: 'Inter', sans-serif;
+        outline: none;
+        transition: all 0.2s;
+        background: var(--slate-50);
+    }
+
+    .form-group input:focus {
+        border-color: var(--blue);
+        background: white;
+        box-shadow: 0 0 0 3px rgba(29,78,216,0.08);
+    }
+
+    .form-row-3 {
+        display: grid;
+        grid-template-columns: 1fr 1fr 2fr;
+        gap: 14px;
+    }
+
+    /* Checkboxes */
+    .checkbox-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 10px;
+        margin-bottom: 14px;
+    }
+
+    .checkbox-item {
+        display: flex; align-items: center; gap: 10px;
+        padding: 10px 14px;
+        border: 1.5px solid var(--slate-200);
+        border-radius: var(--radius-sm);
+        cursor: pointer;
+        transition: all 0.2s;
+        background: var(--slate-50);
+    }
+
+    .checkbox-item:hover {
+        border-color: var(--blue-light);
+        background: var(--blue-pale);
+    }
+
+    .checkbox-item input[type="checkbox"] {
+        width: 16px; height: 16px;
+        accent-color: var(--blue);
+        cursor: pointer;
+        flex-shrink: 0;
+    }
+
+    .checkbox-item label {
+        font-size: 13px; font-weight: 500;
+        color: var(--slate-700);
+        cursor: pointer; margin: 0;
+    }
+
+    .checkbox-item:has(input:checked) {
+        border-color: var(--blue);
+        background: var(--blue-pale);
+    }
+
+    .checkbox-item:has(input:checked) label { color: var(--blue); font-weight: 600; }
+
+    /* Conditional Fields */
+    .conditional-field {
+        display: none;
+        margin-top: 12px;
+        padding: 16px;
+        background: var(--blue-pale);
+        border-left: 3px solid var(--blue);
+        border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
+    }
+
+    .conditional-field.active { display: block; }
+
+    .conditional-field .cond-title {
+        font-size: 12px; font-weight: 700;
+        color: var(--blue); text-transform: uppercase;
+        letter-spacing: 0.5px; margin-bottom: 10px;
+    }
+
+    /* Note Box */
+    .note-box {
+        display: flex; gap: 12px;
+        background: var(--gold-light);
+        border: 1px solid rgba(217,119,6,0.25);
+        border-radius: var(--radius-md);
+        padding: 16px 18px;
+        margin-top: 24px;
+    }
+
+    .note-icon { font-size: 18px; flex-shrink: 0; margin-top: 1px; }
+
+    .note-box p {
+        font-size: 13px; color: #92400E;
+        line-height: 1.6;
+    }
+
+    /* Acknowledge */
+    .acknowledge-wrap {
+        display: flex; align-items: flex-start; gap: 12px;
+        background: var(--slate-50);
+        border: 1.5px solid var(--slate-200);
+        border-radius: var(--radius-md);
+        padding: 16px 18px;
+        margin-top: 16px;
+        cursor: pointer;
+        transition: all 0.2s;
+    }
+
+    .acknowledge-wrap:hover { border-color: var(--blue); background: var(--blue-pale); }
+
+    .acknowledge-wrap input[type="checkbox"] {
+        width: 18px; height: 18px;
+        accent-color: var(--blue);
+        margin-top: 2px; flex-shrink: 0; cursor: pointer;
+    }
+
+    .acknowledge-wrap label {
+        font-size: 13px; font-weight: 500;
+        color: var(--slate-700); cursor: pointer; line-height: 1.6;
+    }
+
+    /* Buttons */
+    .form-actions {
+        display: flex; gap: 12px;
+        justify-content: flex-end;
+        margin-top: 28px;
+        flex-wrap: wrap;
+    }
+
+    .btn-form-reset {
+        padding: 12px 24px;
+        background: transparent;
+        border: 1.5px solid var(--slate-300);
+        border-radius: var(--radius-md);
+        font-size: 14px; font-weight: 600;
+        color: var(--slate-600);
+        cursor: pointer;
+        font-family: 'Inter', sans-serif;
+        transition: all 0.2s;
+    }
+
+    .btn-form-reset:hover { border-color: var(--slate-400); color: var(--navy); }
+
+    .btn-form-submit {
+        padding: 12px 28px;
+        background: var(--blue);
+        color: white; border: none;
+        border-radius: var(--radius-md);
+        font-size: 14px; font-weight: 700;
+        cursor: pointer;
+        font-family: 'Inter', sans-serif;
+        transition: all 0.2s;
+        display: flex; align-items: center; gap: 8px;
+        box-shadow: 0 4px 16px rgba(29,78,216,0.3);
+    }
+
+    .btn-form-submit:hover:not(:disabled) {
+        background: #1e40af;
+        transform: translateY(-1px);
+        box-shadow: 0 6px 24px rgba(29,78,216,0.4);
+    }
+
+    .btn-form-submit:disabled { opacity: 0.5; cursor: not-allowed; }
+
+    .btn-form-print {
+        padding: 12px 24px;
+        background: var(--slate-700);
+        color: white; border: none;
+        border-radius: var(--radius-md);
+        font-size: 14px; font-weight: 600;
+        cursor: pointer;
+        font-family: 'Inter', sans-serif;
+        transition: all 0.2s;
+        display: flex; align-items: center; gap: 8px;
+    }
+
+    .btn-form-print:hover:not(:disabled) { background: var(--navy); }
+    .btn-form-print:disabled { opacity: 0.5; cursor: not-allowed; }
+
+    /* ============================================
+       TOAST
+    ============================================ */
+    .toast {
+        position: fixed; top: 84px; right: 24px;
+        padding: 14px 22px;
+        border-radius: var(--radius-md);
+        color: white; font-size: 14px; font-weight: 600;
+        z-index: 9999; display: none;
+        box-shadow: var(--shadow-lg);
+        font-family: 'Inter', sans-serif;
+        max-width: 360px;
+    }
+
+    .toast.success { background: var(--success); }
+    .toast.error   { background: var(--danger); }
+    .toast.show    { display: flex; align-items: center; gap: 10px; animation: toastIn 0.3s ease; }
+
+    @keyframes toastIn {
+        from { transform: translateX(20px); opacity: 0; }
+        to   { transform: translateX(0); opacity: 1; }
+    }
+
+    /* ============================================
+       FOOTER
+    ============================================ */
+    .footer {
+        background: var(--navy);
+        color: rgba(255,255,255,0.4);
+        text-align: center;
+        padding: 28px 24px;
+        font-size: 13px;
+    }
+
+    .footer strong { color: rgba(255,255,255,0.7); }
+
+    /* ============================================
+       PRINT STYLES
+    ============================================ */
+    .print-view { display: none; }
+
+    @media print {
+        @page { size: landscape; margin: 8mm; }
+
+        body { background: white; padding: 0; }
+
+        .no-print,
+        .navbar,
+        .hero,
+        .services-section,
+        .tracker-section,
+        .form-section-wrapper,
+        .footer,
         .toast {
-            position: fixed;
-            top: 20px;
-            right: 20px;
-            padding: 15px 25px;
-            border-radius: 8px;
-            color: white;
-            font-weight: 600;
-            font-size: 15px;
-            z-index: 9999;
-            display: none;
-            box-shadow: 0 5px 20px rgba(0,0,0,0.2);
+            display: none !important;
         }
 
-        .toast.success { background: #28a745; }
-        .toast.error { background: #dc3545; }
-        .toast.show { display: block; animation: slideIn 0.3s ease; }
-
-        @keyframes slideIn {
-            from { transform: translateX(100px); opacity: 0; }
-            to { transform: translateX(0); opacity: 1; }
+        .print-view {
+            display: flex !important;
+            width: 100%; gap: 0;
         }
 
-        /* Print Styles */
-        .print-view { display: none; }
-
-        @media print {
-            @page { size: landscape; margin: 10mm; }
-            body { background: white; padding: 0; }
-            .form-container, .button-group, .note, .toast { display: none !important; }
-            .print-view {
-                display: flex !important;
-                width: 100%;
-                gap: 0;
-            }
-            .print-copy {
-                flex: 1;
-                padding: 15px;
-                border-right: 1px dashed #999;
-                font-size: 10px;
-            }
-            .print-copy:last-child { border-right: none; }
-            .print-header {
-                display: flex;
-                justify-content: space-between;
-                align-items: flex-start;
-                margin-bottom: 12px;
-                padding-bottom: 8px;
-                border-bottom: 2px solid #000;
-            }
-            .print-logo { width: 50px; height: 50px; }
-            .print-logo img { width: 100%; height: 100%; object-fit: contain; }
-            .print-header h1 { font-size: 13px; font-weight: bold; }
-            .print-header h2 { font-size: 9px; font-weight: normal; }
-            .print-date { text-align: right; font-size: 9px; margin-top: 8px; }
-            .print-section { margin-bottom: 10px; }
-            .print-section h3 {
-                background: #000;
-                color: white;
-                padding: 3px 8px;
-                font-size: 10px;
-                font-weight: bold;
-                margin-bottom: 6px;
-            }
-            .print-field {
-                display: flex;
-                margin-bottom: 5px;
-                font-size: 9px;
-            }
-            .print-field-label { font-weight: bold; margin-right: 4px; min-width: 90px; }
-            .print-field-value { flex: 1; border-bottom: 1px solid #333; min-height: 12px; }
-            .print-row { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 6px; margin-bottom: 5px; }
-            .print-checkbox-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 3px; }
-            .print-checkbox { display: flex; align-items: center; font-size: 9px; }
-            .print-checkbox-box {
-                width: 9px; height: 9px;
-                border: 1px solid #000;
-                margin-right: 3px;
-                display: inline-flex; align-items: center; justify-content: center;
-                font-size: 7px;
-            }
-            .print-checkbox-box.checked::after { content: '✓'; }
-            .print-conditional {
-                margin-top: 6px; padding: 5px;
-                background: #f0f0f0;
-                border-left: 2px solid #000;
-                font-size: 9px;
-            }
-            .print-cio-section { margin-top: 10px; padding: 8px; border: 1px solid #000; }
-            .print-cio-row { display: flex; align-items: center; margin-bottom: 4px; font-size: 9px; }
-            .print-signature {
-                text-align: center; margin-top: 25px;
-                padding-top: 5px; border-top: 1px solid #000;
-                width: 60%; margin-left: auto; margin-right: auto;
-                font-size: 10px; font-weight: bold;
-            }
-            .print-note { font-size: 8px; margin-top: 8px; text-align: center; font-style: italic; }
+        .print-copy {
+            flex: 1; padding: 12px 14px;
+            border-right: 1.5px dashed #aaa;
+            font-family: Arial, sans-serif; font-size: 9.5pt;
         }
 
-        @media (max-width: 768px) {
-            .form-container { padding: 20px; }
-            .form-row { grid-template-columns: 1fr; }
-            .checkbox-group { grid-template-columns: 1fr; }
-            .button-group { flex-direction: column; }
-            .btn { width: 100%; }
+        .print-copy:last-child { border-right: none; }
+
+        .pc-header {
+            display: flex; justify-content: space-between; align-items: flex-start;
+            padding-bottom: 6px; border-bottom: 2px solid #000; margin-bottom: 6px;
         }
+
+        .pc-header h1 { font-size: 13pt; font-weight: bold; line-height: 1.2; }
+        .pc-header h2 { font-size: 9pt; font-weight: normal; }
+        .pc-logo { width: 52px; height: 52px; object-fit: contain; }
+
+        .pc-date { text-align: right; font-size: 9pt; margin-bottom: 10px; }
+        .pc-date-line { display: inline-block; min-width: 140px; border-bottom: 1px solid #000; }
+
+        .pc-section { margin-bottom: 8px; }
+        .pc-section-title { font-size: 10.5pt; font-weight: bold; margin-bottom: 4px; }
+
+        .pc-field {
+            display: flex; align-items: flex-end;
+            margin-bottom: 4px; font-size: 9pt;
+        }
+
+        .pc-field-label { white-space: nowrap; margin-right: 4px; }
+        .pc-field-line {
+            flex: 1; border-bottom: 1px solid #000;
+            min-height: 13px; padding-bottom: 1px; font-size: 9pt;
+        }
+
+        .pc-inline-row { display: flex; gap: 8px; margin-bottom: 4px; }
+        .pc-inline-row .pc-field { flex: 1; }
+
+        .pc-check-grid {
+            display: grid; grid-template-columns: 1fr 1fr;
+            gap: 3px 10px; margin-bottom: 4px;
+        }
+
+        .pc-check-item { display: flex; align-items: center; font-size: 9pt; }
+
+        .pc-box {
+            width: 10px; height: 10px;
+            border: 1.2px solid #000; margin-right: 5px;
+            display: inline-flex; align-items: center; justify-content: center;
+            font-size: 8pt; flex-shrink: 0;
+        }
+
+        .pc-box.checked::after { content: '✓'; font-weight: bold; }
+
+        .pc-conditional { display: flex; gap: 16px; margin-bottom: 4px; }
+        .pc-cond-block { flex: 1; }
+        .pc-cond-title { font-size: 9.5pt; font-weight: bold; margin-bottom: 3px; }
+
+        .pc-copy-block { margin-bottom: 4px; }
+        .pc-copy-title { font-size: 9.5pt; font-weight: bold; margin-bottom: 3px; }
+
+        .pc-cio { border-top: 2.5px solid #000; padding-top: 7px; margin-top: 6px; }
+        .pc-cio-title { font-size: 10.5pt; font-weight: bold; margin-bottom: 5px; }
+
+        .pc-check-row {
+            display: flex; align-items: center;
+            gap: 10px; font-size: 9pt; margin-bottom: 4px;
+        }
+
+        .pc-check-row .pc-label { white-space: nowrap; margin-right: 4px; }
+
+        .pc-footer { margin-top: 14px; }
+
+        .pc-sig {
+            width: 55%; margin: 0 auto; text-align: center;
+            border-top: 1px solid #000; padding-top: 4px;
+            font-size: 9.5pt; font-weight: bold;
+        }
+
+        .pc-note {
+            text-align: center; font-size: 7.5pt;
+            font-style: italic; margin-top: 6px;
+        }
+    }
+
+    /* ============================================
+       RESPONSIVE
+    ============================================ */
+    @media (max-width: 768px) {
+        .nav-links { display: none; }
+        .form-row-3 { grid-template-columns: 1fr; }
+        .checkbox-grid { grid-template-columns: 1fr; }
+        .form-card-body { padding: 24px; }
+        .form-card-header { padding: 24px; }
+        .form-actions { justify-content: stretch; }
+        .btn-form-submit, .btn-form-print, .btn-form-reset { width: 100%; justify-content: center; }
+        .services-grid { grid-template-columns: 1fr 1fr; }
+        .tracker-input-row { flex-direction: column; }
+        .hero-chips { gap: 8px; }
+    }
+
+    @media (max-width: 480px) {
+        .services-grid { grid-template-columns: 1fr; }
+    }
     </style>
 </head>
 <body>
 
-<!-- Toast Notification -->
+<!-- Toast -->
 <div class="toast" id="toast"></div>
 
-<!-- Screen View Form -->
-<div class="form-container">
-    <div class="form-header">
-        <div>
-            <h1>CITY INFORMATION OFFICE</h1>
-            <h2>CITY GOVERNMENT OF BAGO</h2>
+<!-- ============================================================
+     NAVBAR
+============================================================ -->
+<nav class="navbar no-print">
+    <a href="#" class="nav-brand">
+        <div class="nav-emblem">CIO</div>
+        <div class="nav-brand-text">
+            <span>CITY INFORMATION OFFICE</span>
+            <span>City Government of Bago</span>
         </div>
-        <div class="logo">
-            <img src="cio-logo.jpg" alt="CIO Logo">
+    </a>
+    <ul class="nav-links">
+        <li><a href="#services">Services</a></li>
+        <li><a href="#tracker">Track Request</a></li>
+        <li><a href="#request-form">Submit Form</a></li>
+        <li><a href="admin-login.html" class="nav-login">Staff Login</a></li>
+    </ul>
+</nav>
+
+<!-- ============================================================
+     HERO
+============================================================ -->
+<section class="hero no-print">
+    <div class="hero-grid-overlay"></div>
+    <div class="hero-inner">
+        <div class="hero-badge">
+            <div class="hero-badge-dot"></div>
+            Official LGU Media & Coverage Services
+        </div>
+        <h1>Official Media, Coverage<br>&amp; <span>Broadcasting Services</span></h1>
+        <p>Streamlining official event coverage, broadcast requests, video production, and graphic design for Bago City LGU offices and partner agencies.</p>
+        <div class="hero-chips">
+            <div class="hero-chip">📸 Photo Coverage</div>
+            <div class="hero-chip">🎥 Video Production</div>
+            <div class="hero-chip">📻 Radio Guesting</div>
+            <div class="hero-chip">🎨 Graphic Design</div>
+            <div class="hero-chip">🚁 Drone Coverage</div>
+            <div class="hero-chip">📱 Social Media</div>
+        </div>
+        <div class="hero-actions">
+            <a href="#request-form" class="btn-hero-primary">
+                📋 Fill Out Request Form
+            </a>
+            <a href="#tracker" class="btn-hero-secondary">
+                🔍 Check Request Status
+            </a>
         </div>
     </div>
+    <div class="hero-scroll">
+        <span>Scroll</span>
+        <span>↓</span>
+    </div>
+</section>
 
-    <div class="date-row">
-        <label style="font-weight:600;">DATE: </label>
-        <input type="date" id="formDate" required>
+<!-- ============================================================
+     SERVICES SHOWCASE
+============================================================ -->
+<section class="section services-section no-print" id="services">
+    <div class="section-inner">
+        <div class="section-tag">📡 CIO Core Services</div>
+        <h2 class="section-title">What We Can Do For You</h2>
+        <p class="section-subtitle">The City Information Office provides comprehensive media and communications services to all LGU offices and partner agencies.</p>
+
+        <div class="services-grid">
+            <div class="service-card">
+                <div class="service-icon">📻</div>
+                <h3>Radio & Broadcasting</h3>
+                <p>Official announcements, live guestings, and broadcast coverage for important city government events and programs.</p>
+            </div>
+            <div class="service-card">
+                <div class="service-icon">🎥</div>
+                <h3>Video Production & Drone</h3>
+                <p>Full event capture, interviews, aerial footage, video editing, and post-production for official documentation.</p>
+            </div>
+            <div class="service-card">
+                <div class="service-icon">📸</div>
+                <h3>Photography & Archiving</h3>
+                <p>High-resolution official event documentation, digital asset management, and photo archive request services.</p>
+            </div>
+            <div class="service-card">
+                <div class="service-icon">🎨</div>
+                <h3>Graphic Design & Digital Media</h3>
+                <p>Layout design, event collaterals, tarpaulins, official social media publishing, and digital content creation.</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- ============================================================
+     STATUS TRACKER
+============================================================ -->
+<section class="tracker-section no-print" id="tracker">
+    <div class="tracker-inner">
+        <h2>🔍 Track Your Request</h2>
+        <p>Enter your Control Number to check the current status of your request.</p>
+        <div class="tracker-card">
+            <div class="tracker-input-row">
+                <input
+                    type="text"
+                    class="tracker-input"
+                    id="trackerInput"
+                    placeholder="e.g. CIO-20260903-1042"
+                    onkeypress="if(event.key==='Enter') checkStatus()"
+                >
+                <button class="tracker-btn" onclick="checkStatus()">Check Status</button>
+            </div>
+            <div class="tracker-result" id="trackerResult"></div>
+        </div>
+    </div>
+</section>
+
+<!-- ============================================================
+     REQUEST FORM
+============================================================ -->
+<section class="form-section-wrapper" id="request-form">
+    <div style="max-width:820px;margin:0 auto;">
+        <div class="section-tag no-print">📋 Request Submission</div>
+        <h2 class="section-title no-print">Submit a Service Request</h2>
+        <p class="section-subtitle no-print">Fill out the form below completely. All fields marked with <span style="color:var(--danger)">*</span> are required.</p>
     </div>
 
-    <form id="requestForm">
-        <!-- REQUEST FORM -->
-        <div class="form-section">
-            <h3>REQUEST FORM</h3>
-            <div class="form-group">
-                <label>Requesting Office: <span style="color:red">*</span></label>
-                <input type="text" id="requestingOffice" required>
+    <div class="form-card">
+        <div class="form-card-header">
+            <div class="form-card-header-left">
+                <h2>CITY INFORMATION OFFICE</h2>
+                <p>City Government of Bago — Official Service Request Form</p>
             </div>
-            <div class="form-group">
-                <label>Contact Person: <span style="color:red">*</span></label>
-                <input type="text" id="contactPerson" required>
-            </div>
-            <div class="form-group">
-                <label>Phone/Viber Number: <span style="color:red">*</span></label>
-                <input type="tel" id="contactNo" placeholder="+63 or 09XX XXX XXXX" required>
-            </div>
-            <div class="form-group">
-                <label>FB Messenger Profile / Name: <span style="color:red">*</span></label>
-                <input type="text" id="messengerName" placeholder="Facebook name or profile link" required>
-            </div>
+            <img src="cio-logo.jpg" alt="CIO Logo" class="form-header-logo">
         </div>
 
-        <!-- EVENT DETAILS -->
-        <div class="form-section">
-            <h3>EVENT DETAILS</h3>
-            <div class="form-group">
-                <label>Event/Activity: <span style="color:red">*</span></label>
-                <input type="text" id="eventActivity" required>
+        <div class="form-card-body">
+            <div class="date-row">
+                <label for="formDate">DATE:</label>
+                <input type="date" id="formDate" required>
             </div>
-            <div class="form-row">
-                <div class="form-group">
-                    <label>Date: <span style="color:red">*</span></label>
-                    <input type="date" id="eventDate" required>
+
+            <form id="requestForm">
+                <!-- REQUEST FORM BLOCK -->
+                <div class="form-block">
+                    <div class="form-block-header">
+                        <span class="accent-bar"></span>
+                        <div class="form-block-icon">🏢</div>
+                        <h3>REQUEST FORM</h3>
+                    </div>
+                    <div class="form-group">
+                        <label>Requesting Office <span class="req">*</span></label>
+                        <input type="text" id="requestingOffice" placeholder="e.g. Office of the City Mayor" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Contact Person <span class="req">*</span></label>
+                        <input type="text" id="contactPerson" placeholder="Full name of contact person" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Phone / Viber Number <span class="req">*</span></label>
+                        <input type="tel" id="contactNo" placeholder="+63 9XX XXX XXXX" required>
+                    </div>
+                    <div class="form-group">
+                        <label>FB Messenger Profile / Name <span class="req">*</span></label>
+                        <input type="text" id="messengerName" placeholder="Facebook name or profile link" required>
+                    </div>
                 </div>
-                <div class="form-group">
-                    <label>Time: <span style="color:red">*</span></label>
-                    <input type="time" id="eventTime" required>
+
+                <!-- EVENT DETAILS BLOCK -->
+                <div class="form-block">
+                    <div class="form-block-header">
+                        <span class="accent-bar"></span>
+                        <div class="form-block-icon">📅</div>
+                        <h3>EVENT DETAILS</h3>
+                    </div>
+                    <div class="form-group">
+                        <label>Event / Activity <span class="req">*</span></label>
+                        <input type="text" id="eventActivity" placeholder="Name of event or activity" required>
+                    </div>
+                    <div class="form-row-3">
+                        <div class="form-group">
+                            <label>Date <span class="req">*</span></label>
+                            <input type="date" id="eventDate" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Time <span class="req">*</span></label>
+                            <input type="time" id="eventTime" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Venue <span class="req">*</span></label>
+                            <input type="text" id="eventVenue" placeholder="Location/venue" required>
+                        </div>
+                    </div>
                 </div>
-                <div class="form-group">
-                    <label>Venue: <span style="color:red">*</span></label>
-                    <input type="text" id="eventVenue" required>
+
+                <!-- SERVICE REQUESTED BLOCK -->
+                <div class="form-block">
+                    <div class="form-block-header">
+                        <span class="accent-bar"></span>
+                        <div class="form-block-icon">✅</div>
+                        <h3>SERVICE REQUESTED <span style="color:var(--danger);font-size:12px;"> *select at least one</span></h3>
+                    </div>
+                    <div class="checkbox-grid">
+                        <div class="checkbox-item">
+                            <input type="checkbox" id="graphicDesign" value="Graphic/ Lay-out Design">
+                            <label for="graphicDesign">Graphic / Lay-out Design</label>
+                        </div>
+                        <div class="checkbox-item">
+                            <input type="checkbox" id="radioGuesting" value="Radio Guesting">
+                            <label for="radioGuesting">Radio Guesting</label>
+                        </div>
+                        <div class="checkbox-item">
+                            <input type="checkbox" id="photoCoverage" value="Photo Coverage">
+                            <label for="photoCoverage">Photo Coverage</label>
+                        </div>
+                        <div class="checkbox-item">
+                            <input type="checkbox" id="videoEditing" value="Video Editing">
+                            <label for="videoEditing">Video Editing</label>
+                        </div>
+                        <div class="checkbox-item">
+                            <input type="checkbox" id="videoCoverage" value="Video Coverage">
+                            <label for="videoCoverage">Video Coverage</label>
+                        </div>
+                        <div class="checkbox-item">
+                            <input type="checkbox" id="socialMediaPosting" value="Social Media Posting">
+                            <label for="socialMediaPosting">Social Media Posting</label>
+                        </div>
+                        <div class="checkbox-item">
+                            <input type="checkbox" id="videoCoverageInterview" value="Video Coverage with Interview">
+                            <label for="videoCoverageInterview">Video Coverage with Interview</label>
+                        </div>
+                        <div class="checkbox-item">
+                            <input type="checkbox" id="copyMaterials" value="Copy of Photo/Video Materials">
+                            <label for="copyMaterials">Copy of Photo/Video Materials</label>
+                        </div>
+                        <div class="checkbox-item">
+                            <input type="checkbox" id="drone" value="Drone">
+                            <label for="drone">Drone</label>
+                        </div>
+                    </div>
+
+                    <!-- Conditional: Video Editing -->
+                    <div id="videoEditingFields" class="conditional-field">
+                        <div class="cond-title">🎬 For Video Editing</div>
+                        <div class="form-group" style="margin:0;">
+                            <label>Due Date</label>
+                            <input type="date" id="videoEditingDueDate">
+                        </div>
+                    </div>
+
+                    <!-- Conditional: Social Media -->
+                    <div id="socialMediaFields" class="conditional-field">
+                        <div class="cond-title">📱 For Social Media Posting</div>
+                        <div class="form-group" style="margin:0;">
+                            <label>Posting Dates</label>
+                            <input type="text" id="socialMediaDates" placeholder="e.g. September 5, 6, 7, 2026">
+                        </div>
+                    </div>
+
+                    <!-- Conditional: Copy Materials -->
+                    <div id="copyMaterialsFields" class="conditional-field">
+                        <div class="cond-title">📂 For Copy of Photo/Video Materials</div>
+                        <div class="form-row-3">
+                            <div class="form-group" style="margin:0;">
+                                <label>About</label>
+                                <input type="text" id="copyAbout">
+                            </div>
+                            <div class="form-group" style="margin:0;">
+                                <label>Event</label>
+                                <input type="text" id="copyEvent">
+                            </div>
+                            <div class="form-group" style="margin:0;">
+                                <label>Date Taken</label>
+                                <input type="date" id="copyDateTaken">
+                            </div>
+                        </div>
+                    </div>
                 </div>
-            </div>
+
+                <!-- NOTE -->
+                <div class="note-box">
+                    <span class="note-icon">⚠️</span>
+                    <p><strong>Important:</strong> Please submit requests at least <strong>3 working days</strong> before the event, subject to CIO personnel and equipment availability.</p>
+                </div>
+
+                <!-- ACKNOWLEDGE -->
+                <div class="acknowledge-wrap" onclick="document.getElementById('acknowledgeNote').click(); event.stopPropagation();">
+                    <input type="checkbox" id="acknowledgeNote" onclick="event.stopPropagation()">
+                    <label for="acknowledgeNote">I have read and understood that requests must be submitted at least <strong>3 working days</strong> before the event and are subject to CIO personnel and equipment availability.</label>
+                </div>
+
+                <div class="form-actions">
+                    <button type="button" class="btn-form-reset" onclick="resetForm()">Reset</button>
+                    <button type="button" class="btn-form-print" id="printButton" disabled onclick="printForm()">🖨️ Print Form</button>
+                    <button type="button" class="btn-form-submit" id="submitButton" disabled onclick="submitRequest()">
+                        <span id="submitBtnText">📤 Submit Request</span>
+                    </button>
+                </div>
+            </form>
         </div>
+    </div>
+</section>
 
-        <!-- SERVICE REQUESTED -->
-        <div class="form-section">
-            <h3>SERVICE REQUESTED <span style="color:#ffc107">*</span></h3>
-            <p style="font-size:13px;color:#666;margin-bottom:10px;">Please select at least one service:</p>
-            <div class="checkbox-group">
-                <div class="checkbox-item">
-                    <input type="checkbox" id="graphicDesign" value="Graphic/ Lay-out Design">
-                    <label for="graphicDesign">Graphic/ Lay-out Design</label>
-                </div>
-                <div class="checkbox-item">
-                    <input type="checkbox" id="radioGuesting" value="Radio Guesting">
-                    <label for="radioGuesting">Radio Guesting</label>
-                </div>
-                <div class="checkbox-item">
-                    <input type="checkbox" id="photoCoverage" value="Photo Coverage">
-                    <label for="photoCoverage">Photo Coverage</label>
-                </div>
-                <div class="checkbox-item">
-                    <input type="checkbox" id="videoEditing" value="Video Editing">
-                    <label for="videoEditing">Video Editing</label>
-                </div>
-                <div class="checkbox-item">
-                    <input type="checkbox" id="videoCoverage" value="Video Coverage">
-                    <label for="videoCoverage">Video Coverage</label>
-                </div>
-                <div class="checkbox-item">
-                    <input type="checkbox" id="socialMediaPosting" value="Social Media Posting">
-                    <label for="socialMediaPosting">Social Media Posting</label>
-                </div>
-                <div class="checkbox-item">
-                    <input type="checkbox" id="videoCoverageInterview" value="Video Coverage with Interview">
-                    <label for="videoCoverageInterview">Video Coverage with Interview</label>
-                </div>
-                <div class="checkbox-item">
-                    <input type="checkbox" id="copyMaterials" value="Copy of Photo/Video Materials">
-                    <label for="copyMaterials">Copy of Photo/Video Materials</label>
-                </div>
-                <div class="checkbox-item">
-                    <input type="checkbox" id="drone" value="Drone">
-                    <label for="drone">Drone</label>
-                </div>
-            </div>
+<!-- ============================================================
+     FOOTER
+============================================================ -->
+<footer class="footer no-print">
+    <strong>City Information Office</strong> — City Government of Bago &nbsp;|&nbsp; All rights reserved &copy; 2026
+</footer>
 
-            <!-- Conditional: Video Editing -->
-            <div id="videoEditingFields" class="conditional-field">
-                <div class="form-group">
-                    <label>Due Date:</label>
-                    <input type="date" id="videoEditingDueDate">
-                </div>
-            </div>
-
-            <!-- Conditional: Social Media Posting -->
-            <div id="socialMediaFields" class="conditional-field">
-                <div class="form-group">
-                    <label>Posting Dates:</label>
-                    <input type="text" id="socialMediaDates" placeholder="Enter posting dates">
-                </div>
-            </div>
-
-            <!-- Conditional: Copy of Materials -->
-            <div id="copyMaterialsFields" class="conditional-field">
-                <div class="form-group">
-                    <label>About:</label>
-                    <input type="text" id="copyAbout">
-                </div>
-                <div class="form-group">
-                    <label>Event:</label>
-                    <input type="text" id="copyEvent">
-                </div>
-                <div class="form-group">
-                    <label>Date Taken:</label>
-                    <input type="date" id="copyDateTaken">
-                </div>
-            </div>
-        </div>
-
-        <div class="note">
-            <strong>Note:</strong> Please submit requests at least 3 working days before the event, subject to CIO personnel and equipment availability.
-        </div>
-
-        <div class="acknowledge-box" style="margin-top:15px;">
-            <input type="checkbox" id="acknowledgeNote">
-            <label for="acknowledgeNote">
-                I have read and understood that requests must be submitted at least <strong>3 working days</strong> before the event, and are subject to CIO personnel and equipment availability.
-            </label>
-        </div>
-
-        <div class="button-group">
-            <button type="button" class="btn btn-secondary" onclick="resetForm()">Reset Form</button>
-            <button type="button" class="btn btn-primary" id="submitButton" disabled onclick="submitRequest()">Submit Request</button>
-            <button type="button" class="btn btn-primary" id="printButton" disabled onclick="printForm()">Print Form</button>
-        </div>
-    </form>
-</div>
-
-<!-- Print View -->
+<!-- ============================================================
+     PRINT VIEW (2-up landscape, hidden on screen)
+============================================================ -->
 <div class="print-view" id="printView">
-    <!-- Left Copy -->
-    <div class="print-copy">
-        <div class="print-header">
-            <div>
-                <h1>CITY INFORMATION OFFICE</h1>
-                <h2>CITY GOVERNMENT OF BAGO</h2>
-            </div>
-            <div class="print-logo"><img src="cio-logo.jpg" alt="CIO"></div>
-        </div>
-        <div class="print-date">DATE: <span id="p1Date"></span></div>
-
-        <div class="print-section">
-            <h3>REQUEST FORM</h3>
-            <div class="print-field"><span class="print-field-label">Requesting Office:</span><span class="print-field-value" id="p1Office"></span></div>
-            <div class="print-field"><span class="print-field-label">Contact Person:</span><span class="print-field-value" id="p1Contact"></span></div>
-            <div class="print-field"><span class="print-field-label">Contact No.:</span><span class="print-field-value" id="p1Phone"></span></div>
-            <div class="print-field"><span class="print-field-label">FB Messenger:</span><span class="print-field-value" id="p1Messenger"></span></div>
-        </div>
-
-        <div class="print-section">
-            <h3>EVENT DETAILS</h3>
-            <div class="print-field"><span class="print-field-label">Event/Activity:</span><span class="print-field-value" id="p1Event"></span></div>
-            <div class="print-row">
-                <div class="print-field"><span class="print-field-label">Date:</span><span class="print-field-value" id="p1EventDate"></span></div>
-                <div class="print-field"><span class="print-field-label">Time:</span><span class="print-field-value" id="p1EventTime"></span></div>
-                <div class="print-field"><span class="print-field-label">Venue:</span><span class="print-field-value" id="p1Venue"></span></div>
-            </div>
-        </div>
-
-        <div class="print-section">
-            <h3>SERVICE REQUESTED</h3>
-            <div class="print-checkbox-grid" id="p1Services"></div>
-            <div id="p1Conditional"></div>
-        </div>
-
-        <div class="print-section">
-            <div class="print-cio-section">
-                <h3 style="margin:0 0 6px 0;">FOR CIO USE</h3>
-                <div class="print-cio-row">
-                    <strong style="margin-right:8px;">Request Status:</strong>
-                    <span class="print-checkbox-box"></span><span style="margin-right:8px;">Approved</span>
-                    <span class="print-checkbox-box"></span><span>Declined</span>
-                </div>
-                <div class="print-field"><span class="print-field-label">Remarks:</span><span class="print-field-value"></span></div>
-                <div class="print-cio-row" style="margin-top:5px;">
-                    <strong style="margin-right:8px;">Progress Status:</strong>
-                    <span class="print-checkbox-box"></span><span style="margin-right:8px;">Completed</span>
-                    <span class="print-checkbox-box"></span><span style="margin-right:8px;">Ongoing</span>
-                    <span class="print-checkbox-box"></span><span>Deferred</span>
-                </div>
-                <div class="print-field"><span class="print-field-label">Remarks:</span><span class="print-field-value"></span></div>
-                <div class="print-field"><span class="print-field-label">Assigned Personnel:</span><span class="print-field-value"></span></div>
-            </div>
-        </div>
-
-        <div class="print-signature">CITY INFORMATION OFFICER</div>
-        <div class="print-note">Note: Please submit requests at least 3 working days before the event, subject to CIO personnel and equipment availability.</div>
-    </div>
-
-    <!-- Right Copy (duplicate) -->
-    <div class="print-copy">
-        <div class="print-header">
-            <div>
-                <h1>CITY INFORMATION OFFICE</h1>
-                <h2>CITY GOVERNMENT OF BAGO</h2>
-            </div>
-            <div class="print-logo"><img src="cio-logo.jpg" alt="CIO"></div>
-        </div>
-        <div class="print-date">DATE: <span id="p2Date"></span></div>
-
-        <div class="print-section">
-            <h3>REQUEST FORM</h3>
-            <div class="print-field"><span class="print-field-label">Requesting Office:</span><span class="print-field-value" id="p2Office"></span></div>
-            <div class="print-field"><span class="print-field-label">Contact Person:</span><span class="print-field-value" id="p2Contact"></span></div>
-            <div class="print-field"><span class="print-field-label">Contact No.:</span><span class="print-field-value" id="p2Phone"></span></div>
-            <div class="print-field"><span class="print-field-label">FB Messenger:</span><span class="print-field-value" id="p2Messenger"></span></div>
-        </div>
-
-        <div class="print-section">
-            <h3>EVENT DETAILS</h3>
-            <div class="print-field"><span class="print-field-label">Event/Activity:</span><span class="print-field-value" id="p2Event"></span></div>
-            <div class="print-row">
-                <div class="print-field"><span class="print-field-label">Date:</span><span class="print-field-value" id="p2EventDate"></span></div>
-                <div class="print-field"><span class="print-field-label">Time:</span><span class="print-field-value" id="p2EventTime"></span></div>
-                <div class="print-field"><span class="print-field-label">Venue:</span><span class="print-field-value" id="p2Venue"></span></div>
-            </div>
-        </div>
-
-        <div class="print-section">
-            <h3>SERVICE REQUESTED</h3>
-            <div class="print-checkbox-grid" id="p2Services"></div>
-            <div id="p2Conditional"></div>
-        </div>
-
-        <div class="print-section">
-            <div class="print-cio-section">
-                <h3 style="margin:0 0 6px 0;">FOR CIO USE</h3>
-                <div class="print-cio-row">
-                    <strong style="margin-right:8px;">Request Status:</strong>
-                    <span class="print-checkbox-box"></span><span style="margin-right:8px;">Approved</span>
-                    <span class="print-checkbox-box"></span><span>Declined</span>
-                </div>
-                <div class="print-field"><span class="print-field-label">Remarks:</span><span class="print-field-value"></span></div>
-                <div class="print-cio-row" style="margin-top:5px;">
-                    <strong style="margin-right:8px;">Progress Status:</strong>
-                    <span class="print-checkbox-box"></span><span style="margin-right:8px;">Completed</span>
-                    <span class="print-checkbox-box"></span><span style="margin-right:8px;">Ongoing</span>
-                    <span class="print-checkbox-box"></span><span>Deferred</span>
-                </div>
-                <div class="print-field"><span class="print-field-label">Remarks:</span><span class="print-field-value"></span></div>
-                <div class="print-field"><span class="print-field-label">Assigned Personnel:</span><span class="print-field-value"></span></div>
-            </div>
-        </div>
-
-        <div class="print-signature">CITY INFORMATION OFFICER</div>
-        <div class="print-note">Note: Please submit requests at least 3 working days before the event, subject to CIO personnel and equipment availability.</div>
-    </div>
+    <div class="print-copy" id="printCopy1"></div>
+    <div class="print-copy" id="printCopy2"></div>
 </div>
 
+<!-- ============================================================
+     SCRIPTS
+============================================================ -->
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script>
     const SUPABASE_URL = 'https://jnfkfzjhgbktovvvqbuk.supabase.co';
@@ -587,41 +1279,39 @@
     // Set today's date
     document.getElementById('formDate').value = new Date().toISOString().split('T')[0];
 
-    // Conditional fields toggle
-    document.getElementById('videoEditing').addEventListener('change', function() {
+    // ---- Conditional fields ----
+    document.getElementById('videoEditing').addEventListener('change', function () {
         document.getElementById('videoEditingFields').classList.toggle('active', this.checked);
     });
-    document.getElementById('socialMediaPosting').addEventListener('change', function() {
+    document.getElementById('socialMediaPosting').addEventListener('change', function () {
         document.getElementById('socialMediaFields').classList.toggle('active', this.checked);
     });
-    document.getElementById('copyMaterials').addEventListener('change', function() {
+    document.getElementById('copyMaterials').addEventListener('change', function () {
         document.getElementById('copyMaterialsFields').classList.toggle('active', this.checked);
     });
 
-    // Acknowledge checkbox enables buttons
-    document.getElementById('acknowledgeNote').addEventListener('change', function() {
+    // ---- Acknowledge checkbox ----
+    document.getElementById('acknowledgeNote').addEventListener('change', function () {
         document.getElementById('submitButton').disabled = !this.checked;
-        document.getElementById('printButton').disabled = !this.checked;
+        document.getElementById('printButton').disabled  = !this.checked;
     });
 
-    // Toast notification
-    function showToast(message, type) {
-        const toast = document.getElementById('toast');
-        toast.textContent = message;
-        toast.className = 'toast ' + type + ' show';
-        setTimeout(() => { toast.className = 'toast'; }, 4000);
+    // ---- Toast ----
+    function showToast(msg, type) {
+        const t = document.getElementById('toast');
+        t.textContent = msg;
+        t.className = 'toast ' + type + ' show';
+        setTimeout(() => { t.className = 'toast'; }, 4500);
     }
 
-    // Generate control number
+    // ---- Control Number ----
     function generateControlNumber() {
         const d = new Date();
-        const pad = n => String(n).padStart(2,'0');
-        const date = d.getFullYear() + pad(d.getMonth()+1) + pad(d.getDate());
-        const rand = Math.floor(Math.random() * 10000).toString().padStart(4,'0');
-        return 'CIO-' + date + '-' + rand;
+        const p = n => String(n).padStart(2,'0');
+        return `CIO-${d.getFullYear()}${p(d.getMonth()+1)}${p(d.getDate())}-${Math.floor(Math.random()*9000+1000)}`;
     }
 
-    // Get selected services
+    // ---- Selected services ----
     function getSelectedServices() {
         const ids = ['graphicDesign','radioGuesting','photoCoverage','videoEditing',
                      'videoCoverage','socialMediaPosting','videoCoverageInterview',
@@ -630,25 +1320,20 @@
                   .map(id => document.getElementById(id).value);
     }
 
-    // Submit request
+    // ---- SUBMIT ----
     async function submitRequest() {
         const form = document.getElementById('requestForm');
-        if (!form.checkValidity()) {
-            form.reportValidity();
-            return;
-        }
+        if (!form.checkValidity()) { form.reportValidity(); return; }
 
         const services = getSelectedServices();
-        if (services.length === 0) {
-            alert('Please select at least one service.');
-            return;
-        }
+        if (!services.length) { alert('Please select at least one service.'); return; }
 
-        const submitBtn = document.getElementById('submitButton');
-        submitBtn.disabled = true;
-        submitBtn.textContent = '⏳ Submitting...';
+        const btn = document.getElementById('submitButton');
+        const txt = document.getElementById('submitBtnText');
+        btn.disabled = true;
+        txt.textContent = '⏳ Submitting...';
 
-        const data = {
+        const payload = {
             control_number: generateControlNumber(),
             form_date: document.getElementById('formDate').value,
             requesting_office: document.getElementById('requestingOffice').value,
@@ -669,97 +1354,215 @@
         };
 
         try {
-            const { error } = await sb.from('requests').insert([data]);
+            const { error } = await sb.from('requests').insert([payload]);
             if (error) throw error;
 
-            showToast('✅ Request submitted! Control #: ' + data.control_number, 'success');
+            showToast('✅ Request submitted! Control #: ' + payload.control_number, 'success');
 
             setTimeout(() => {
-                alert('✅ Request Submitted Successfully!\n\nControl Number: ' + data.control_number + '\n\nPlease save this number for your reference.\nThe CIO team will contact you soon.');
+                alert(`✅ Request Submitted Successfully!\n\nControl Number: ${payload.control_number}\n\nSave this number to track your request.\nThe CIO team will contact you soon.`);
             }, 300);
 
-            // Reset form
+            // Reset
             form.reset();
             document.getElementById('formDate').value = new Date().toISOString().split('T')[0];
             document.getElementById('acknowledgeNote').checked = false;
-            document.getElementById('submitButton').disabled = true;
+            btn.disabled = true;
             document.getElementById('printButton').disabled = true;
             document.querySelectorAll('.conditional-field').forEach(f => f.classList.remove('active'));
 
         } catch (err) {
             console.error(err);
-            showToast('❌ Error: ' + err.message, 'error');
-            alert('❌ Submission failed.\n\nError: ' + err.message + '\n\nPlease try again or contact support.');
+            showToast('❌ Submission failed: ' + err.message, 'error');
         } finally {
-            submitBtn.disabled = false;
-            submitBtn.textContent = 'Submit Request';
+            btn.disabled = false;
+            txt.textContent = '📤 Submit Request';
         }
     }
 
-    // Print form
+    // ---- STATUS TRACKER ----
+    async function checkStatus() {
+        const cn = document.getElementById('trackerInput').value.trim();
+        if (!cn) { alert('Please enter a Control Number.'); return; }
+
+        const resultDiv = document.getElementById('trackerResult');
+        resultDiv.innerHTML = '<p style="color:rgba(255,255,255,0.5);font-size:13px;">🔍 Searching...</p>';
+        resultDiv.classList.add('show');
+
+        try {
+            const { data, error } = await sb
+                .from('requests')
+                .select('control_number, status, requesting_office, event_activity, event_date, created_at')
+                .eq('control_number', cn)
+                .single();
+
+            if (error || !data) {
+                resultDiv.innerHTML = `<span class="status-badge not-found">❌ Control number not found. Please check and try again.</span>`;
+                return;
+            }
+
+            const statusClass = data.status.toLowerCase().replace(' ','');
+            const icons = { Pending:'⏳', Contacted:'📞', Approved:'✅', Declined:'❌', Completed:'🏁' };
+            const icon = icons[data.status] || '📋';
+
+            resultDiv.innerHTML = `
+                <span class="status-badge ${statusClass}">${icon} ${data.status}</span>
+                <div class="tracker-detail">
+                    <strong>Control #:</strong> ${data.control_number}<br>
+                    <strong>Office:</strong> ${data.requesting_office}<br>
+                    <strong>Event:</strong> ${data.event_activity}<br>
+                    <strong>Event Date:</strong> ${data.event_date}<br>
+                    <strong>Date Submitted:</strong> ${new Date(data.created_at).toLocaleDateString('en-PH', {year:'numeric',month:'long',day:'numeric'})}
+                </div>
+            `;
+        } catch (err) {
+            resultDiv.innerHTML = `<span class="status-badge not-found">❌ Error: ${err.message}</span>`;
+        }
+    }
+
+    // ---- PRINT FORM ----
     function printForm() {
         const services = getSelectedServices();
-        if (services.length === 0) {
-            alert('Please select at least one service before printing.');
-            return;
-        }
+        if (!services.length) { alert('Please select at least one service before printing.'); return; }
 
-        const allServices = [
-            { id: 'graphicDesign', label: 'Graphic/ Lay-out Design' },
-            { id: 'radioGuesting', label: 'Radio Guesting' },
-            { id: 'photoCoverage', label: 'Photo Coverage' },
-            { id: 'videoEditing', label: 'Video Editing' },
-            { id: 'videoCoverage', label: 'Video Coverage' },
-            { id: 'socialMediaPosting', label: 'Social Media Posting' },
-            { id: 'videoCoverageInterview', label: 'Video Coverage with Interview' },
-            { id: 'copyMaterials', label: 'Copy of Photo/Video Materials' },
-            { id: 'drone', label: 'Drone' }
-        ];
+        const req = {
+            form_date: document.getElementById('formDate').value,
+            requesting_office: document.getElementById('requestingOffice').value,
+            contact_person: document.getElementById('contactPerson').value,
+            contact_no: document.getElementById('contactNo').value,
+            messenger_name: document.getElementById('messengerName').value,
+            event_activity: document.getElementById('eventActivity').value,
+            event_date: document.getElementById('eventDate').value,
+            event_time: document.getElementById('eventTime').value,
+            event_venue: document.getElementById('eventVenue').value,
+            services: services,
+            video_editing_due_date: document.getElementById('videoEditingDueDate').value || '',
+            social_media_dates: document.getElementById('socialMediaDates').value || '',
+            copy_about: document.getElementById('copyAbout').value || '',
+            copy_event: document.getElementById('copyEvent').value || '',
+            copy_date_taken: document.getElementById('copyDateTaken').value || ''
+        };
 
-        for (let i = 1; i <= 2; i++) {
-            const p = i === 1 ? 'p1' : 'p2';
-            document.getElementById(p+'Date').textContent = document.getElementById('formDate').value;
-            document.getElementById(p+'Office').textContent = document.getElementById('requestingOffice').value;
-            document.getElementById(p+'Contact').textContent = document.getElementById('contactPerson').value;
-            document.getElementById(p+'Phone').textContent = document.getElementById('contactNo').value;
-            document.getElementById(p+'Messenger').textContent = document.getElementById('messengerName').value;
-            document.getElementById(p+'Event').textContent = document.getElementById('eventActivity').value;
-            document.getElementById(p+'EventDate').textContent = document.getElementById('eventDate').value;
-            document.getElementById(p+'EventTime').textContent = document.getElementById('eventTime').value;
-            document.getElementById(p+'Venue').textContent = document.getElementById('eventVenue').value;
-
-            const grid = document.getElementById(p+'Services');
-            grid.innerHTML = allServices.map(s => {
-                const checked = document.getElementById(s.id).checked ? 'checked' : '';
-                return `<div class="print-checkbox"><span class="print-checkbox-box ${checked}"></span>${s.label}</div>`;
-            }).join('');
-
-            let cond = '';
-            if (document.getElementById('videoEditing').checked) {
-                cond += `<div class="print-conditional"><strong>FOR VIDEO EDITING</strong><br>Due Date: ${document.getElementById('videoEditingDueDate').value}</div>`;
-            }
-            if (document.getElementById('socialMediaPosting').checked) {
-                cond += `<div class="print-conditional"><strong>FOR SOCIAL MEDIA POSTING</strong><br>Posting Dates: ${document.getElementById('socialMediaDates').value}</div>`;
-            }
-            if (document.getElementById('copyMaterials').checked) {
-                cond += `<div class="print-conditional"><strong>FOR COPY OF PHOTO/VIDEO MATERIALS</strong><br>About: ${document.getElementById('copyAbout').value} | Event: ${document.getElementById('copyEvent').value} | Date Taken: ${document.getElementById('copyDateTaken').value}</div>`;
-            }
-            document.getElementById(p+'Conditional').innerHTML = cond;
-        }
-
+        const html = buildPrintHTML(req);
+        document.getElementById('printCopy1').innerHTML = html;
+        document.getElementById('printCopy2').innerHTML = html;
         window.print();
     }
 
-    // Reset form
+    // ---- RESET ----
     function resetForm() {
-        if (confirm('Reset all fields?')) {
-            document.getElementById('requestForm').reset();
-            document.getElementById('formDate').value = new Date().toISOString().split('T')[0];
-            document.getElementById('acknowledgeNote').checked = false;
-            document.getElementById('submitButton').disabled = true;
-            document.getElementById('printButton').disabled = true;
-            document.querySelectorAll('.conditional-field').forEach(f => f.classList.remove('active'));
-        }
+        if (!confirm('Reset all fields?')) return;
+        document.getElementById('requestForm').reset();
+        document.getElementById('formDate').value = new Date().toISOString().split('T')[0];
+        document.getElementById('acknowledgeNote').checked = false;
+        document.getElementById('submitButton').disabled = true;
+        document.getElementById('printButton').disabled  = true;
+        document.querySelectorAll('.conditional-field').forEach(f => f.classList.remove('active'));
+    }
+
+    // ---- BUILD PRINT HTML ----
+    function buildPrintHTML(req) {
+        const services = Array.isArray(req.services) ? req.services : [];
+
+        const allServices = [
+            'Graphic/ Lay-out Design', 'Photo Coverage',
+            'Video Coverage', 'Video Coverage with Interview', 'Drone',
+            'Radio Guesting', 'Video Editing',
+            'Social Media Posting', 'Copy of Photo/Video Materials'
+        ];
+
+        const checkboxes = allServices.map(s =>
+            `<div class="pc-check-item">
+                <span class="pc-box ${services.includes(s) ? 'checked' : ''}"></span>${s}
+            </div>`
+        ).join('');
+
+        const hasVE  = services.includes('Video Editing');
+        const hasSM  = services.includes('Social Media Posting');
+        const hasCM  = services.includes('Copy of Photo/Video Materials');
+
+        const condSection = (hasVE || hasSM) ? `
+            <div class="pc-conditional">
+                <div class="pc-cond-block">
+                    <div class="pc-cond-title">FOR VIDEO EDITING</div>
+                    <div class="pc-field">
+                        <span class="pc-field-label">Due Date:</span>
+                        <span class="pc-field-line">${hasVE ? req.video_editing_due_date : ''}</span>
+                    </div>
+                </div>
+                <div class="pc-cond-block">
+                    <div class="pc-cond-title">FOR SOCIAL MEDIA POSTING</div>
+                    <div class="pc-field">
+                        <span class="pc-field-label">Posting Dates:</span>
+                        <span class="pc-field-line">${hasSM ? req.social_media_dates : ''}</span>
+                    </div>
+                </div>
+            </div>` : '';
+
+        const copySection = hasCM ? `
+            <div class="pc-copy-block">
+                <div class="pc-copy-title">FOR COPY OF PHOTO/VIDEO MATERIALS</div>
+                <div class="pc-inline-row">
+                    <div class="pc-field"><span class="pc-field-label">About:</span><span class="pc-field-line">${req.copy_about}</span></div>
+                    <div class="pc-field"><span class="pc-field-label">Event:</span><span class="pc-field-line">${req.copy_event}</span></div>
+                    <div class="pc-field"><span class="pc-field-label">Date Taken:</span><span class="pc-field-line">${req.copy_date_taken}</span></div>
+                </div>
+            </div>` : '';
+
+        return `
+            <div class="pc-header">
+                <div><h1>CITY INFORMATION OFFICE</h1><h2>CITY GOVERNMENT OF BAGO</h2></div>
+                <img class="pc-logo" src="cio-logo.jpg" alt="CIO">
+            </div>
+            <div class="pc-date">DATE: <span class="pc-date-line">${req.form_date}</span></div>
+
+            <div class="pc-section">
+                <div class="pc-section-title">REQUEST FORM</div>
+                <div class="pc-field"><span class="pc-field-label">Requesting Office:</span><span class="pc-field-line">${req.requesting_office}</span></div>
+                <div class="pc-field"><span class="pc-field-label">Contact Person:</span><span class="pc-field-line">${req.contact_person}</span></div>
+                <div class="pc-field"><span class="pc-field-label">Contact No.:</span><span class="pc-field-line">${req.contact_no}</span></div>
+            </div>
+
+            <div class="pc-section">
+                <div class="pc-section-title">EVENT DETAILS</div>
+                <div class="pc-field"><span class="pc-field-label">Event/Activity:</span><span class="pc-field-line">${req.event_activity}</span></div>
+                <div class="pc-inline-row">
+                    <div class="pc-field" style="flex:0 0 auto;min-width:120px;"><span class="pc-field-label">Date:</span><span class="pc-field-line">${req.event_date}</span></div>
+                    <div class="pc-field" style="flex:0 0 auto;min-width:100px;"><span class="pc-field-label">Time:</span><span class="pc-field-line">${req.event_time}</span></div>
+                    <div class="pc-field"><span class="pc-field-label">Venue:</span><span class="pc-field-line">${req.event_venue}</span></div>
+                </div>
+            </div>
+
+            <div class="pc-section">
+                <div class="pc-section-title">SERVICE REQUESTED</div>
+                <div class="pc-check-grid">${checkboxes}</div>
+                ${condSection}
+                ${copySection}
+            </div>
+
+            <div class="pc-cio">
+                <div class="pc-cio-title">FOR CIO USE</div>
+                <div class="pc-check-row">
+                    <span class="pc-label">Request Status:</span>
+                    <span class="pc-box"></span> Approved &nbsp;
+                    <span class="pc-box"></span> Declined
+                </div>
+                <div class="pc-field"><span class="pc-field-label">Remarks:</span><span class="pc-field-line"></span></div>
+                <div class="pc-check-row" style="margin-top:5px;">
+                    <span class="pc-label">Progress Status:</span>
+                    <span class="pc-box"></span> Completed &nbsp;
+                    <span class="pc-box"></span> Ongoing &nbsp;
+                    <span class="pc-box"></span> Deferred
+                </div>
+                <div class="pc-field"><span class="pc-field-label">Remarks:</span><span class="pc-field-line"></span></div>
+                <div class="pc-field"><span class="pc-field-label">Assigned Personnel:</span><span class="pc-field-line"></span></div>
+            </div>
+
+            <div class="pc-footer">
+                <div class="pc-sig">CITY INFORMATION OFFICER</div>
+                <div class="pc-note">Note: Please submit requests at least 3 working days before the event, subject to CIO personnel and equipment availability.</div>
+            </div>
+        `;
     }
 </script>
 </body>
