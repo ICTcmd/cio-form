@@ -66,21 +66,19 @@
         position: fixed;
         top: 0; left: 0; right: 0;
         z-index: 1000;
-        background: rgba(15,23,42,0.92);
+        width: 100%;
+        background: #0d111a;
+        border-bottom: 1px solid #1e293b;
         backdrop-filter: blur(16px);
         -webkit-backdrop-filter: blur(16px);
-        border-bottom: 1px solid rgba(255,255,255,0.08);
-        height: 68px;
-        width: 100%;
+        height: 72px;
         display: flex;
         align-items: center;
     }
 
     .navbar-inner {
         width: 100%;
-        max-width: 1400px;
-        margin: 0 auto;
-        padding: 0 32px;
+        padding: 0 40px;
         display: flex;
         align-items: center;
         justify-content: space-between;
@@ -202,7 +200,7 @@
         pointer-events: none;
     }
     .hero {
-        padding-top: 68px;
+        padding-top: 72px;
         min-height: 100vh;
         background: var(--navy);
         display: flex; flex-direction: column;
@@ -1076,7 +1074,7 @@
 ============================================================ -->
 <nav class="navbar no-print">
     <div class="navbar-inner">
-        <a href="#" class="nav-brand">
+        <div style="display:flex;align-items:center;gap:12px;">
             <div class="nav-emblem">
                 <img src="cio-logo.jpg" alt="CIO Logo">
             </div>
@@ -1084,13 +1082,15 @@
                 <span>CITY INFORMATION OFFICE</span>
                 <span>City Government of Bago</span>
             </div>
-        </a>
-        <ul class="nav-links">
-            <li><a href="#services">Services</a></li>
-            <li><a href="#tracker">Track Request</a></li>
-            <li><a href="#request-form">Submit Form</a></li>
-            <li><a href="admin-login.html" class="nav-login">Staff Login</a></li>
-        </ul>
+        </div>
+        <div style="display:flex;align-items:center;gap:6px;">
+            <ul class="nav-links">
+                <li><a href="#services">Services</a></li>
+                <li><a href="#tracker">Track Request</a></li>
+                <li><a href="#request-form">Submit Form</a></li>
+                <li><a href="admin-login.html" class="nav-login">Staff Login</a></li>
+            </ul>
+        </div>
     </div>
 </nav>
 
