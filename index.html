@@ -1444,14 +1444,6 @@
                             <input type="checkbox" id="liveStreaming" value="Live Streaming">
                             <label for="liveStreaming">Live Streaming</label>
                         </div>
-                        <div class="checkbox-item">
-                            <input type="checkbox" id="tarpaulinDesign" value="Tarpaulin / Streamer Design">
-                            <label for="tarpaulinDesign">Tarpaulin / Streamer Design</label>
-                        </div>
-                        <div class="checkbox-item">
-                            <input type="checkbox" id="pressRelease" value="Press Release / Write-up">
-                            <label for="pressRelease">Press Release / Write-up</label>
-                        </div>
                         <div class="checkbox-item" style="grid-column: 1 / -1;">
                             <input type="checkbox" id="others" value="Others">
                             <label for="others">Others — please specify:</label>
@@ -1473,6 +1465,19 @@
                             <label>Due Date</label>
                             <input type="date" id="videoEditingDueDate">
                         </div>
+                    </div>
+
+                    <!-- Conditional: Graphic Design Upload -->
+                    <div id="graphicDesignFields" class="conditional-field">
+                        <div class="cond-title">🎨 For Graphic / Lay-out Design — Upload Reference File</div>
+                        <p style="font-size:12px;color:var(--slate-600);margin-bottom:10px;">Upload your content reference, text file, or images. Accepted: .doc, .docx, .txt, .jpg, .jpeg, .png (max 10MB each)</p>
+                        <div class="form-group" style="margin:0;">
+                            <input type="file" id="graphicDesignFile" name="graphicDesignFile"
+                                accept=".doc,.docx,.txt,.jpg,.jpeg,.png"
+                                multiple
+                                style="width:100%;padding:10px;border:1.5px dashed var(--slate-300);border-radius:var(--radius-sm);font-size:13px;background:white;cursor:pointer;">
+                        </div>
+                        <div id="graphicFilePreview" style="margin-top:10px;display:flex;flex-wrap:wrap;gap:8px;"></div>
                     </div>
 
                     <!-- Conditional: Social Media -->
@@ -1578,6 +1583,9 @@
     document.getElementById('videoEditing').addEventListener('change', function () {
         document.getElementById('videoEditingFields').classList.toggle('active', this.checked);
     });
+    document.getElementById('graphicDesign').addEventListener('change', function () {
+        document.getElementById('graphicDesignFields').classList.toggle('active', this.checked);
+    });
     document.getElementById('socialMediaPosting').addEventListener('change', function () {
         document.getElementById('socialMediaFields').classList.toggle('active', this.checked);
     });
@@ -1609,12 +1617,24 @@
         return `CIO-${d.getFullYear()}${p(d.getMonth()+1)}${p(d.getDate())}-${Math.floor(Math.random()*9000+1000)}`;
     }
 
+    // ---- File preview for graphic design ----
+    document.getElementById('graphicDesignFile').addEventListener('change', function () {
+        const preview = document.getElementById('graphicFilePreview');
+        preview.innerHTML = '';
+        Array.from(this.files).forEach(file => {
+            const tag = document.createElement('div');
+            tag.style.cssText = 'padding:6px 12px;background:var(--blue-pale);border:1px solid var(--slate-200);border-radius:6px;font-size:12px;color:var(--navy);display:flex;align-items:center;gap:6px;';
+            const icon = file.type.startsWith('image/') ? '🖼️' : '📄';
+            tag.innerHTML = `${icon} <span>${file.name}</span> <span style="color:var(--slate-400)">(${(file.size/1024/1024).toFixed(2)}MB)</span>`;
+            preview.appendChild(tag);
+        });
+    });
+
     // ---- Selected services ----
     function getSelectedServices() {
         const ids = ['graphicDesign','radioGuesting','photoCoverage','videoEditing',
                      'videoCoverage','socialMediaPosting','videoCoverageInterview',
-                     'copyMaterials','drone','liveStreaming','tarpaulinDesign',
-                     'pressRelease','others'];
+                     'copyMaterials','drone','liveStreaming','others'];
         return ids.filter(id => document.getElementById(id).checked)
                   .map(id => {
                       const val = document.getElementById(id).value;
@@ -1661,6 +1681,20 @@
         };
 
         try {
+            // Upload graphic design files if any
+            const fileInput = document.getElementById('graphicDesignFile');
+            let uploadedFiles = [];
+            if (document.getElementById('graphicDesign').checked && fileInput.files.length > 0) {
+                for (const file of fileInput.files) {
+                    const filePath = `graphic-design/${payload.control_number}/${file.name}`;
+                    const { error: uploadError } = await sb.storage
+                        .from('cio-uploads')
+                        .upload(filePath, file, { upsert: true });
+                    if (!uploadError) uploadedFiles.push(filePath);
+                }
+                payload.graphic_design_files = uploadedFiles;
+            }
+
             const { error } = await sb.from('requests').insert([payload]);
             if (error) throw error;
 
@@ -1679,6 +1713,8 @@
             document.querySelectorAll('.conditional-field').forEach(f => f.classList.remove('active'));
             document.getElementById('othersSpecify').value = '';
             document.getElementById('remarks').value = '';
+            document.getElementById('graphicDesignFile').value = '';
+            document.getElementById('graphicFilePreview').innerHTML = '';
 
         } catch (err) {
             console.error(err);
