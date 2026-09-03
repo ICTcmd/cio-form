@@ -105,14 +105,17 @@
 
     .nav-brand-text span:first-child {
         display: block;
-        font-size: 13px; font-weight: 700;
-        color: white; letter-spacing: 0.3px;
+        font-size: 14px; font-weight: 800;
+        color: white;
+        letter-spacing: 0.4px;
+        text-transform: uppercase;
     }
 
     .nav-brand-text span:last-child {
         display: block;
-        font-size: 11px; font-weight: 400;
-        color: rgba(255,255,255,0.5);
+        font-size: 11px; font-weight: 500;
+        color: rgba(255,255,255,0.6);
+        letter-spacing: 0.2px;
     }
 
     .nav-links {
@@ -177,14 +180,18 @@
         position: absolute;
         inset: 0;
         background: linear-gradient(
-            160deg,
-            rgba(7,11,24,0.88) 0%,
-            rgba(10,18,40,0.82) 50%,
-            rgba(15,23,42,0.90) 100%
+            to right,
+            rgba(23,37,84,0.80) 0%,
+            rgba(15,23,42,0.75) 50%,
+            rgba(30,58,138,0.80) 100%
         );
         backdrop-filter: blur(2px);
         -webkit-backdrop-filter: blur(2px);
         pointer-events: none;
+    }
+
+    .hero-slide img {
+        opacity: 0.6;
     }
     .hero {
         padding-top: 68px;
@@ -258,26 +265,29 @@
     }
 
     .hero-chips {
-        display: flex; flex-wrap: wrap;
-        justify-content: center; gap: 10px;
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: center;
+        gap: 10px;
         margin-bottom: 44px;
     }
 
     .hero-chip {
-        display: flex; align-items: center; gap: 7px;
-        background: rgba(255,255,255,0.07);
-        border: 1px solid rgba(255,255,255,0.12);
+        display: flex; align-items: center; gap: 8px;
+        background: rgba(255,255,255,0.08);
+        border: 1px solid rgba(255,255,255,0.18);
         border-radius: 100px;
-        padding: 8px 16px;
-        font-size: 13px; font-weight: 500;
-        color: rgba(255,255,255,0.8);
+        padding: 9px 20px;
+        font-size: 14px; font-weight: 600;
+        color: rgba(255,255,255,0.92);
         transition: all 0.2s;
         cursor: default;
+        white-space: nowrap;
     }
 
     .hero-chip:hover {
-        background: rgba(255,255,255,0.12);
-        border-color: rgba(255,255,255,0.25);
+        background: rgba(255,255,255,0.15);
+        border-color: rgba(255,255,255,0.35);
         color: white;
         transform: translateY(-2px);
     }
@@ -289,21 +299,22 @@
 
     .btn-hero-primary {
         display: inline-flex; align-items: center; gap: 8px;
-        background: var(--blue);
+        background: #2563EB;
         color: white;
-        padding: 14px 28px;
+        padding: 15px 32px;
         border-radius: var(--radius-md);
-        font-size: 15px; font-weight: 600;
+        font-size: 15px; font-weight: 700;
         text-decoration: none;
         border: none; cursor: pointer;
         transition: all 0.2s;
-        box-shadow: 0 4px 20px rgba(29,78,216,0.4);
+        box-shadow: 0 8px 32px rgba(37,99,235,0.45), 0 2px 8px rgba(37,99,235,0.3);
+        letter-spacing: 0.1px;
     }
 
     .btn-hero-primary:hover {
-        background: #1e40af;
+        background: #3B82F6;
         transform: translateY(-2px);
-        box-shadow: 0 8px 30px rgba(29,78,216,0.5);
+        box-shadow: 0 12px 40px rgba(59,130,246,0.55), 0 4px 12px rgba(37,99,235,0.35);
     }
 
     .btn-hero-secondary {
@@ -1068,8 +1079,6 @@
             <div class="hero-chip">🎥 Video Production</div>
             <div class="hero-chip">📻 Radio Guesting</div>
             <div class="hero-chip">🎨 Graphic Design</div>
-            <div class="hero-chip">🚁 Drone Coverage</div>
-            <div class="hero-chip">📱 Social Media</div>
         </div>
         <div class="hero-actions">
             <a href="#request-form" class="btn-hero-primary">
