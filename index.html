@@ -1673,13 +1673,13 @@
 
                 <!-- DATA PRIVACY CONSENT -->
                 <div class="privacy-consent-wrap">
-                    <input type="checkbox" id="privacyConsent" onchange="toggleSubmitButton()">
+                    <input type="checkbox" id="privacyConsent" disabled onchange="toggleSubmitButton()" style="cursor:not-allowed;opacity:0.4;">
                     <div>
-                        <label for="privacyConsent">
+                        <label for="privacyConsent" style="opacity:0.6;cursor:default;">
                             I hereby authorize the City Information Office (CIO) of Bago City to collect and process the personal information provided in this form solely for processing my service request, in compliance with <strong>RA 10173 (Data Privacy Act of 2012)</strong>.
                         </label>
                         <br>
-                        <button type="button" class="privacy-link" onclick="openPrivacyModal()">Read Full Data Privacy Statement →</button>
+                        <button type="button" class="privacy-link" onclick="openPrivacyModal()">📋 You must read the Full Data Privacy Statement before proceeding →</button>
                     </div>
                 </div>
 
@@ -1842,7 +1842,26 @@
     }
 
     function acceptPrivacy() {
-        document.getElementById('privacyConsent').checked = true;
+        // Enable and check the privacy checkbox
+        const cb = document.getElementById('privacyConsent');
+        cb.disabled = false;
+        cb.checked = true;
+        cb.style.cursor = 'pointer';
+        cb.style.opacity = '1';
+
+        // Enable the label
+        const label = cb.nextElementSibling.querySelector('label');
+        label.style.opacity = '1';
+        label.style.cursor = 'pointer';
+
+        // Update the link text
+        const link = cb.nextElementSibling.querySelector('.privacy-link');
+        link.textContent = '✅ Data Privacy Statement read and accepted';
+        link.style.color = '#059669';
+        link.style.textDecoration = 'none';
+        link.style.cursor = 'default';
+        link.onclick = null;
+
         toggleSubmitButton();
         closePrivacyModal();
     }
@@ -2086,7 +2105,23 @@
         document.getElementById('requestForm').reset();
         document.getElementById('formDate').value = new Date().toISOString().split('T')[0];
         document.getElementById('acknowledgeNote').checked = false;
-        document.getElementById('privacyConsent').checked = false;
+
+        // Reset privacy consent back to locked state
+        const cb = document.getElementById('privacyConsent');
+        cb.checked = false;
+        cb.disabled = true;
+        cb.style.cursor = 'not-allowed';
+        cb.style.opacity = '0.4';
+        const label = cb.nextElementSibling.querySelector('label');
+        label.style.opacity = '0.6';
+        label.style.cursor = 'default';
+        const link = cb.nextElementSibling.querySelector('.privacy-link');
+        link.textContent = '📋 You must read the Full Data Privacy Statement before proceeding →';
+        link.style.color = '#4f46e5';
+        link.style.textDecoration = 'underline';
+        link.style.cursor = 'pointer';
+        link.onclick = openPrivacyModal;
+
         document.getElementById('submitButton').disabled = true;
         document.getElementById('printButton').disabled  = true;
         document.querySelectorAll('.conditional-field').forEach(f => f.classList.remove('active'));
