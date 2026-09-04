@@ -701,6 +701,22 @@
     const SUPABASE_ANON_KEY = 'sb_publishable_3Kd460W0EV6xAJuJKtCIuQ_wGtxeuM2';
     const sb = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
+    // Call admin Edge Function securely (no service key in browser)
+    async function callAdminFunction(action, payload = {}) {
+        const { data: { session } } = await sb.auth.getSession();
+        const res = await fetch(`${SUPABASE_URL}/functions/v1/manage-admin-users`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${session.access_token}`
+            },
+            body: JSON.stringify({ action, ...payload })
+        });
+        const json = await res.json();
+        if (json.error) throw new Error(json.error);
+        return json;
+    }
+
     let allRequests = [];
     let realtimeSub = null;
     let currentUserRole = null;
@@ -1080,22 +1096,8 @@
         tbody.innerHTML = `<tr><td colspan="5"><div class="empty-state"><p>Loading...</p></div></td></tr>`;
 
         try {
-            // Use Supabase Admin API via edge function or service role
-            // For now we use the admin listUsers approach
-            const { data, error } = await sb.auth.admin?.listUsers?.() ||
-                { data: null, error: { message: 'Use Supabase dashboard to view users.' } };
-
-            if (error) {
-                tbody.innerHTML = `<tr><td colspan="5"><div class="empty-state">
-                    <p style="color:#64748b;">To view and manage admin accounts, please use your<br>
-                    <a href="https://supabase.com/dashboard/project/jnfkfzjhgbktovvvqbuk/auth/users"
-                       target="_blank" style="color:#4f46e5;font-weight:600;">Supabase Authentication Dashboard</a>
-                    </p>
-                </div></td></tr>`;
-                return;
-            }
-
-            const admins = data.users.filter(u =>
+            const data = await callAdminFunction('list');
+            const admins = (data.users || []).filter(u =>
                 ['admin','superadmin'].includes(u.app_metadata?.role)
             );
 
@@ -1115,8 +1117,6 @@
                     : 'Never';
                 const isSelf = user.email === currentUserEmail;
                 const isSuperadmin = role === 'superadmin';
-
-                tr.innerHTML = '';
 
                 const tdEmail = document.createElement('td');
                 const emailSpan = document.createElement('span');
@@ -1153,7 +1153,9 @@
             });
 
         } catch (err) {
-            tbody.innerHTML = `<tr><td colspan="5"><div class="empty-state"><p>Error: ${err.message}</p></div></td></tr>`;
+            tbody.innerHTML = `<tr><td colspan="5"><div class="empty-state">
+                <p style="color:#dc2626;">Error: ${err.message}</p>
+            </div></td></tr>`;
         }
     }
 
@@ -1180,16 +1182,8 @@
         btn.disabled = true;
 
         try {
-            const { data, error } = await sb.auth.admin.createUser({
-                email,
-                password,
-                app_metadata: { role: 'admin' },
-                email_confirm: true
-            });
-
-            if (error) throw error;
-
-            showToast(`✅ Admin account created for ${email}`, 'success');
+            await callAdminFunction('create', { email, password });
+            showToast(`Admin account created for ${email}`, 'success');
             closeCreateUserModal();
             loadUsers();
         } catch (err) {
@@ -1203,8 +1197,7 @@
     async function deleteAdminUser(userId, email) {
         if (!confirm(`Delete admin account for ${email}?\n\nThis cannot be undone.`)) return;
         try {
-            const { error } = await sb.auth.admin.deleteUser(userId);
-            if (error) throw error;
+            await callAdminFunction('delete', { userId });
             showToast(`Admin account deleted: ${email}`, 'success');
             loadUsers();
         } catch (err) {
