@@ -411,6 +411,108 @@
             from { transform: translateY(10px); opacity: 0; }
             to   { transform: translateY(0); opacity: 1; }
         }
+        /* ---- TABS ---- */
+        .tabs-bar {
+            background: white;
+            border-bottom: 1px solid #e2e8f0;
+            padding: 0 32px;
+            display: flex;
+            gap: 4px;
+        }
+
+        .tab-btn {
+            padding: 14px 20px;
+            font-size: 13px; font-weight: 600;
+            color: #64748b;
+            background: none; border: none;
+            border-bottom: 2px solid transparent;
+            cursor: pointer;
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            transition: all 0.2s;
+        }
+
+        .tab-btn:hover { color: #0f172a; }
+        .tab-btn.active { color: #4f46e5; border-bottom-color: #4f46e5; }
+
+        .tab-panel { display: none; }
+        .tab-panel.active { display: block; }
+
+        /* ---- USER MANAGEMENT ---- */
+        .user-table-card {
+            background: white; border-radius: 16px;
+            border: 1px solid #e2e8f0;
+            box-shadow: 0 1px 4px rgba(0,0,0,0.04);
+            overflow: hidden;
+        }
+
+        .user-toolbar {
+            display: flex; align-items: center;
+            gap: 12px; padding: 18px 24px;
+            border-bottom: 1px solid #f1f5f9;
+        }
+
+        .user-toolbar-title { font-size: 15px; font-weight: 700; color: #0f172a; flex: 1; }
+
+        /* ---- MODAL ---- */
+        .modal-overlay {
+            position: fixed; inset: 0;
+            background: rgba(0,0,0,0.45);
+            z-index: 200; display: none;
+            align-items: center; justify-content: center; padding: 24px;
+        }
+
+        .modal-overlay.open { display: flex; }
+
+        .modal-card {
+            background: white; border-radius: 16px;
+            padding: 32px; width: 100%; max-width: 440px;
+            box-shadow: 0 25px 60px rgba(0,0,0,0.25);
+        }
+
+        .modal-card h2 { font-size: 18px; font-weight: 800; color: #0f172a; margin-bottom: 6px; }
+        .modal-card p { font-size: 13px; color: #64748b; margin-bottom: 24px; }
+
+        .modal-field { margin-bottom: 16px; }
+
+        .modal-field label {
+            display: block; font-size: 13px; font-weight: 600;
+            color: #334155; margin-bottom: 6px;
+        }
+
+        .modal-field input, .modal-field select {
+            width: 100%; padding: 10px 14px;
+            border: 1.5px solid #e2e8f0; border-radius: 9px;
+            font-size: 14px; font-family: 'Plus Jakarta Sans', sans-serif;
+            color: #0f172a; background: #f8fafc;
+            outline: none; transition: all 0.2s;
+        }
+
+        .modal-field input:focus, .modal-field select:focus {
+            border-color: #6366f1; background: white;
+            box-shadow: 0 0 0 3px rgba(99,102,241,0.08);
+        }
+
+        .modal-actions { display: flex; gap: 10px; justify-content: flex-end; margin-top: 24px; }
+
+        .btn-modal-cancel {
+            padding: 10px 20px; border: 1.5px solid #e2e8f0; border-radius: 9px;
+            font-size: 14px; font-weight: 600; color: #64748b;
+            background: white; cursor: pointer;
+            font-family: 'Plus Jakarta Sans', sans-serif; transition: all 0.2s;
+        }
+
+        .btn-modal-cancel:hover { background: #f8fafc; }
+
+        .btn-modal-confirm {
+            padding: 10px 20px; border: none; border-radius: 9px;
+            font-size: 14px; font-weight: 600; color: white;
+            background: #4f46e5; cursor: pointer;
+            font-family: 'Plus Jakarta Sans', sans-serif; transition: all 0.2s;
+        }
+
+        .btn-modal-confirm:hover { background: #4338ca; }
+        .btn-modal-confirm:disabled { opacity: 0.5; cursor: not-allowed; }
+
         @media (max-width: 900px) {
             .kpi-grid { grid-template-columns: 1fr 1fr; }
             .page-body { padding: 20px 16px; }
@@ -447,8 +549,17 @@
     </div>
 </nav>
 
+<!-- TABS BAR (superadmin sees extra tab) -->
+<div class="tabs-bar" id="tabsBar">
+    <button class="tab-btn active" onclick="switchTab('requests')">Requests Management</button>
+    <button class="tab-btn" id="userMgmtTab" style="display:none;" onclick="switchTab('users')">User Management</button>
+</div>
+
 <!-- PAGE BODY -->
 <div class="page-body">
+
+    <!-- TAB: REQUESTS -->
+    <div class="tab-panel active" id="panel-requests">
     <div class="page-heading">
         <h1>Request Dashboard</h1>
         <p>Monitor, manage, and respond to all incoming service requests.</p>
@@ -526,6 +637,62 @@
             </table>
         </div>
     </div>
+
+    </div><!-- end panel-requests -->
+
+    <!-- TAB: USER MANAGEMENT (Superadmin only) -->
+    <div class="tab-panel" id="panel-users">
+        <div class="page-heading">
+            <h1>User Management</h1>
+            <p>Create and manage admin staff accounts. Only Superadmins can access this section.</p>
+        </div>
+        <div class="user-table-card">
+            <div class="user-toolbar">
+                <span class="user-toolbar-title">Admin Accounts</span>
+                <button class="btn-toolbar primary" onclick="openCreateUserModal()">
+                    <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+                    Create Admin Account
+                </button>
+            </div>
+            <div style="overflow-x:auto;">
+                <table class="data-table">
+                    <thead>
+                        <tr>
+                            <th>Email</th>
+                            <th>Role</th>
+                            <th>Created</th>
+                            <th>Last Sign In</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="userTableBody">
+                        <tr><td colspan="5"><div class="empty-state"><p>Loading users...</p></div></td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+</div><!-- end page-body -->
+
+<!-- CREATE USER MODAL -->
+<div class="modal-overlay" id="createUserModal">
+    <div class="modal-card">
+        <h2>Create Admin Account</h2>
+        <p>This will create a new admin account. The user will receive a password and can log in to the dashboard.</p>
+        <div class="modal-field">
+            <label>Email Address</label>
+            <input type="email" id="newUserEmail" placeholder="staff@cio.gov.ph">
+        </div>
+        <div class="modal-field">
+            <label>Temporary Password</label>
+            <input type="text" id="newUserPassword" placeholder="Min. 8 characters">
+        </div>
+        <div class="modal-actions">
+            <button class="btn-modal-cancel" onclick="closeCreateUserModal()">Cancel</button>
+            <button class="btn-modal-confirm" id="createUserBtn" onclick="createAdminUser()">Create Account</button>
+        </div>
+    </div>
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
@@ -537,6 +704,7 @@
     let allRequests = [];
     let realtimeSub = null;
     let currentUserRole = null;
+    let currentUserEmail = null;
     let inactivityTimer = null;
 
     // ---- AUTH CHECK ----
@@ -549,7 +717,8 @@
 
         // Get role from app_metadata
         currentUserRole = session.user?.app_metadata?.role || 'admin';
-        const userEmail = session.user?.email || 'Admin';
+        currentUserEmail = session.user?.email || '';
+        const userEmail = currentUserEmail;
 
         // Update header badge
         const badge = document.getElementById('adminBadge');
@@ -562,6 +731,9 @@
         // Hide delete buttons if not superadmin
         if (currentUserRole !== 'superadmin') {
             document.documentElement.style.setProperty('--del-btn-display', 'none');
+        } else {
+            // Show User Management tab for superadmin
+            document.getElementById('userMgmtTab').style.display = 'block';
         }
 
         // Logout button
@@ -891,6 +1063,153 @@
         a.href = URL.createObjectURL(new Blob([csv], { type: 'text/csv' }));
         a.download = `CIO_Requests_${new Date().toISOString().split('T')[0]}.csv`;
         a.click();
+    }
+
+    // ---- TAB SWITCHING ----
+    function switchTab(tab) {
+        document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+        document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+        document.querySelector(`[onclick="switchTab('${tab}')"]`).classList.add('active');
+        document.getElementById(`panel-${tab}`).classList.add('active');
+        if (tab === 'users') loadUsers();
+    }
+
+    // ---- USER MANAGEMENT ----
+    async function loadUsers() {
+        const tbody = document.getElementById('userTableBody');
+        tbody.innerHTML = `<tr><td colspan="5"><div class="empty-state"><p>Loading...</p></div></td></tr>`;
+
+        try {
+            // Use Supabase Admin API via edge function or service role
+            // For now we use the admin listUsers approach
+            const { data, error } = await sb.auth.admin?.listUsers?.() ||
+                { data: null, error: { message: 'Use Supabase dashboard to view users.' } };
+
+            if (error) {
+                tbody.innerHTML = `<tr><td colspan="5"><div class="empty-state">
+                    <p style="color:#64748b;">To view and manage admin accounts, please use your<br>
+                    <a href="https://supabase.com/dashboard/project/jnfkfzjhgbktovvvqbuk/auth/users"
+                       target="_blank" style="color:#4f46e5;font-weight:600;">Supabase Authentication Dashboard</a>
+                    </p>
+                </div></td></tr>`;
+                return;
+            }
+
+            const admins = data.users.filter(u =>
+                ['admin','superadmin'].includes(u.app_metadata?.role)
+            );
+
+            if (!admins.length) {
+                tbody.innerHTML = `<tr><td colspan="5"><div class="empty-state"><p>No admin accounts found.</p></div></td></tr>`;
+                return;
+            }
+
+            tbody.innerHTML = '';
+            admins.forEach(user => {
+                const tr = document.createElement('tr');
+                const role = user.app_metadata?.role || 'admin';
+                const pillCls = role === 'superadmin' ? 'role-superadmin' : 'role-admin';
+                const created = new Date(user.created_at).toLocaleDateString('en-PH',{month:'short',day:'numeric',year:'numeric'});
+                const lastSign = user.last_sign_in_at
+                    ? new Date(user.last_sign_in_at).toLocaleDateString('en-PH',{month:'short',day:'numeric',year:'numeric'})
+                    : 'Never';
+                const isSelf = user.email === currentUserEmail;
+                const isSuperadmin = role === 'superadmin';
+
+                tr.innerHTML = '';
+
+                const tdEmail = document.createElement('td');
+                const emailSpan = document.createElement('span');
+                emailSpan.className = 'cell-primary';
+                emailSpan.textContent = user.email + (isSelf ? ' (you)' : '');
+                tdEmail.appendChild(emailSpan);
+                tr.appendChild(tdEmail);
+
+                const tdRole = document.createElement('td');
+                tdRole.innerHTML = `<span class="role-pill ${pillCls}">${role}</span>`;
+                tr.appendChild(tdRole);
+
+                const tdCreated = document.createElement('td');
+                tdCreated.textContent = created;
+                tr.appendChild(tdCreated);
+
+                const tdLast = document.createElement('td');
+                tdLast.textContent = lastSign;
+                tr.appendChild(tdLast);
+
+                const tdActions = document.createElement('td');
+                if (!isSelf && !isSuperadmin) {
+                    const delBtn = document.createElement('button');
+                    delBtn.className = 'act-btn del';
+                    delBtn.setAttribute('data-tip', 'Delete Account');
+                    delBtn.innerHTML = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/><path d="M10 11v6"/><path d="M14 11v6"/></svg>`;
+                    delBtn.onclick = () => deleteAdminUser(user.id, user.email);
+                    tdActions.appendChild(delBtn);
+                } else {
+                    tdActions.innerHTML = `<span style="font-size:12px;color:#94a3b8;">${isSelf ? 'Current user' : 'Protected'}</span>`;
+                }
+                tr.appendChild(tdActions);
+                tbody.appendChild(tr);
+            });
+
+        } catch (err) {
+            tbody.innerHTML = `<tr><td colspan="5"><div class="empty-state"><p>Error: ${err.message}</p></div></td></tr>`;
+        }
+    }
+
+    function openCreateUserModal() {
+        document.getElementById('createUserModal').classList.add('open');
+        document.getElementById('newUserEmail').focus();
+    }
+
+    function closeCreateUserModal() {
+        document.getElementById('createUserModal').classList.remove('open');
+        document.getElementById('newUserEmail').value = '';
+        document.getElementById('newUserPassword').value = '';
+    }
+
+    async function createAdminUser() {
+        const email = document.getElementById('newUserEmail').value.trim();
+        const password = document.getElementById('newUserPassword').value;
+        const btn = document.getElementById('createUserBtn');
+
+        if (!email || !password) { showToast('Please fill in all fields.', 'error'); return; }
+        if (password.length < 8) { showToast('Password must be at least 8 characters.', 'error'); return; }
+
+        btn.textContent = 'Creating...';
+        btn.disabled = true;
+
+        try {
+            const { data, error } = await sb.auth.admin.createUser({
+                email,
+                password,
+                app_metadata: { role: 'admin' },
+                email_confirm: true
+            });
+
+            if (error) throw error;
+
+            showToast(`✅ Admin account created for ${email}`, 'success');
+            closeCreateUserModal();
+            loadUsers();
+        } catch (err) {
+            showToast('Error: ' + err.message, 'error');
+        } finally {
+            btn.textContent = 'Create Account';
+            btn.disabled = false;
+        }
+    }
+
+    async function deleteAdminUser(userId, email) {
+        if (!confirm(`Delete admin account for ${email}?\n\nThis cannot be undone.`)) return;
+        try {
+            const { error } = await sb.auth.admin.deleteUser(userId);
+            if (error) throw error;
+            showToast(`Admin account deleted: ${email}`, 'success');
+            loadUsers();
+        } catch (err) {
+            showToast('Error: ' + err.message, 'error');
+        }
     }
 </script>
 </body>
