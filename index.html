@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
     <title>City Information Office — City Government of Bago</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
@@ -74,6 +74,7 @@
         height: 72px;
         display: flex;
         align-items: center;
+        padding-top: env(safe-area-inset-top);
     }
 
     .navbar-inner {
@@ -739,7 +740,7 @@
         padding: 10px 14px;
         border: 1.5px solid var(--slate-200);
         border-radius: var(--radius-sm);
-        font-size: 14px;
+        font-size: 16px; /* 16px prevents iOS Safari auto-zoom */
         color: var(--navy);
         font-family: 'Plus Jakarta Sans', sans-serif;
         outline: none;
@@ -870,26 +871,13 @@
         flex-wrap: wrap;
     }
 
-    .btn-form-reset {
-        padding: 12px 24px;
-        background: transparent;
-        border: 1.5px solid var(--slate-300);
-        border-radius: var(--radius-md);
-        font-size: 14px; font-weight: 600;
-        color: var(--slate-600);
-        cursor: pointer;
-        font-family: 'Plus Jakarta Sans', sans-serif;
-        transition: all 0.2s;
-    }
-
-    .btn-form-reset:hover { border-color: var(--slate-400); color: var(--navy); }
-
     .btn-form-submit {
-        padding: 12px 28px;
+        padding: 13px 28px;
+        min-height: 44px;
         background: var(--blue);
         color: white; border: none;
         border-radius: var(--radius-md);
-        font-size: 14px; font-weight: 700;
+        font-size: 15px; font-weight: 700;
         cursor: pointer;
         font-family: 'Plus Jakarta Sans', sans-serif;
         transition: all 0.2s;
@@ -897,28 +885,31 @@
         box-shadow: 0 4px 16px rgba(29,78,216,0.3);
     }
 
-    .btn-form-submit:hover:not(:disabled) {
-        background: #1e40af;
-        transform: translateY(-1px);
-        box-shadow: 0 6px 24px rgba(29,78,216,0.4);
-    }
-
-    .btn-form-submit:disabled { opacity: 0.5; cursor: not-allowed; }
-
     .btn-form-print {
-        padding: 12px 24px;
+        padding: 13px 24px;
+        min-height: 44px;
         background: var(--slate-700);
         color: white; border: none;
         border-radius: var(--radius-md);
-        font-size: 14px; font-weight: 600;
+        font-size: 15px; font-weight: 600;
         cursor: pointer;
         font-family: 'Plus Jakarta Sans', sans-serif;
         transition: all 0.2s;
         display: flex; align-items: center; gap: 8px;
     }
 
-    .btn-form-print:hover:not(:disabled) { background: var(--navy); }
-    .btn-form-print:disabled { opacity: 0.5; cursor: not-allowed; }
+    .btn-form-reset {
+        padding: 13px 24px;
+        min-height: 44px;
+        background: transparent;
+        border: 1.5px solid var(--slate-300);
+        border-radius: var(--radius-md);
+        font-size: 15px; font-weight: 600;
+        color: var(--slate-600);
+        cursor: pointer;
+        font-family: 'Plus Jakarta Sans', sans-serif;
+        transition: all 0.2s;
+    }
 
     /* ============================================
        TOAST
