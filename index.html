@@ -1444,6 +1444,10 @@
                             <input type="checkbox" id="liveStreaming" value="Live Streaming">
                             <label for="liveStreaming">Live Streaming</label>
                         </div>
+                        <div class="checkbox-item">
+                            <input type="checkbox" id="pressRelease" value="Press Release / Write-up">
+                            <label for="pressRelease">Press Release / Write-up</label>
+                        </div>
                         <div class="checkbox-item" style="grid-column: 1 / -1;">
                             <input type="checkbox" id="others" value="Others">
                             <label for="others">Others — please specify:</label>
@@ -1478,6 +1482,19 @@
                                 style="width:100%;padding:10px;border:1.5px dashed var(--slate-300);border-radius:var(--radius-sm);font-size:13px;background:white;cursor:pointer;">
                         </div>
                         <div id="graphicFilePreview" style="margin-top:10px;display:flex;flex-wrap:wrap;gap:8px;"></div>
+                    </div>
+
+                    <!-- Conditional: Press Release Upload -->
+                    <div id="pressReleaseFields" class="conditional-field">
+                        <div class="cond-title">📄 For Press Release / Write-up — Upload Your File</div>
+                        <p style="font-size:12px;color:var(--slate-600);margin-bottom:10px;">Upload your draft, write-up, or reference materials. Accepted: .doc, .docx, .txt, .pdf, .jpg, .jpeg, .png (max 10MB each)</p>
+                        <div class="form-group" style="margin:0;">
+                            <input type="file" id="pressReleaseFile" name="pressReleaseFile"
+                                accept=".doc,.docx,.txt,.pdf,.jpg,.jpeg,.png"
+                                multiple
+                                style="width:100%;padding:10px;border:1.5px dashed var(--slate-300);border-radius:var(--radius-sm);font-size:13px;background:white;cursor:pointer;">
+                        </div>
+                        <div id="pressReleaseFilePreview" style="margin-top:10px;display:flex;flex-wrap:wrap;gap:8px;"></div>
                     </div>
 
                     <!-- Conditional: Social Media -->
@@ -1586,6 +1603,9 @@
     document.getElementById('graphicDesign').addEventListener('change', function () {
         document.getElementById('graphicDesignFields').classList.toggle('active', this.checked);
     });
+    document.getElementById('pressRelease').addEventListener('change', function () {
+        document.getElementById('pressReleaseFields').classList.toggle('active', this.checked);
+    });
     document.getElementById('socialMediaPosting').addEventListener('change', function () {
         document.getElementById('socialMediaFields').classList.toggle('active', this.checked);
     });
@@ -1619,22 +1639,32 @@
 
     // ---- File preview for graphic design ----
     document.getElementById('graphicDesignFile').addEventListener('change', function () {
-        const preview = document.getElementById('graphicFilePreview');
+        showFilePreview(this.files, 'graphicFilePreview');
+    });
+
+    // ---- File preview for press release ----
+    document.getElementById('pressReleaseFile').addEventListener('change', function () {
+        showFilePreview(this.files, 'pressReleaseFilePreview');
+    });
+
+    function showFilePreview(files, previewId) {
+        const preview = document.getElementById(previewId);
         preview.innerHTML = '';
-        Array.from(this.files).forEach(file => {
+        Array.from(files).forEach(file => {
             const tag = document.createElement('div');
             tag.style.cssText = 'padding:6px 12px;background:var(--blue-pale);border:1px solid var(--slate-200);border-radius:6px;font-size:12px;color:var(--navy);display:flex;align-items:center;gap:6px;';
             const icon = file.type.startsWith('image/') ? '🖼️' : '📄';
-            tag.innerHTML = `${icon} <span>${file.name}</span> <span style="color:var(--slate-400)">(${(file.size/1024/1024).toFixed(2)}MB)</span>`;
+            const size = (file.size / 1024 / 1024).toFixed(2);
+            tag.innerHTML = `${icon} <span>${file.name}</span> <span style="color:var(--slate-400)">(${size}MB)</span>`;
             preview.appendChild(tag);
         });
-    });
+    }
 
     // ---- Selected services ----
     function getSelectedServices() {
         const ids = ['graphicDesign','radioGuesting','photoCoverage','videoEditing',
                      'videoCoverage','socialMediaPosting','videoCoverageInterview',
-                     'copyMaterials','drone','liveStreaming','others'];
+                     'copyMaterials','drone','liveStreaming','pressRelease','others'];
         return ids.filter(id => document.getElementById(id).checked)
                   .map(id => {
                       const val = document.getElementById(id).value;
@@ -1695,6 +1725,20 @@
                 payload.graphic_design_files = uploadedFiles;
             }
 
+            // Upload press release files if any
+            const prFileInput = document.getElementById('pressReleaseFile');
+            let prUploadedFiles = [];
+            if (document.getElementById('pressRelease').checked && prFileInput.files.length > 0) {
+                for (const file of prFileInput.files) {
+                    const filePath = `press-release/${payload.control_number}/${file.name}`;
+                    const { error: uploadError } = await sb.storage
+                        .from('cio-uploads')
+                        .upload(filePath, file, { upsert: true });
+                    if (!uploadError) prUploadedFiles.push(filePath);
+                }
+                payload.press_release_files = prUploadedFiles;
+            }
+
             const { error } = await sb.from('requests').insert([payload]);
             if (error) throw error;
 
@@ -1715,6 +1759,8 @@
             document.getElementById('remarks').value = '';
             document.getElementById('graphicDesignFile').value = '';
             document.getElementById('graphicFilePreview').innerHTML = '';
+            document.getElementById('pressReleaseFile').value = '';
+            document.getElementById('pressReleaseFilePreview').innerHTML = '';
 
         } catch (err) {
             console.error(err);
