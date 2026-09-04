@@ -1665,13 +1665,13 @@
                     <p><strong>Important:</strong> Please submit requests at least <strong>3 working days</strong> before the event, subject to CIO personnel and equipment availability.</p>
                 </div>
 
-                <!-- ACKNOWLEDGE -->
-                <div class="acknowledge-wrap" onclick="document.getElementById('acknowledgeNote').click(); event.stopPropagation();">
-                    <input type="checkbox" id="acknowledgeNote" onclick="event.stopPropagation()">
-                    <label for="acknowledgeNote">I have read and understood that requests must be submitted at least <strong>3 working days</strong> before the event and are subject to CIO personnel and equipment availability.</label>
-                </div>
-
-                <!-- DATA PRIVACY CONSENT -->
+                <!-- 3 WORKING DAYS NOTICE -->
+                <label for="leadTimeConsent" style="display:flex;align-items:flex-start;gap:12px;background:#fefce8;border:1.5px solid #fde047;border-radius:var(--radius-md);padding:16px 18px;margin-top:24px;cursor:pointer;user-select:none;-webkit-user-select:none;transition:all 0.2s;width:100%;">
+                    <input type="checkbox" id="leadTimeConsent" style="width:18px;height:18px;accent-color:#d97706;margin-top:2px;flex-shrink:0;cursor:pointer;min-width:18px;" onchange="toggleSubmitButton()">
+                    <span style="font-size:13px;font-weight:500;color:#713f12;line-height:1.6;">
+                        I have read and understood that requests must be submitted at least <strong>3 working days</strong> before the event and are subject to CIO personnel and equipment availability.
+                    </span>
+                </label>
                 <div class="privacy-consent-wrap">
                     <input type="checkbox" id="privacyConsent" disabled onchange="toggleSubmitButton()" style="cursor:not-allowed;opacity:0.4;">
                     <div>
@@ -1816,16 +1816,16 @@
         document.getElementById('othersFields').classList.toggle('active', this.checked);
     });
 
-    // ---- Acknowledge checkbox ----
-    document.getElementById('acknowledgeNote').addEventListener('change', function () {
+    // ---- Lead time consent checkbox ----
+    document.getElementById('leadTimeConsent').addEventListener('change', function () {
         toggleSubmitButton();
     });
 
     function toggleSubmitButton() {
-        const acknowledged = document.getElementById('acknowledgeNote').checked;
+        const acknowledged = document.getElementById('leadTimeConsent').checked;
         const privacyConsent = document.getElementById('privacyConsent').checked;
         const submitBtn = document.getElementById('submitButton');
-        const printBtn = document.getElementById('printButton');
+        const printBtn  = document.getElementById('printButton');
         const enabled = acknowledged && privacyConsent;
         submitBtn.disabled = !enabled;
         printBtn.disabled  = !enabled;
@@ -2000,7 +2000,7 @@
             // Reset
             form.reset();
             document.getElementById('formDate').value = new Date().toISOString().split('T')[0];
-            document.getElementById('acknowledgeNote').checked = false;
+            document.getElementById('leadTimeConsent').checked = false;
             btn.disabled = true;
             document.getElementById('printButton').disabled = true;
             document.querySelectorAll('.conditional-field').forEach(f => f.classList.remove('active'));
@@ -2104,7 +2104,7 @@
         if (!confirm('Reset all fields?')) return;
         document.getElementById('requestForm').reset();
         document.getElementById('formDate').value = new Date().toISOString().split('T')[0];
-        document.getElementById('acknowledgeNote').checked = false;
+        document.getElementById('leadTimeConsent').checked = false;
 
         // Reset privacy consent back to locked state
         const cb = document.getElementById('privacyConsent');
@@ -2242,6 +2242,7 @@
 </script>
 </body>
 </html>
+
 
 
 
