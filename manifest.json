@@ -1,0 +1,27 @@
+{
+  "name": "Bago City CIO Portal",
+  "short_name": "CIO Portal",
+  "description": "City Information Office Service Request & Management Portal — City Government of Bago",
+  "start_url": "/",
+  "scope": "/",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#0d111a",
+  "theme_color": "#0d111a",
+  "icons": [
+    {
+      "src": "/cio-logo.jpg",
+      "sizes": "192x192",
+      "type": "image/jpeg",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "/cio-logo.jpg",
+      "sizes": "512x512",
+      "type": "image/jpeg",
+      "purpose": "any maskable"
+    }
+  ],
+  "categories": ["government", "productivity"],
+  "lang": "en-PH"
+}

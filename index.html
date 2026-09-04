@@ -4,6 +4,16 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
     <title>City Information Office — City Government of Bago</title>
+
+    <!-- PWA -->
+    <link rel="manifest" href="/manifest.json">
+    <meta name="theme-color" content="#0d111a">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="CIO Portal">
+    <link rel="apple-touch-icon" href="/cio-logo.jpg">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="application-name" content="CIO Portal">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
     <style>
@@ -1798,8 +1808,7 @@
     }
 
     // ---- HERO SLIDESHOW ----
-    (function () {
-        const slides = document.querySelectorAll('.hero-slide');
+    (function () {        const slides = document.querySelectorAll('.hero-slide');
         let current = 0;
 
         setInterval(function () {
@@ -1922,6 +1931,14 @@
                 <div class="pc-note">Note: Please submit requests at least 3 working days before the event, subject to CIO personnel and equipment availability.</div>
             </div>
         `;
+    }
+    // ---- SERVICE WORKER REGISTRATION ----
+    if ('serviceWorker' in navigator) {
+        window.addEventListener('load', () => {
+            navigator.serviceWorker.register('/sw.js')
+                .then(reg => console.log('SW registered:', reg.scope))
+                .catch(err => console.log('SW registration failed:', err));
+        });
     }
 </script>
 </body>
