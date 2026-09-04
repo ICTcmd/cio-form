@@ -262,7 +262,7 @@
             const role = data.user?.app_metadata?.role;
             if (role !== 'admin' && role !== 'superadmin') {
                 await sb.auth.signOut();
-                errorBox.textContent = 'Access denied. You do not have admin privileges.';
+                errorBox.textContent = 'Access denied. Your account does not have admin privileges. Please contact your Superadmin.';
                 errorBox.classList.add('show');
                 btn.textContent = 'Login';
                 btn.disabled = false;
