@@ -3,332 +3,488 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Admin Dashboard - CIO Request System</title>
+    <title>Admin Dashboard — CIO Request System</title>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
 
         body {
-            font-family: Arial, sans-serif;
-            background: #f5f5f5;
-            padding: 20px;
+            font-family: 'Plus Jakarta Sans', system-ui, sans-serif;
+            background: #f1f5f9;
+            min-height: 100vh;
+            -webkit-font-smoothing: antialiased;
         }
 
-        .dashboard-container {
-            max-width: 1400px;
-            margin: 0 auto;
-            background: white;
-            padding: 30px;
-            border-radius: 10px;
-            box-shadow: 0 10px 40px rgba(0,0,0,0.1);
-        }
-
-        .dashboard-header {
+        /* ---- TOP NAVBAR ---- */
+        .topnav {
+            background: #0f172a;
+            height: 64px;
             display: flex;
-            justify-content: space-between;
             align-items: center;
-            margin-bottom: 30px;
-            padding-bottom: 20px;
-            border-bottom: 3px solid #667eea;
+            padding: 0 32px;
+            justify-content: space-between;
+            position: sticky; top: 0; z-index: 100;
+            border-bottom: 1px solid rgba(255,255,255,0.06);
         }
 
-        .dashboard-header h1 { color: #333; font-size: 24px; }
-        .dashboard-header p { color: #666; font-size: 14px; }
-
-        .toolbar {
-            display: flex;
-            gap: 10px;
-            margin-bottom: 20px;
-            flex-wrap: wrap;
+        .topnav-left {
+            display: flex; align-items: center; gap: 14px;
         }
 
-        .btn {
-            padding: 10px 20px;
-            border: none;
-            border-radius: 5px;
+        .topnav-logo {
+            height: 36px; width: auto;
+            object-fit: contain;
+            background: white;
+            padding: 3px 6px;
+            border-radius: 7px;
+        }
+
+        .topnav-title {
+            font-size: 15px; font-weight: 700;
+            color: white; letter-spacing: -0.2px;
+        }
+
+        .topnav-subtitle {
+            font-size: 11px; color: rgba(255,255,255,0.45);
+            font-weight: 400;
+        }
+
+        .topnav-right {
+            display: flex; align-items: center; gap: 12px;
+        }
+
+        .admin-badge {
+            display: flex; align-items: center; gap: 8px;
+            background: rgba(255,255,255,0.07);
+            border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 100px;
+            padding: 6px 14px;
+            font-size: 12px; font-weight: 500;
+            color: rgba(255,255,255,0.7);
+        }
+
+        .admin-badge-dot {
+            width: 7px; height: 7px;
+            background: #22c55e;
+            border-radius: 50%;
+        }
+
+        .btn-logout {
+            padding: 8px 18px;
+            background: transparent;
+            border: 1px solid rgba(255,255,255,0.2);
+            border-radius: 8px;
+            font-size: 13px; font-weight: 500;
+            color: rgba(255,255,255,0.7);
             cursor: pointer;
-            font-size: 14px;
-            font-weight: 600;
-            transition: all 0.3s;
-        }
-
-        .btn-primary { background: #667eea; color: white; }
-        .btn-primary:hover { background: #5568d3; }
-        .btn-secondary { background: #6c757d; color: white; }
-        .btn-secondary:hover { background: #5a6268; }
-
-        .table-wrapper { overflow-x: auto; }
-
-        .requests-table {
-            width: 100%;
-            border-collapse: collapse;
-            margin-top: 10px;
-        }
-
-        .requests-table th {
-            background: #667eea;
-            color: white;
-            padding: 12px;
-            text-align: left;
-            font-size: 13px;
-        }
-
-        .requests-table td {
-            padding: 10px;
-            border-bottom: 1px solid #ddd;
-            font-size: 13px;
-        }
-
-        .requests-table tr:hover { background: #f8f9fa; }
-
-        .control-number { font-weight: bold; color: #667eea; }
-
-        .action-btn {
-            padding: 6px 10px;
-            margin: 2px;
-            border: none;
-            border-radius: 4px;
-            cursor: pointer;
-            font-size: 12px;
+            font-family: 'Plus Jakarta Sans', sans-serif;
             transition: all 0.2s;
         }
 
-        .action-btn:hover { opacity: 0.8; transform: translateY(-1px); }
-        .btn-call { background: #28a745; color: white; }
-        .btn-msg { background: #0084ff; color: white; }
-        .btn-print { background: #fd7e14; color: white; }
-        .btn-del { background: #dc3545; color: white; }
+        .btn-logout:hover {
+            background: rgba(255,255,255,0.08);
+            color: white;
+        }
 
-        .status-select {
-            padding: 5px 8px;
-            border: 1px solid #ddd;
-            border-radius: 4px;
+        /* ---- PAGE BODY ---- */
+        .page-body {
+            max-width: 1440px;
+            margin: 0 auto;
+            padding: 32px 32px 60px;
+        }
+
+        .page-heading {
+            margin-bottom: 28px;
+        }
+
+        .page-heading h1 {
+            font-size: 22px; font-weight: 800;
+            color: #0f172a; letter-spacing: -0.4px;
+        }
+
+        .page-heading p {
+            font-size: 13px; color: #64748b;
+            margin-top: 4px;
+        }
+
+        /* ---- KPI CARDS ---- */
+        .kpi-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 16px;
+            margin-bottom: 28px;
+        }
+
+        .kpi-card {
+            background: white;
+            border-radius: 14px;
+            padding: 22px 24px;
+            border: 1px solid #e2e8f0;
+            box-shadow: 0 1px 4px rgba(0,0,0,0.04);
+            transition: all 0.2s;
+        }
+
+        .kpi-card:hover {
+            box-shadow: 0 4px 16px rgba(0,0,0,0.08);
+            transform: translateY(-2px);
+        }
+
+        .kpi-label {
+            font-size: 11px; font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.8px;
+            color: #94a3b8;
+            margin-bottom: 10px;
+        }
+
+        .kpi-value {
+            font-size: 34px; font-weight: 800;
+            color: #0f172a; line-height: 1;
+            margin-bottom: 6px;
+        }
+
+        .kpi-sub {
+            font-size: 12px; color: #94a3b8;
+        }
+
+        .kpi-card.total .kpi-value { color: #1d4ed8; }
+        .kpi-card.pending .kpi-value { color: #d97706; }
+        .kpi-card.progress .kpi-value { color: #0891b2; }
+        .kpi-card.completed .kpi-value { color: #059669; }
+
+        /* ---- MAIN TABLE CARD ---- */
+        .table-card {
+            background: white;
+            border-radius: 16px;
+            border: 1px solid #e2e8f0;
+            box-shadow: 0 1px 4px rgba(0,0,0,0.04);
+            overflow: hidden;
+        }
+
+        .table-toolbar {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 18px 24px;
+            border-bottom: 1px solid #f1f5f9;
+            flex-wrap: wrap;
+        }
+
+        .toolbar-title {
+            font-size: 15px; font-weight: 700;
+            color: #0f172a; flex: 1;
+        }
+
+        .search-input {
+            padding: 9px 14px 9px 38px;
+            border: 1.5px solid #e2e8f0;
+            border-radius: 9px;
+            font-size: 13px;
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            color: #0f172a;
+            background: #f8fafc;
+            outline: none;
+            width: 260px;
+            transition: all 0.2s;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='14' height='14' viewBox='0 0 24 24' fill='none' stroke='%2394a3b8' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Ccircle cx='11' cy='11' r='8'/%3E%3Cline x1='21' y1='21' x2='16.65' y2='16.65'/%3E%3C/svg%3E");
+            background-repeat: no-repeat;
+            background-position: 12px center;
+        }
+
+        .search-input:focus {
+            border-color: #6366f1;
+            background-color: white;
+            box-shadow: 0 0 0 3px rgba(99,102,241,0.08);
+        }
+
+        .filter-select {
+            padding: 9px 14px;
+            border: 1.5px solid #e2e8f0;
+            border-radius: 9px;
+            font-size: 13px;
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            color: #334155;
+            background: #f8fafc;
+            outline: none;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .filter-select:focus {
+            border-color: #6366f1;
+            box-shadow: 0 0 0 3px rgba(99,102,241,0.08);
+        }
+
+        .btn-toolbar {
+            padding: 9px 16px;
+            border: 1.5px solid #e2e8f0;
+            border-radius: 9px;
+            font-size: 13px; font-weight: 600;
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            color: #334155;
+            background: #f8fafc;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: flex; align-items: center; gap: 6px;
+        }
+
+        .btn-toolbar:hover { background: #f1f5f9; border-color: #cbd5e1; }
+        .btn-toolbar.primary { background: #4f46e5; color: white; border-color: #4f46e5; }
+        .btn-toolbar.primary:hover { background: #4338ca; }
+
+        /* ---- TABLE ---- */
+        .data-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .data-table thead th {
+            background: #f8fafc;
+            color: #64748b;
+            font-size: 11px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.7px;
+            padding: 12px 16px;
+            text-align: left;
+            border-bottom: 1px solid #e2e8f0;
+            white-space: nowrap;
+        }
+
+        .data-table tbody td {
+            padding: 13px 16px;
+            font-size: 13px;
+            color: #334155;
+            border-bottom: 1px solid #f1f5f9;
+            vertical-align: middle;
+        }
+
+        .data-table tbody tr:last-child td { border-bottom: none; }
+
+        .data-table tbody tr:hover td { background: #f8fafc; }
+
+        .control-num {
+            font-weight: 700;
+            color: #4f46e5;
             font-size: 12px;
+            font-family: monospace;
         }
 
-        .loading, .no-data {
+        .cell-primary { font-weight: 600; color: #0f172a; }
+
+        /* ---- STATUS PILLS ---- */
+        .status-pill {
+            display: inline-flex; align-items: center; gap: 5px;
+            padding: 4px 10px;
+            border-radius: 100px;
+            font-size: 11px; font-weight: 700;
+            white-space: nowrap;
+        }
+
+        .status-pill::before {
+            content: '';
+            width: 5px; height: 5px;
+            border-radius: 50%;
+            flex-shrink: 0;
+        }
+
+        .pill-pending    { background: #fef3c7; color: #92400e; }
+        .pill-pending::before { background: #f59e0b; }
+        .pill-contacted  { background: #dbeafe; color: #1e40af; }
+        .pill-contacted::before { background: #3b82f6; }
+        .pill-approved   { background: #d1fae5; color: #065f46; }
+        .pill-approved::before { background: #10b981; }
+        .pill-declined   { background: #fee2e2; color: #991b1b; }
+        .pill-declined::before { background: #ef4444; }
+        .pill-completed  { background: #f0fdf4; color: #166534; }
+        .pill-completed::before { background: #22c55e; }
+
+        .status-select-pill {
+            appearance: none;
+            background: transparent;
+            border: none;
+            font-size: 11px; font-weight: 700;
+            cursor: pointer;
+            padding: 4px 20px 4px 10px;
+            border-radius: 100px;
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='10' viewBox='0 0 24 24' fill='none' stroke='%23475569' stroke-width='2.5'%3E%3Cpolyline points='6 9 12 15 18 9'/%3E%3C/svg%3E");
+            background-repeat: no-repeat;
+            background-position: right 6px center;
+        }
+
+        /* ---- ACTION BUTTONS ---- */
+        .action-wrap {
+            display: flex; align-items: center; gap: 4px;
+        }
+
+        .act-btn {
+            width: 32px; height: 32px;
+            display: flex; align-items: center; justify-content: center;
+            border: 1.5px solid #e2e8f0;
+            border-radius: 8px;
+            background: white;
+            cursor: pointer;
+            color: #64748b;
+            transition: all 0.2s;
+            position: relative;
+        }
+
+        .act-btn:hover { transform: translateY(-1px); }
+        .act-btn.call:hover  { border-color: #22c55e; color: #16a34a; background: #f0fdf4; }
+        .act-btn.msg:hover   { border-color: #3b82f6; color: #2563eb; background: #eff6ff; }
+        .act-btn.print:hover { border-color: #8b5cf6; color: #7c3aed; background: #f5f3ff; }
+        .act-btn.del:hover   { border-color: #ef4444; color: #dc2626; background: #fef2f2; }
+
+        .act-btn svg { width: 15px; height: 15px; }
+
+        /* Tooltip */
+        .act-btn::after {
+            content: attr(data-tip);
+            position: absolute;
+            bottom: calc(100% + 6px);
+            left: 50%; transform: translateX(-50%);
+            background: #0f172a;
+            color: white;
+            font-size: 11px; font-weight: 500;
+            padding: 4px 8px;
+            border-radius: 5px;
+            white-space: nowrap;
+            pointer-events: none;
+            opacity: 0;
+            transition: opacity 0.15s;
+        }
+
+        .act-btn:hover::after { opacity: 1; }
+
+        /* ---- EMPTY / LOADING ---- */
+        .empty-state {
             text-align: center;
-            padding: 40px;
-            color: #999;
+            padding: 60px 20px;
+            color: #94a3b8;
         }
 
-        /* ================================
-           PRINT STYLES - 2-UP LANDSCAPE
-        ================================ */
-        .print-area { display: none; }
+        .empty-state svg {
+            width: 40px; height: 40px;
+            margin: 0 auto 12px;
+            opacity: 0.4;
+        }
 
-        @media print {
-            @page { size: landscape; margin: 8mm; }
+        .empty-state p { font-size: 14px; }
 
-            body { background: white; padding: 0; }
-            .dashboard-container { display: none !important; }
+        /* ---- RESPONSIVE ---- */
+        @media (max-width: 900px) {
+            .kpi-grid { grid-template-columns: 1fr 1fr; }
+            .page-body { padding: 20px 16px; }
+            .topnav { padding: 0 16px; }
+        }
 
-            .print-area {
-                display: flex !important;
-                width: 100%;
-                height: 100%;
-                gap: 0;
-            }
-
-            .print-copy {
-                flex: 1;
-                padding: 12px 14px;
-                border-right: 1.5px dashed #aaa;
-                font-family: Arial, sans-serif;
-                font-size: 9.5pt;
-            }
-
-            .print-copy:last-child { border-right: none; }
-
-            /* Header */
-            .pc-header {
-                display: flex;
-                justify-content: space-between;
-                align-items: flex-start;
-                padding-bottom: 6px;
-                border-bottom: 2px solid #000;
-                margin-bottom: 6px;
-            }
-
-            .pc-header h1 { font-size: 13pt; font-weight: bold; line-height: 1.2; }
-            .pc-header h2 { font-size: 9pt; font-weight: normal; }
-            .pc-logo { width: 52px; height: 52px; object-fit: contain; }
-
-            .pc-date {
-                text-align: right;
-                font-size: 9pt;
-                margin-bottom: 10px;
-            }
-
-            .pc-date-line {
-                display: inline-block;
-                min-width: 140px;
-                border-bottom: 1px solid #000;
-            }
-
-            /* Sections */
-            .pc-section { margin-bottom: 8px; }
-
-            .pc-section-title {
-                font-size: 10.5pt;
-                font-weight: bold;
-                margin-bottom: 4px;
-            }
-
-            /* Field rows */
-            .pc-field {
-                display: flex;
-                align-items: flex-end;
-                margin-bottom: 4px;
-                font-size: 9pt;
-            }
-
-            .pc-field-label { white-space: nowrap; margin-right: 4px; }
-
-            .pc-field-line {
-                flex: 1;
-                border-bottom: 1px solid #000;
-                min-height: 13px;
-                padding-bottom: 1px;
-                font-size: 9pt;
-            }
-
-            .pc-inline-row {
-                display: flex;
-                gap: 8px;
-                margin-bottom: 4px;
-            }
-
-            .pc-inline-row .pc-field { flex: 1; }
-
-            /* Checkboxes */
-            .pc-check-grid {
-                display: grid;
-                grid-template-columns: 1fr 1fr;
-                gap: 3px 10px;
-                margin-bottom: 4px;
-            }
-
-            .pc-check-item {
-                display: flex;
-                align-items: center;
-                font-size: 9pt;
-            }
-
-            .pc-box {
-                width: 10px;
-                height: 10px;
-                border: 1.2px solid #000;
-                margin-right: 5px;
-                display: inline-flex;
-                align-items: center;
-                justify-content: center;
-                font-size: 8pt;
-                flex-shrink: 0;
-            }
-
-            .pc-box.checked::after { content: '✓'; font-weight: bold; }
-
-            /* Conditional section */
-            .pc-conditional {
-                display: flex;
-                gap: 16px;
-                margin-bottom: 4px;
-            }
-
-            .pc-cond-block { flex: 1; }
-            .pc-cond-title { font-size: 9.5pt; font-weight: bold; margin-bottom: 3px; }
-
-            .pc-copy-block { margin-bottom: 4px; }
-            .pc-copy-title { font-size: 9.5pt; font-weight: bold; margin-bottom: 3px; }
-
-            /* CIO Use */
-            .pc-cio {
-                border-top: 2.5px solid #000;
-                padding-top: 7px;
-                margin-top: 6px;
-            }
-
-            .pc-cio-title { font-size: 10.5pt; font-weight: bold; margin-bottom: 5px; }
-
-            .pc-check-row {
-                display: flex;
-                align-items: center;
-                gap: 10px;
-                font-size: 9pt;
-                margin-bottom: 4px;
-            }
-
-            .pc-check-row .pc-label { white-space: nowrap; margin-right: 4px; }
-
-            /* Signature */
-            .pc-footer { margin-top: 14px; }
-
-            .pc-sig {
-                width: 55%;
-                margin: 0 auto;
-                text-align: center;
-                border-top: 1px solid #000;
-                padding-top: 4px;
-                font-size: 9.5pt;
-                font-weight: bold;
-            }
-
-            .pc-note {
-                text-align: center;
-                font-size: 7.5pt;
-                font-style: italic;
-                margin-top: 6px;
-            }
+        @media (max-width: 600px) {
+            .kpi-grid { grid-template-columns: 1fr 1fr; }
+            .search-input { width: 100%; }
+            .table-toolbar { flex-direction: column; align-items: stretch; }
         }
     </style>
 </head>
 <body>
 
-<!-- Dashboard UI -->
-<div class="dashboard-container">
-    <div class="dashboard-header">
+<!-- TOP NAVBAR -->
+<nav class="topnav">
+    <div class="topnav-left">
+        <img src="cio-logo.jpg" alt="CIO" class="topnav-logo">
         <div>
-            <h1>🎯 CIO Request Management Dashboard</h1>
-            <p>Manage and track all service requests</p>
+            <div class="topnav-title">CIO Request Management</div>
+            <div class="topnav-subtitle">City Information Office — City Government of Bago</div>
         </div>
-        <button class="btn btn-secondary" id="logoutBtn">Logout</button>
+    </div>
+    <div class="topnav-right">
+        <div class="admin-badge">
+            <span class="admin-badge-dot"></span>
+            Admin
+        </div>
+        <button class="btn-logout" id="logoutBtn">Logout</button>
+    </div>
+</nav>
+
+<!-- PAGE BODY -->
+<div class="page-body">
+    <div class="page-heading">
+        <h1>Request Dashboard</h1>
+        <p>Monitor, manage, and respond to all incoming service requests.</p>
     </div>
 
-    <div class="toolbar">
-        <button class="btn btn-primary" onclick="loadRequests()">🔄 Refresh</button>
-        <button class="btn btn-secondary" onclick="exportRequests()">📥 Export CSV</button>
+    <!-- KPI CARDS -->
+    <div class="kpi-grid">
+        <div class="kpi-card total">
+            <div class="kpi-label">Total Requests</div>
+            <div class="kpi-value" id="kpiTotal">—</div>
+            <div class="kpi-sub">All time</div>
+        </div>
+        <div class="kpi-card pending">
+            <div class="kpi-label">Pending</div>
+            <div class="kpi-value" id="kpiPending">—</div>
+            <div class="kpi-sub">Awaiting action</div>
+        </div>
+        <div class="kpi-card progress">
+            <div class="kpi-label">In Progress</div>
+            <div class="kpi-value" id="kpiProgress">—</div>
+            <div class="kpi-sub">Contacted / Approved</div>
+        </div>
+        <div class="kpi-card completed">
+            <div class="kpi-label">Completed</div>
+            <div class="kpi-value" id="kpiCompleted">—</div>
+            <div class="kpi-sub">Finished requests</div>
+        </div>
     </div>
 
-    <div class="table-wrapper">
-        <table class="requests-table">
-            <thead>
-                <tr>
-                    <th>Control #</th>
-                    <th>Date</th>
-                    <th>Requesting Office</th>
-                    <th>Contact Person</th>
-                    <th>Phone</th>
-                    <th>Messenger</th>
-                    <th>Event</th>
-                    <th>Event Date</th>
-                    <th>Services</th>
-                    <th>Status</th>
-                    <th>Actions</th>
-                </tr>
-            </thead>
-            <tbody id="requestsTableBody">
-                <tr><td colspan="11" class="loading">Loading requests...</td></tr>
-            </tbody>
-        </table>
-    </div>
-</div>
+    <!-- TABLE CARD -->
+    <div class="table-card">
+        <div class="table-toolbar">
+            <span class="toolbar-title">All Requests</span>
+            <input type="text" class="search-input" id="searchInput" placeholder="Search by office, contact, control #...">
+            <select class="filter-select" id="statusFilter">
+                <option value="">All Statuses</option>
+                <option value="Pending">Pending</option>
+                <option value="Contacted">Contacted</option>
+                <option value="Approved">Approved</option>
+                <option value="Declined">Declined</option>
+                <option value="Completed">Completed</option>
+            </select>
+            <button class="btn-toolbar" onclick="loadRequests()">
+                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="23 4 23 10 17 10"/><polyline points="1 20 1 14 7 14"/><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"/></svg>
+                Refresh
+            </button>
+            <button class="btn-toolbar primary" onclick="exportRequests()">
+                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+                Export CSV
+            </button>
+        </div>
 
-<!-- Print Area (hidden on screen, shown on print) -->
-<div class="print-area" id="printArea">
-    <!-- Left Copy -->
-    <div class="print-copy" id="printCopy1"></div>
-    <!-- Right Copy -->
-    <div class="print-copy" id="printCopy2"></div>
+        <div style="overflow-x:auto;">
+            <table class="data-table">
+                <thead>
+                    <tr>
+                        <th>Control #</th>
+                        <th>Date</th>
+                        <th>Requesting Office</th>
+                        <th>Contact Person</th>
+                        <th>Phone</th>
+                        <th>Event</th>
+                        <th>Event Date</th>
+                        <th>Services</th>
+                        <th>Status</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody id="tableBody">
+                    <tr><td colspan="10"><div class="empty-state">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+                        <p>Loading requests...</p>
+                    </div></td></tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
@@ -337,22 +493,24 @@
     const SUPABASE_ANON_KEY = 'sb_publishable_3Kd460W0EV6xAJuJKtCIuQ_wGtxeuM2';
     const sb = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
-    let requests = [];
-    let realtimeSubscription = null;
+    let allRequests = [];
+    let realtimeSub = null;
 
-    // Check session
+    // Auth check
     if (!sessionStorage.getItem('adminLoggedIn')) {
         window.location.href = 'admin-login.html';
     }
 
-    window.addEventListener('DOMContentLoaded', function () {
+    window.addEventListener('DOMContentLoaded', () => {
         loadRequests();
-        document.getElementById('logoutBtn').addEventListener('click', function () {
-            if (confirm('Logout from admin dashboard?')) {
-                sessionStorage.removeItem('adminLoggedIn');
-                window.location.href = 'admin-login.html';
-            }
+
+        document.getElementById('logoutBtn').addEventListener('click', () => {
+            sessionStorage.removeItem('adminLoggedIn');
+            window.location.href = 'admin-login.html';
         });
+
+        document.getElementById('searchInput').addEventListener('input', renderTable);
+        document.getElementById('statusFilter').addEventListener('change', renderTable);
     });
 
     async function loadRequests() {
@@ -363,39 +521,72 @@
                 .order('created_at', { ascending: false });
 
             if (error) throw error;
-            requests = data || [];
-            displayRequests();
-            subscribeToRealtimeUpdates();
+            allRequests = data || [];
+            updateKPIs();
+            renderTable();
+            subscribeRealtime();
         } catch (err) {
-            document.getElementById('requestsTableBody').innerHTML =
-                `<tr><td colspan="11" class="no-data">Error loading requests: ${err.message}</td></tr>`;
+            document.getElementById('tableBody').innerHTML = `
+                <tr><td colspan="10"><div class="empty-state">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+                    <p>Error loading: ${err.message}</p>
+                </div></td></tr>`;
         }
     }
 
-    function displayRequests() {
-        const tbody = document.getElementById('requestsTableBody');
-        tbody.innerHTML = '';
+    function updateKPIs() {
+        document.getElementById('kpiTotal').textContent = allRequests.length;
+        document.getElementById('kpiPending').textContent = allRequests.filter(r => r.status === 'Pending').length;
+        document.getElementById('kpiProgress').textContent = allRequests.filter(r => r.status === 'Contacted' || r.status === 'Approved').length;
+        document.getElementById('kpiCompleted').textContent = allRequests.filter(r => r.status === 'Completed').length;
+    }
 
-        if (requests.length === 0) {
-            tbody.innerHTML = '<tr><td colspan="11" class="no-data">No requests yet.</td></tr>';
+    function renderTable() {
+        const search = document.getElementById('searchInput').value.toLowerCase();
+        const filter = document.getElementById('statusFilter').value;
+
+        let filtered = allRequests.filter(r => {
+            const matchSearch = !search ||
+                (r.control_number || '').toLowerCase().includes(search) ||
+                (r.requesting_office || '').toLowerCase().includes(search) ||
+                (r.contact_person || '').toLowerCase().includes(search);
+            const matchStatus = !filter || r.status === filter;
+            return matchSearch && matchStatus;
+        });
+
+        const tbody = document.getElementById('tableBody');
+
+        if (!filtered.length) {
+            tbody.innerHTML = `<tr><td colspan="10"><div class="empty-state">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77"/></svg>
+                <p>No requests found.</p>
+            </div></td></tr>`;
             return;
         }
 
-        requests.forEach(req => {
+        tbody.innerHTML = filtered.map(req => {
             const services = Array.isArray(req.services) ? req.services.join(', ') : req.services;
-            const row = document.createElement('tr');
-            row.innerHTML = `
-                <td><span class="control-number">${req.control_number}</span></td>
-                <td>${new Date(req.created_at).toLocaleDateString()}</td>
-                <td>${req.requesting_office}</td>
+            const pillClass = {
+                'Pending': 'pill-pending',
+                'Contacted': 'pill-contacted',
+                'Approved': 'pill-approved',
+                'Declined': 'pill-declined',
+                'Completed': 'pill-completed'
+            }[req.status] || 'pill-pending';
+
+            return `<tr>
+                <td><span class="control-num">${req.control_number}</span></td>
+                <td>${new Date(req.created_at).toLocaleDateString('en-PH',{month:'short',day:'numeric',year:'numeric'})}</td>
+                <td><span class="cell-primary">${req.requesting_office}</span></td>
                 <td>${req.contact_person}</td>
                 <td>${req.contact_no}</td>
-                <td>${req.messenger_name}</td>
                 <td>${req.event_activity}</td>
                 <td>${req.event_date}</td>
-                <td style="font-size:11px;max-width:160px;">${services}</td>
+                <td style="font-size:11px;max-width:160px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;" title="${services}">${services}</td>
                 <td>
-                    <select class="status-select" onchange="updateStatus('${req.id}', this.value)">
+                    <select class="status-pill status-select-pill ${pillClass}"
+                        onchange="updateStatus('${req.id}', this.value, this)"
+                        style="color:inherit;">
                         <option value="Pending"   ${req.status==='Pending'   ?'selected':''}>Pending</option>
                         <option value="Contacted" ${req.status==='Contacted' ?'selected':''}>Contacted</option>
                         <option value="Approved"  ${req.status==='Approved'  ?'selected':''}>Approved</option>
@@ -403,32 +594,46 @@
                         <option value="Completed" ${req.status==='Completed' ?'selected':''}>Completed</option>
                     </select>
                 </td>
-                <td style="white-space:nowrap;">
-                    <button class="action-btn btn-call"  onclick="callContact('${req.contact_no}')"        title="Call">📞</button>
-                    <button class="action-btn btn-msg"   onclick="openMessenger('${req.messenger_name}')"  title="Message">💬</button>
-                    <button class="action-btn btn-print" onclick="printRequest('${req.id}')"               title="Print Form">🖨️ Print</button>
-                    <button class="action-btn btn-del"   onclick="deleteRequest('${req.id}')"              title="Delete">🗑️</button>
+                <td>
+                    <div class="action-wrap">
+                        <button class="act-btn call" data-tip="Call" onclick="callContact('${req.contact_no}')">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.69 12a19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 3.6 1.3h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L7.91 8.77a16 16 0 0 0 6.29 6.29l1.83-1.83a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
+                        </button>
+                        <button class="act-btn msg" data-tip="Messenger" onclick="openMessenger('${req.messenger_name}')">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+                        </button>
+                        <button class="act-btn print" data-tip="Print Form" onclick="printRequest('${req.id}')">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 6 2 18 2 18 9"/><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><rect x="6" y="14" width="12" height="8"/></svg>
+                        </button>
+                        <button class="act-btn del" data-tip="Delete" onclick="deleteRequest('${req.id}')">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/><path d="M10 11v6"/><path d="M14 11v6"/><path d="M9 6V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"/></svg>
+                        </button>
+                    </div>
                 </td>
-            `;
-            tbody.appendChild(row);
-        });
+            </tr>`;
+        }).join('');
     }
 
-    function subscribeToRealtimeUpdates() {
-        if (realtimeSubscription) return;
-        realtimeSubscription = sb
-            .channel('requests-channel')
-            .on('postgres_changes', { event: '*', schema: 'public', table: 'requests' }, () => {
-                loadRequests();
-            })
+    function subscribeRealtime() {
+        if (realtimeSub) return;
+        realtimeSub = sb.channel('requests-ch')
+            .on('postgres_changes', { event: '*', schema: 'public', table: 'requests' }, () => loadRequests())
             .subscribe();
     }
 
-    async function updateStatus(requestId, newStatus) {
+    async function updateStatus(id, newStatus, selectEl) {
+        // Update pill color immediately
+        const pillClasses = ['pill-pending','pill-contacted','pill-approved','pill-declined','pill-completed'];
+        selectEl.classList.remove(...pillClasses);
+        const map = { Pending:'pill-pending', Contacted:'pill-contacted', Approved:'pill-approved', Declined:'pill-declined', Completed:'pill-completed' };
+        selectEl.classList.add(map[newStatus] || 'pill-pending');
+
         try {
-            const { error } = await sb.from('requests').update({ status: newStatus }).eq('id', requestId);
+            const { error } = await sb.from('requests').update({ status: newStatus }).eq('id', id);
             if (error) throw error;
-            await loadRequests();
+            const req = allRequests.find(r => r.id === id);
+            if (req) req.status = newStatus;
+            updateKPIs();
         } catch (err) {
             alert('Error updating status: ' + err.message);
         }
@@ -441,198 +646,109 @@
     function openMessenger(name) {
         const link = name.includes('facebook.com') ? name : 'https://m.me/' + name;
         const w = window.open(link, '_blank');
-        if (!w) {
-            navigator.clipboard.writeText(name);
-            alert('Messenger name copied: ' + name);
-        }
+        if (!w) { navigator.clipboard.writeText(name); alert('Copied: ' + name); }
     }
 
-    // ========================================
-    // PRINT FUNCTION - generates 2-up layout
-    // ========================================
-    function printRequest(requestId) {
-        const req = requests.find(r => r.id === requestId);
+    function printRequest(id) {
+        const req = allRequests.find(r => r.id === id);
         if (!req) return;
-
-        const html = buildPrintCopy(req);
-
-        // Populate both copies
-        document.getElementById('printCopy1').innerHTML = html;
-        document.getElementById('printCopy2').innerHTML = html;
-
-        window.print();
+        const html = buildPrintHTML(req);
+        const win = window.open('', '_blank', 'width=1000,height=700');
+        win.document.write(`<!DOCTYPE html><html><head>
+            <style>
+                @page { size: landscape; margin: 8mm; }
+                body { font-family: Arial, sans-serif; display: flex; gap: 0; }
+                .copy { flex: 1; padding: 14px; border-right: 1.5px dashed #aaa; font-size: 9.5pt; }
+                .copy:last-child { border-right: none; }
+                .hdr { display: flex; justify-content: space-between; align-items: flex-start; padding-bottom: 6px; border-bottom: 2px solid #000; margin-bottom: 6px; }
+                .hdr h1 { font-size: 13pt; font-weight: bold; line-height: 1.2; }
+                .hdr h2 { font-size: 9pt; font-weight: normal; }
+                .hdr img { width: 52px; height: 52px; object-fit: contain; }
+                .dt { text-align: right; font-size: 9pt; margin-bottom: 10px; }
+                .sec { margin-bottom: 8px; }
+                .sec-title { font-size: 10.5pt; font-weight: bold; margin-bottom: 4px; }
+                .field { display: flex; align-items: flex-end; margin-bottom: 4px; font-size: 9pt; }
+                .field-lbl { white-space: nowrap; margin-right: 4px; }
+                .field-val { flex: 1; border-bottom: 1px solid #000; min-height: 13px; padding-bottom: 1px; }
+                .inline-row { display: flex; gap: 8px; margin-bottom: 4px; }
+                .inline-row .field { flex: 1; }
+                .chk-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 3px 10px; margin-bottom: 4px; }
+                .chk-item { display: flex; align-items: center; font-size: 9pt; }
+                .box { width: 10px; height: 10px; border: 1.2px solid #000; margin-right: 5px; display: inline-flex; align-items: center; justify-content: center; font-size: 8pt; flex-shrink: 0; }
+                .cio { border-top: 2.5px solid #000; padding-top: 7px; margin-top: 6px; }
+                .cio-title { font-size: 10.5pt; font-weight: bold; margin-bottom: 5px; }
+                .chk-row { display: flex; align-items: center; gap: 8px; font-size: 9pt; margin-bottom: 4px; }
+                .sig { width: 55%; margin: 14px auto 0; text-align: center; border-top: 1px solid #000; padding-top: 4px; font-size: 9.5pt; font-weight: bold; }
+                .note { text-align: center; font-size: 7.5pt; font-style: italic; margin-top: 6px; }
+            </style></head><body>${html}${html}</body></html>`);
+        win.document.close();
+        win.focus();
+        setTimeout(() => { win.print(); win.close(); }, 500);
     }
 
-    function buildPrintCopy(req) {
+    function buildPrintHTML(req) {
         const services = Array.isArray(req.services) ? req.services : [];
-
-        const allServices = [
-            'Graphic/ Lay-out Design',
-            'Photo Coverage',
-            'Video Coverage',
-            'Video Coverage with Interview',
-            'Drone',
-            'Radio Guesting',
-            'Video Editing',
-            'Social Media Posting',
-            'Copy of Photo/Video Materials'
-        ];
-
-        const checkboxes = allServices.map(s => `
-            <div class="pc-check-item">
-                <span class="pc-box ${services.includes(s) ? 'checked' : ''}"></span>
-                ${s}
+        const all = ['Graphic/ Lay-out Design','Photo Coverage','Video Coverage','Video Coverage with Interview','Drone','Radio Guesting','Video Editing','Social Media Posting','Copy of Photo/Video Materials','Live Streaming','Press Release / Write-up','Others'];
+        const boxes = all.map(s => `<div class="chk-item"><span class="box">${services.includes(s)?'✓':''}</span>${s}</div>`).join('');
+        const hasVE = services.includes('Video Editing');
+        const hasSM = services.includes('Social Media Posting');
+        const hasCM = services.includes('Copy of Photo/Video Materials');
+        const cond = (hasVE || hasSM) ? `<div style="display:flex;gap:16px;margin-bottom:4px;font-size:9pt;">
+            <div style="flex:1;"><b>FOR VIDEO EDITING</b><div class="field"><span class="field-lbl">Due Date:</span><span class="field-val">${hasVE?req.video_editing_due_date||'':''}</span></div></div>
+            <div style="flex:1;"><b>FOR SOCIAL MEDIA POSTING</b><div class="field"><span class="field-lbl">Posting Dates:</span><span class="field-val">${hasSM?req.social_media_dates||'':''}</span></div></div>
+        </div>` : '';
+        const copy = hasCM ? `<div style="font-size:9pt;margin-bottom:4px;"><b>FOR COPY OF PHOTO/VIDEO MATERIALS</b>
+            <div class="inline-row">
+                <div class="field"><span class="field-lbl">About:</span><span class="field-val">${req.copy_about||''}</span></div>
+                <div class="field"><span class="field-lbl">Event:</span><span class="field-val">${req.copy_event||''}</span></div>
+                <div class="field"><span class="field-lbl">Date Taken:</span><span class="field-val">${req.copy_date_taken||''}</span></div>
+            </div></div>` : '';
+        return `<div class="copy">
+            <div class="hdr"><div><h1>CITY INFORMATION OFFICE</h1><h2>CITY GOVERNMENT OF BAGO</h2></div><img src="cio-logo.jpg"></div>
+            <div class="dt">DATE: <span style="border-bottom:1px solid #000;min-width:120px;display:inline-block;">${req.form_date||''}</span></div>
+            <div class="sec"><div class="sec-title">REQUEST FORM</div>
+                <div class="field"><span class="field-lbl">Requesting Office:</span><span class="field-val">${req.requesting_office}</span></div>
+                <div class="field"><span class="field-lbl">Contact Person:</span><span class="field-val">${req.contact_person}</span></div>
+                <div class="field"><span class="field-lbl">Contact No.:</span><span class="field-val">${req.contact_no}</span></div>
             </div>
-        `).join('');
-
-        const hasVideoEditing   = services.includes('Video Editing');
-        const hasSocialMedia    = services.includes('Social Media Posting');
-        const hasCopyMaterials  = services.includes('Copy of Photo/Video Materials');
-
-        const conditionalSection = (hasVideoEditing || hasSocialMedia) ? `
-            <div class="pc-conditional">
-                <div class="pc-cond-block">
-                    <div class="pc-cond-title">FOR VIDEO EDITING</div>
-                    <div class="pc-field">
-                        <span class="pc-field-label">Due Date:</span>
-                        <span class="pc-field-line">${hasVideoEditing && req.video_editing_due_date ? req.video_editing_due_date : ''}</span>
-                    </div>
-                </div>
-                <div class="pc-cond-block">
-                    <div class="pc-cond-title">FOR SOCIAL MEDIA POSTING</div>
-                    <div class="pc-field">
-                        <span class="pc-field-label">Posting Dates:</span>
-                        <span class="pc-field-line">${hasSocialMedia && req.social_media_dates ? req.social_media_dates : ''}</span>
-                    </div>
+            <div class="sec"><div class="sec-title">EVENT DETAILS</div>
+                <div class="field"><span class="field-lbl">Event/Activity:</span><span class="field-val">${req.event_activity}</span></div>
+                <div class="inline-row">
+                    <div class="field" style="flex:0 0 auto;min-width:110px;"><span class="field-lbl">Date:</span><span class="field-val">${req.event_date}</span></div>
+                    <div class="field" style="flex:0 0 auto;min-width:90px;"><span class="field-lbl">Time:</span><span class="field-val">${req.event_time}</span></div>
+                    <div class="field"><span class="field-lbl">Venue:</span><span class="field-val">${req.event_venue}</span></div>
                 </div>
             </div>
-        ` : '';
-
-        const copySection = hasCopyMaterials ? `
-            <div class="pc-copy-block">
-                <div class="pc-copy-title">FOR COPY OF PHOTO/VIDEO MATERIALS</div>
-                <div class="pc-inline-row">
-                    <div class="pc-field"><span class="pc-field-label">About:</span><span class="pc-field-line">${req.copy_about || ''}</span></div>
-                    <div class="pc-field"><span class="pc-field-label">Event:</span><span class="pc-field-line">${req.copy_event || ''}</span></div>
-                    <div class="pc-field"><span class="pc-field-label">Date Taken:</span><span class="pc-field-line">${req.copy_date_taken || ''}</span></div>
-                </div>
+            <div class="sec"><div class="sec-title">SERVICE REQUESTED</div>
+                <div class="chk-grid">${boxes}</div>${cond}${copy}
             </div>
-        ` : '';
-
-        return `
-            <!-- HEADER -->
-            <div class="pc-header">
-                <div>
-                    <h1>CITY INFORMATION OFFICE</h1>
-                    <h2>CITY GOVERNMENT OF BAGO</h2>
-                </div>
-                <img class="pc-logo" src="cio-logo.jpg" alt="CIO Logo">
+            <div class="cio"><div class="cio-title">FOR CIO USE</div>
+                <div class="chk-row"><b>Request Status:</b><span class="box"></span>Approved<span class="box"></span>Declined</div>
+                <div class="field"><span class="field-lbl">Remarks:</span><span class="field-val"></span></div>
+                <div class="chk-row" style="margin-top:5px;"><b>Progress Status:</b><span class="box"></span>Completed<span class="box"></span>Ongoing<span class="box"></span>Deferred</div>
+                <div class="field"><span class="field-lbl">Remarks:</span><span class="field-val"></span></div>
+                <div class="field"><span class="field-lbl">Assigned Personnel:</span><span class="field-val"></span></div>
             </div>
-
-            <!-- DATE -->
-            <div class="pc-date">
-                DATE: <span class="pc-date-line">${req.form_date || ''}</span>
-            </div>
-
-            <!-- REQUEST FORM -->
-            <div class="pc-section">
-                <div class="pc-section-title">REQUEST FORM</div>
-                <div class="pc-field">
-                    <span class="pc-field-label">Requesting Office:</span>
-                    <span class="pc-field-line">${req.requesting_office}</span>
-                </div>
-                <div class="pc-field">
-                    <span class="pc-field-label">Contact Person:</span>
-                    <span class="pc-field-line">${req.contact_person}</span>
-                </div>
-                <div class="pc-field">
-                    <span class="pc-field-label">Contact No.:</span>
-                    <span class="pc-field-line">${req.contact_no}</span>
-                </div>
-            </div>
-
-            <!-- EVENT DETAILS -->
-            <div class="pc-section">
-                <div class="pc-section-title">EVENT DETAILS</div>
-                <div class="pc-field">
-                    <span class="pc-field-label">Event/Activity:</span>
-                    <span class="pc-field-line">${req.event_activity}</span>
-                </div>
-                <div class="pc-inline-row">
-                    <div class="pc-field" style="flex:0 0 auto;min-width:140px;">
-                        <span class="pc-field-label">Date:</span>
-                        <span class="pc-field-line">${req.event_date}</span>
-                    </div>
-                    <div class="pc-field" style="flex:0 0 auto;min-width:120px;">
-                        <span class="pc-field-label">Time:</span>
-                        <span class="pc-field-line">${req.event_time}</span>
-                    </div>
-                    <div class="pc-field">
-                        <span class="pc-field-label">Venue:</span>
-                        <span class="pc-field-line">${req.event_venue}</span>
-                    </div>
-                </div>
-            </div>
-
-            <!-- SERVICE REQUESTED -->
-            <div class="pc-section">
-                <div class="pc-section-title">SERVICE REQUESTED</div>
-                <div class="pc-check-grid">${checkboxes}</div>
-                ${conditionalSection}
-                ${copySection}
-            </div>
-
-            <!-- FOR CIO USE -->
-            <div class="pc-cio">
-                <div class="pc-cio-title">FOR CIO USE</div>
-                <div class="pc-check-row">
-                    <span class="pc-label">Request Status:</span>
-                    <span class="pc-box"></span> Approved &nbsp;
-                    <span class="pc-box"></span> Declined
-                </div>
-                <div class="pc-field">
-                    <span class="pc-field-label">Remarks:</span>
-                    <span class="pc-field-line"></span>
-                </div>
-                <div class="pc-check-row" style="margin-top:6px;">
-                    <span class="pc-label">Progress Status:</span>
-                    <span class="pc-box"></span> Completed &nbsp;
-                    <span class="pc-box"></span> Ongoing &nbsp;
-                    <span class="pc-box"></span> Deferred
-                </div>
-                <div class="pc-field">
-                    <span class="pc-field-label">Remarks:</span>
-                    <span class="pc-field-line"></span>
-                </div>
-                <div class="pc-field">
-                    <span class="pc-field-label">Assigned Personnel:</span>
-                    <span class="pc-field-line"></span>
-                </div>
-            </div>
-
-            <!-- FOOTER -->
-            <div class="pc-footer">
-                <div class="pc-sig">CITY INFORMATION OFFICER</div>
-                <div class="pc-note">Note: Please submit requests at least 3 working days before the event, subject to CIO personnel and equipment availability.</div>
-            </div>
-        `;
+            <div class="sig">CITY INFORMATION OFFICER</div>
+            <div class="note">Note: Please submit requests at least 3 working days before the event, subject to CIO personnel and equipment availability.</div>
+        </div>`;
     }
 
-    async function deleteRequest(requestId) {
-        if (!confirm('Delete this request?')) return;
+    async function deleteRequest(id) {
+        if (!confirm('Delete this request? This cannot be undone.')) return;
         try {
-            const { error } = await sb.from('requests').delete().eq('id', requestId);
+            const { error } = await sb.from('requests').delete().eq('id', id);
             if (error) throw error;
-            await loadRequests();
-        } catch (err) {
-            alert('Error: ' + err.message);
-        }
+            allRequests = allRequests.filter(r => r.id !== id);
+            updateKPIs();
+            renderTable();
+        } catch (err) { alert('Error: ' + err.message); }
     }
 
     function exportRequests() {
-        if (!requests.length) { alert('No requests to export.'); return; }
+        if (!allRequests.length) { alert('No requests to export.'); return; }
         let csv = 'Control Number,Date,Office,Contact Person,Phone,Messenger,Event,Event Date,Services,Status\n';
-        requests.forEach(r => {
+        allRequests.forEach(r => {
             const s = Array.isArray(r.services) ? r.services.join('; ') : r.services;
             csv += `"${r.control_number}","${new Date(r.created_at).toLocaleDateString()}","${r.requesting_office}","${r.contact_person}","${r.contact_no}","${r.messenger_name}","${r.event_activity}","${r.event_date}","${s}","${r.status}"\n`;
         });
@@ -642,418 +758,5 @@
         a.click();
     }
 </script>
-</body>
-</html>
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
-        body {
-            font-family: Arial, sans-serif;
-            background: #f5f5f5;
-            padding: 20px;
-        }
-
-        .dashboard-container {
-            max-width: 1400px;
-            margin: 0 auto;
-            background: white;
-            padding: 30px;
-            border-radius: 10px;
-            box-shadow: 0 10px 40px rgba(0,0,0,0.1);
-        }
-
-        .dashboard-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 30px;
-            padding-bottom: 20px;
-            border-bottom: 3px solid #667eea;
-        }
-
-        .dashboard-header h1 {
-            color: #333;
-            font-size: 28px;
-        }
-
-        .dashboard-header p {
-            color: #666;
-            font-size: 14px;
-        }
-
-        .toolbar {
-            display: flex;
-            gap: 10px;
-            margin-bottom: 20px;
-            flex-wrap: wrap;
-        }
-
-        .btn {
-            padding: 10px 20px;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-            font-size: 14px;
-            font-weight: 600;
-            transition: all 0.3s;
-        }
-
-        .btn-primary {
-            background: #667eea;
-            color: white;
-        }
-
-        .btn-primary:hover {
-            background: #5568d3;
-        }
-
-        .btn-secondary {
-            background: #6c757d;
-            color: white;
-        }
-
-        .btn-secondary:hover {
-            background: #5a6268;
-        }
-
-        .requests-table {
-            width: 100%;
-            border-collapse: collapse;
-            margin-top: 20px;
-            overflow-x: auto;
-        }
-
-        .requests-table th {
-            background: #667eea;
-            color: white;
-            padding: 12px;
-            text-align: left;
-            font-weight: 600;
-            font-size: 13px;
-        }
-
-        .requests-table td {
-            padding: 10px;
-            border-bottom: 1px solid #ddd;
-            font-size: 13px;
-        }
-
-        .requests-table tr:hover {
-            background: #f8f9fa;
-        }
-
-        .control-number {
-            font-weight: bold;
-            color: #667eea;
-        }
-
-        .action-btn {
-            padding: 6px 12px;
-            margin: 2px;
-            border: none;
-            border-radius: 4px;
-            cursor: pointer;
-            font-size: 12px;
-            transition: all 0.3s;
-        }
-
-        .action-btn-call {
-            background: #28a745;
-            color: white;
-        }
-
-        .action-btn-messenger {
-            background: #0084ff;
-            color: white;
-        }
-
-        .action-btn-print {
-            background: #667eea;
-            color: white;
-        }
-
-        .action-btn-delete {
-            background: #dc3545;
-            color: white;
-        }
-
-        .action-btn:hover {
-            opacity: 0.8;
-            transform: translateY(-1px);
-        }
-
-        .status-select {
-            padding: 6px;
-            border: 1px solid #ddd;
-            border-radius: 4px;
-            font-size: 12px;
-        }
-
-        .loading {
-            text-align: center;
-            padding: 40px;
-            color: #666;
-        }
-
-        .no-requests {
-            text-align: center;
-            padding: 40px;
-            color: #999;
-        }
-
-        .table-wrapper {
-            overflow-x: auto;
-        }
-
-        @media print {
-            body {
-                background: white;
-            }
-            .dashboard-header,
-            .toolbar,
-            .btn {
-                display: none;
-            }
-        }
-    </style>
-</head>
-<body>
-    <div class="dashboard-container">
-        <div class="dashboard-header">
-            <div>
-                <h1>🎯 CIO Request Management Dashboard</h1>
-                <p>Manage and track all service requests</p>
-            </div>
-            <button class="btn btn-secondary" id="logoutBtn">Logout</button>
-        </div>
-
-        <div class="toolbar">
-            <button class="btn btn-primary" onclick="loadRequests()">🔄 Refresh</button>
-            <button class="btn btn-secondary" onclick="exportRequests()">📥 Export CSV</button>
-        </div>
-
-        <div class="table-wrapper">
-            <table class="requests-table">
-                <thead>
-                    <tr>
-                        <th>Control #</th>
-                        <th>Date</th>
-                        <th>Requesting Office</th>
-                        <th>Contact Person</th>
-                        <th>Phone</th>
-                        <th>Messenger</th>
-                        <th>Event</th>
-                        <th>Event Date</th>
-                        <th>Services</th>
-                        <th>Status</th>
-                        <th>Actions</th>
-                    </tr>
-                </thead>
-                <tbody id="requestsTableBody">
-                    <tr>
-                        <td colspan="11" class="loading">Loading requests...</td>
-                    </tr>
-                </tbody>
-            </table>
-        </div>
-    </div>
-
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-    <script>
-        const SUPABASE_URL = 'https://jnfkfzjhgbktovvvqbuk.supabase.co';
-        const SUPABASE_ANON_KEY = 'sb_publishable_3Kd460W0EV6xAJuJKtCIuQ_wGtxeuM2';
-        const sb = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
-        
-        let requests = [];
-        let realtimeSubscription = null;
-
-        // Check if logged in
-        if (!sessionStorage.getItem('adminLoggedIn')) {
-            window.location.href = 'admin-login.html';
-        }
-
-        // Load requests on page load
-        window.addEventListener('DOMContentLoaded', function() {
-            loadRequests();
-            
-            // Setup logout button
-            document.getElementById('logoutBtn').addEventListener('click', function() {
-                if (confirm('Logout from admin dashboard?')) {
-                    sessionStorage.removeItem('adminLoggedIn');
-                    window.location.href = 'admin-login.html';
-                }
-            });
-        });
-
-        async function loadRequests() {
-            try {
-                const { data, error } = await sb
-                    .from('requests')
-                    .select('*')
-                    .order('created_at', { ascending: false });
-
-                if (error) throw error;
-
-                requests = data || [];
-                displayRequests();
-                subscribeToRealtimeUpdates();
-            } catch (error) {
-                console.error('Error loading requests:', error);
-                const tbody = document.getElementById('requestsTableBody');
-                tbody.innerHTML = '<tr><td colspan="11" class="no-requests">Error loading requests: ' + error.message + '</td></tr>';
-            }
-        }
-
-        function displayRequests() {
-            const tbody = document.getElementById('requestsTableBody');
-            tbody.innerHTML = '';
-
-            if (requests.length === 0) {
-                tbody.innerHTML = '<tr><td colspan="11" class="no-requests">No requests yet</td></tr>';
-                return;
-            }
-
-            requests.forEach((req) => {
-                const row = document.createElement('tr');
-                const services = Array.isArray(req.services) ? req.services.join(', ') : req.services;
-                
-                row.innerHTML = `
-                    <td><span class="control-number">${req.control_number}</span></td>
-                    <td>${new Date(req.created_at).toLocaleDateString()}</td>
-                    <td>${req.requesting_office}</td>
-                    <td>${req.contact_person}</td>
-                    <td>${req.contact_no}</td>
-                    <td>${req.messenger_name}</td>
-                    <td>${req.event_activity}</td>
-                    <td>${req.event_date}</td>
-                    <td style="font-size: 11px;">${services}</td>
-                    <td>
-                        <select class="status-select" onchange="updateStatus('${req.id}', this.value)">
-                            <option value="Pending" ${req.status === 'Pending' ? 'selected' : ''}>Pending</option>
-                            <option value="Contacted" ${req.status === 'Contacted' ? 'selected' : ''}>Contacted</option>
-                            <option value="Approved" ${req.status === 'Approved' ? 'selected' : ''}>Approved</option>
-                            <option value="Declined" ${req.status === 'Declined' ? 'selected' : ''}>Declined</option>
-                            <option value="Completed" ${req.status === 'Completed' ? 'selected' : ''}>Completed</option>
-                        </select>
-                    </td>
-                    <td>
-                        <button class="action-btn action-btn-call" onclick="callContact('${req.contact_no}')" title="Call">📞</button>
-                        <button class="action-btn action-btn-messenger" onclick="openMessenger('${req.messenger_name}')" title="Messenger">💬</button>
-                        <button class="action-btn action-btn-print" onclick="viewDetails('${req.id}')" title="View Details">👁️</button>
-                        <button class="action-btn action-btn-delete" onclick="deleteRequest('${req.id}')" title="Delete">🗑️</button>
-                    </td>
-                `;
-                tbody.appendChild(row);
-            });
-        }
-
-        function subscribeToRealtimeUpdates() {
-            if (realtimeSubscription) return;
-
-            realtimeSubscription = sb
-                .channel('requests-channel')
-                .on('postgres_changes', {
-                    event: '*',
-                    schema: 'public',
-                    table: 'requests'
-                }, () => {
-                    loadRequests();
-                })
-                .subscribe();
-        }
-
-        async function updateStatus(requestId, newStatus) {
-            try {
-                const { error } = await sb
-                    .from('requests')
-                    .update({ status: newStatus })
-                    .eq('id', requestId);
-
-                if (error) throw error;
-                
-                await loadRequests();
-            } catch (error) {
-                console.error('Error updating status:', error);
-                alert('Error updating status: ' + error.message);
-            }
-        }
-
-        function callContact(phoneNumber) {
-            window.location.href = `tel:${phoneNumber}`;
-        }
-
-        function openMessenger(messengerName) {
-            const messengerLink = messengerName.includes('facebook.com') ? messengerName : `https://m.me/${messengerName}`;
-            const newWindow = window.open(messengerLink, '_blank');
-            if (!newWindow) {
-                navigator.clipboard.writeText(messengerName).then(() => {
-                    alert(`📋 Messenger name copied to clipboard:\n${messengerName}`);
-                });
-            }
-        }
-
-        function viewDetails(requestId) {
-            const req = requests.find(r => r.id === requestId);
-            if (!req) return;
-
-            const services = Array.isArray(req.services) ? req.services.join(', ') : req.services;
-            
-            alert(`📋 Request Details\n\n` +
-                  `Control #: ${req.control_number}\n` +
-                  `Office: ${req.requesting_office}\n` +
-                  `Contact: ${req.contact_person}\n` +
-                  `Phone: ${req.contact_no}\n` +
-                  `Messenger: ${req.messenger_name}\n\n` +
-                  `Event: ${req.event_activity}\n` +
-                  `Date: ${req.event_date}\n` +
-                  `Time: ${req.event_time}\n` +
-                  `Venue: ${req.event_venue}\n\n` +
-                  `Services: ${services}\n\n` +
-                  `Status: ${req.status}`);
-        }
-
-        async function deleteRequest(requestId) {
-            if (!confirm('Are you sure you want to delete this request?')) return;
-
-            try {
-                const { error } = await sb
-                    .from('requests')
-                    .delete()
-                    .eq('id', requestId);
-
-                if (error) throw error;
-
-                await loadRequests();
-                alert('✅ Request deleted successfully!');
-            } catch (error) {
-                console.error('Error deleting request:', error);
-                alert('Error deleting request: ' + error.message);
-            }
-        }
-
-        function exportRequests() {
-            if (requests.length === 0) {
-                alert('No requests to export.');
-                return;
-            }
-
-            let csv = 'Control Number,Date Submitted,Requesting Office,Contact Person,Phone,Messenger,Event,Event Date,Services,Status\n';
-            requests.forEach(req => {
-                const services = Array.isArray(req.services) ? req.services.join('; ') : req.services;
-                csv += `"${req.control_number}","${new Date(req.created_at).toLocaleDateString()}","${req.requesting_office}","${req.contact_person}","${req.contact_no}","${req.messenger_name}","${req.event_activity}","${req.event_date}","${services}","${req.status}"\n`;
-            });
-
-            const blob = new Blob([csv], { type: 'text/csv' });
-            const url = window.URL.createObjectURL(blob);
-            const a = document.createElement('a');
-            a.href = url;
-            a.download = `CIO_Requests_${new Date().toISOString().split('T')[0]}.csv`;
-            a.click();
-        }
-    </script>
 </body>
 </html>
