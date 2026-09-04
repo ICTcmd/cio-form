@@ -11,7 +11,7 @@
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <meta name="apple-mobile-web-app-title" content="CIO Portal">
-    <link rel="apple-touch-icon" href="/cio-logo.jpg">
+    <link rel="apple-touch-icon" href="/icon-192.png">
     <meta name="mobile-web-app-capable" content="yes">
     <meta name="application-name" content="CIO Portal">
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -780,38 +780,49 @@
 
     .checkbox-item {
         display: flex; align-items: center; gap: 10px;
-        padding: 10px 14px;
+        padding: 12px 14px;
         border: 1.5px solid var(--slate-200);
         border-radius: var(--radius-sm);
         cursor: pointer;
         transition: all 0.2s;
         background: var(--slate-50);
+        user-select: none;
+        -webkit-user-select: none;
+        min-height: 44px;
+        width: 100%;
     }
 
     .checkbox-item:hover {
-        border-color: var(--blue-light);
-        background: var(--blue-pale);
+        border-color: #6366f1;
+        background: #eef2ff;
     }
 
     .checkbox-item input[type="checkbox"] {
-        width: 16px; height: 16px;
-        accent-color: var(--blue);
+        width: 18px; height: 18px;
+        accent-color: #4f46e5;
         cursor: pointer;
         flex-shrink: 0;
+        pointer-events: none;
     }
 
     .checkbox-item label {
         font-size: 13px; font-weight: 500;
         color: var(--slate-700);
         cursor: pointer; margin: 0;
+        pointer-events: none;
+        line-height: 1.4;
     }
 
     .checkbox-item:has(input:checked) {
-        border-color: var(--blue);
-        background: var(--blue-pale);
+        border-color: #4f46e5;
+        background: rgba(238,242,255,0.7);
+        box-shadow: 0 1px 4px rgba(79,70,229,0.12);
     }
 
-    .checkbox-item:has(input:checked) label { color: var(--blue); font-weight: 600; }
+    .checkbox-item:has(input:checked) label {
+        color: #312e81;
+        font-weight: 600;
+    }
 
     /* Conditional Fields */
     .conditional-field {
@@ -1373,54 +1384,54 @@
                         <h3>SERVICE REQUESTED <span style="color:var(--danger);font-size:12px;font-weight:500;"> *select at least one</span></h3>
                     </div>
                     <div class="checkbox-grid">
-                        <div class="checkbox-item">
+                        <label class="checkbox-item">
                             <input type="checkbox" id="graphicDesign" value="Graphic/ Lay-out Design">
-                            <label for="graphicDesign">Graphic / Lay-out Design</label>
-                        </div>
-                        <div class="checkbox-item">
+                            <span>Graphic / Lay-out Design</span>
+                        </label>
+                        <label class="checkbox-item">
                             <input type="checkbox" id="radioGuesting" value="Radio Guesting">
-                            <label for="radioGuesting">Radio Guesting</label>
-                        </div>
-                        <div class="checkbox-item">
+                            <span>Radio Guesting</span>
+                        </label>
+                        <label class="checkbox-item">
                             <input type="checkbox" id="photoCoverage" value="Photo Coverage">
-                            <label for="photoCoverage">Photo Coverage</label>
-                        </div>
-                        <div class="checkbox-item">
+                            <span>Photo Coverage</span>
+                        </label>
+                        <label class="checkbox-item">
                             <input type="checkbox" id="videoEditing" value="Video Editing">
-                            <label for="videoEditing">Video Editing</label>
-                        </div>
-                        <div class="checkbox-item">
+                            <span>Video Editing</span>
+                        </label>
+                        <label class="checkbox-item">
                             <input type="checkbox" id="videoCoverage" value="Video Coverage">
-                            <label for="videoCoverage">Video Coverage</label>
-                        </div>
-                        <div class="checkbox-item">
+                            <span>Video Coverage</span>
+                        </label>
+                        <label class="checkbox-item">
                             <input type="checkbox" id="socialMediaPosting" value="Social Media Posting">
-                            <label for="socialMediaPosting">Social Media Posting</label>
-                        </div>
-                        <div class="checkbox-item">
+                            <span>Social Media Posting</span>
+                        </label>
+                        <label class="checkbox-item">
                             <input type="checkbox" id="videoCoverageInterview" value="Video Coverage with Interview">
-                            <label for="videoCoverageInterview">Video Coverage with Interview</label>
-                        </div>
-                        <div class="checkbox-item">
+                            <span>Video Coverage with Interview</span>
+                        </label>
+                        <label class="checkbox-item">
                             <input type="checkbox" id="copyMaterials" value="Copy of Photo/Video Materials">
-                            <label for="copyMaterials">Copy of Photo/Video Materials</label>
-                        </div>
-                        <div class="checkbox-item">
+                            <span>Copy of Photo/Video Materials</span>
+                        </label>
+                        <label class="checkbox-item">
                             <input type="checkbox" id="drone" value="Drone">
-                            <label for="drone">Drone</label>
-                        </div>
-                        <div class="checkbox-item">
+                            <span>Drone</span>
+                        </label>
+                        <label class="checkbox-item">
                             <input type="checkbox" id="liveStreaming" value="Live Streaming">
-                            <label for="liveStreaming">Live Streaming</label>
-                        </div>
-                        <div class="checkbox-item">
+                            <span>Live Streaming</span>
+                        </label>
+                        <label class="checkbox-item">
                             <input type="checkbox" id="pressRelease" value="Press Release / Write-up">
-                            <label for="pressRelease">Press Release / Write-up</label>
-                        </div>
-                        <div class="checkbox-item" style="grid-column: 1 / -1;">
+                            <span>Press Release / Write-up</span>
+                        </label>
+                        <label class="checkbox-item" style="grid-column: 1 / -1;" onclick="document.getElementById('othersSpecify').focus()">
                             <input type="checkbox" id="others" value="Others">
-                            <label for="others">Others — please specify:</label>
-                        </div>
+                            <span>Others — please specify:</span>
+                        </label>
                     </div>
 
                     <!-- Others specify field -->
@@ -1943,6 +1954,7 @@
 </script>
 </body>
 </html>
+
 
 
 
