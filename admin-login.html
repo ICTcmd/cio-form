@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Admin Login — CIO Request System</title>
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
 
@@ -181,9 +182,16 @@
 
         <form id="loginForm">
             <div class="form-group">
-                <label for="password">Admin Password</label>
+                <label for="email">Email Address</label>
                 <div class="input-wrap">
-                    <input type="password" id="password" placeholder="Enter your password" autofocus required>
+                    <input type="email" id="email" placeholder="your@email.com" autofocus required
+                        style="padding: 11px 14px;">
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="password">Password</label>
+                <div class="input-wrap">
+                    <input type="password" id="password" placeholder="Enter your password" required>
                     <button type="button" class="eye-toggle" id="eyeToggle" onclick="togglePassword()">
                         <svg id="eyeIcon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                             <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/>
@@ -193,15 +201,31 @@
                 </div>
             </div>
 
-            <button type="submit" class="btn-login">Login</button>
+            <button type="submit" class="btn-login" id="loginBtn">Login</button>
         </form>
 
         <button class="back-link" onclick="window.location.href='index.html'">Back to public form</button>
     </div>
 
     <script>
-        const ADMIN_PASSWORD = 'CIOBago2026';
+        const SUPABASE_URL = 'https://jnfkfzjhgbktovvvqbuk.supabase.co';
+        const SUPABASE_ANON_KEY = 'sb_publishable_3Kd460W0EV6xAJuJKtCIuQ_wGtxeuM2';
+        const sb = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
         let passwordVisible = false;
+
+        // If already logged in, redirect to dashboard
+        window.addEventListener('DOMContentLoaded', async () => {
+            const { data: { session } } = await sb.auth.getSession();
+            if (session) window.location.href = 'admin-dashboard.html';
+
+            // Show timeout message if redirected due to inactivity
+            if (window.location.search.includes('reason=timeout')) {
+                const errorBox = document.getElementById('errorBox');
+                errorBox.textContent = 'Session expired due to inactivity. Please log in again.';
+                errorBox.classList.add('show');
+            }
+        });
 
         function togglePassword() {
             passwordVisible = !passwordVisible;
@@ -213,20 +237,39 @@
                 : '<path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/>';
         }
 
-        document.getElementById('loginForm').addEventListener('submit', function (e) {
+        document.getElementById('loginForm').addEventListener('submit', async function (e) {
             e.preventDefault();
+            const email = document.getElementById('email').value.trim();
             const password = document.getElementById('password').value;
             const errorBox = document.getElementById('errorBox');
+            const btn = document.getElementById('loginBtn');
 
-            if (password === ADMIN_PASSWORD) {
-                sessionStorage.setItem('adminLoggedIn', 'true');
-                window.location.href = 'admin-dashboard.html';
-            } else {
+            btn.textContent = 'Signing in...';
+            btn.disabled = true;
+
+            const { data, error } = await sb.auth.signInWithPassword({ email, password });
+
+            if (error) {
+                errorBox.textContent = 'Invalid email or password. Please try again.';
                 errorBox.classList.add('show');
-                document.getElementById('password').value = '';
-                document.getElementById('password').focus();
                 setTimeout(() => errorBox.classList.remove('show'), 3500);
+                btn.textContent = 'Login';
+                btn.disabled = false;
+                return;
             }
+
+            // Check if user has admin or superadmin role
+            const role = data.user?.app_metadata?.role;
+            if (role !== 'admin' && role !== 'superadmin') {
+                await sb.auth.signOut();
+                errorBox.textContent = 'Access denied. You do not have admin privileges.';
+                errorBox.classList.add('show');
+                btn.textContent = 'Login';
+                btn.disabled = false;
+                return;
+            }
+
+            window.location.href = 'admin-dashboard.html';
         });
     </script>
 </body>

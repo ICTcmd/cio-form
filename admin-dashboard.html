@@ -6,6 +6,8 @@
     <title>Admin Dashboard — CIO Request System</title>
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <style>
+        :root { --del-btn-display: flex; }
+
         * { margin: 0; padding: 0; box-sizing: border-box; }
 
         body {
@@ -372,7 +374,43 @@
 
         .empty-state p { font-size: 14px; }
 
-        /* ---- RESPONSIVE ---- */
+        .act-btn.del { display: var(--del-btn-display); }
+
+        .role-pill {
+            padding: 2px 8px;
+            border-radius: 100px;
+            font-size: 10px;
+            font-weight: 700;
+            letter-spacing: 0.3px;
+        }
+
+        .role-superadmin { background: #ede9fe; color: #6d28d9; }
+        .role-admin { background: #dbeafe; color: #1d4ed8; }
+
+        /* Toast */
+        .toast {
+            position: fixed;
+            bottom: 24px; right: 24px;
+            padding: 14px 20px;
+            border-radius: 10px;
+            font-size: 14px; font-weight: 600;
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            color: white;
+            z-index: 9999;
+            display: none;
+            box-shadow: 0 8px 24px rgba(0,0,0,0.15);
+            max-width: 360px;
+        }
+
+        .toast.show { display: block; animation: slideUp 0.3s ease; }
+        .toast-success { background: #059669; }
+        .toast-error   { background: #dc2626; }
+        .toast-info    { background: #2563eb; }
+
+        @keyframes slideUp {
+            from { transform: translateY(10px); opacity: 0; }
+            to   { transform: translateY(0); opacity: 1; }
+        }
         @media (max-width: 900px) {
             .kpi-grid { grid-template-columns: 1fr 1fr; }
             .page-body { padding: 20px 16px; }
@@ -388,6 +426,9 @@
 </head>
 <body>
 
+<!-- TOAST -->
+<div class="toast" id="toast"></div>
+
 <!-- TOP NAVBAR -->
 <nav class="topnav">
     <div class="topnav-left">
@@ -398,9 +439,9 @@
         </div>
     </div>
     <div class="topnav-right">
-        <div class="admin-badge">
+        <div class="admin-badge" id="adminBadge">
             <span class="admin-badge-dot"></span>
-            Admin
+            <span>Admin</span>
         </div>
         <button class="btn-logout" id="logoutBtn">Logout</button>
     </div>
@@ -495,23 +536,67 @@
 
     let allRequests = [];
     let realtimeSub = null;
+    let currentUserRole = null;
+    let inactivityTimer = null;
 
-    // Auth check
-    if (!sessionStorage.getItem('adminLoggedIn')) {
-        window.location.href = 'admin-login.html';
-    }
+    // ---- AUTH CHECK ----
+    window.addEventListener('DOMContentLoaded', async () => {
+        const { data: { session } } = await sb.auth.getSession();
+        if (!session) {
+            window.location.href = 'admin-login.html';
+            return;
+        }
 
-    window.addEventListener('DOMContentLoaded', () => {
-        loadRequests();
+        // Get role from app_metadata
+        currentUserRole = session.user?.app_metadata?.role || 'admin';
+        const userEmail = session.user?.email || 'Admin';
 
-        document.getElementById('logoutBtn').addEventListener('click', () => {
-            sessionStorage.removeItem('adminLoggedIn');
+        // Update header badge
+        const badge = document.getElementById('adminBadge');
+        badge.innerHTML = `<span class="admin-badge-dot"></span>
+            <span>${userEmail.split('@')[0]}</span>
+            <span class="role-pill ${currentUserRole === 'superadmin' ? 'role-superadmin' : 'role-admin'}">
+                ${currentUserRole === 'superadmin' ? 'Superadmin' : 'Admin'}
+            </span>`;
+
+        // Hide delete buttons if not superadmin
+        if (currentUserRole !== 'superadmin') {
+            document.documentElement.style.setProperty('--del-btn-display', 'none');
+        }
+
+        // Logout button
+        document.getElementById('logoutBtn').addEventListener('click', async () => {
+            await sb.auth.signOut();
             window.location.href = 'admin-login.html';
         });
 
+        // Search & filter listeners
         document.getElementById('searchInput').addEventListener('input', renderTable);
         document.getElementById('statusFilter').addEventListener('change', renderTable);
+
+        // Start inactivity timer (15 min)
+        resetInactivityTimer();
+        ['mousemove','keydown','click','scroll'].forEach(e => {
+            document.addEventListener(e, resetInactivityTimer);
+        });
+
+        loadRequests();
     });
+
+    function resetInactivityTimer() {
+        clearTimeout(inactivityTimer);
+        inactivityTimer = setTimeout(async () => {
+            await sb.auth.signOut();
+            window.location.href = 'admin-login.html?reason=timeout';
+        }, 15 * 60 * 1000); // 15 minutes
+    }
+
+    function showToast(msg, type = 'info') {
+        const t = document.getElementById('toast');
+        t.textContent = msg;
+        t.className = 'toast toast-' + type + ' show';
+        setTimeout(() => t.className = 'toast', 3500);
+    }
 
     async function loadRequests() {
         try {
@@ -780,6 +865,10 @@
     }
 
     async function deleteRequest(id) {
+        if (currentUserRole !== 'superadmin') {
+            showToast('Access Denied: Only Superadmins can delete records.', 'error');
+            return;
+        }
         if (!confirm('Delete this request? This cannot be undone.')) return;
         try {
             const { error } = await sb.from('requests').delete().eq('id', id);
@@ -787,7 +876,8 @@
             allRequests = allRequests.filter(r => r.id !== id);
             updateKPIs();
             renderTable();
-        } catch (err) { alert('Error: ' + err.message); }
+            showToast('Request deleted successfully.', 'success');
+        } catch (err) { showToast('Error: ' + err.message, 'error'); }
     }
 
     function exportRequests() {
