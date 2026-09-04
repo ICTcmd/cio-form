@@ -859,8 +859,150 @@
         line-height: 1.6;
     }
 
-    /* Acknowledge */
-    .acknowledge-wrap {
+    /* Privacy Consent */
+    .privacy-consent-wrap {
+        display: flex; align-items: flex-start; gap: 12px;
+        background: #fefce8;
+        border: 1.5px solid #fde047;
+        border-radius: var(--radius-md);
+        padding: 16px 18px;
+        margin-top: 14px;
+    }
+
+    .privacy-consent-wrap input[type="checkbox"] {
+        width: 18px; height: 18px;
+        accent-color: #4f46e5;
+        margin-top: 2px; flex-shrink: 0; cursor: pointer;
+    }
+
+    .privacy-consent-wrap label {
+        font-size: 13px; font-weight: 500;
+        color: #713f12; cursor: pointer; line-height: 1.6;
+    }
+
+    .privacy-consent-wrap:has(input:checked) {
+        background: #f0fdf4;
+        border-color: #86efac;
+    }
+
+    .privacy-consent-wrap:has(input:checked) label { color: #14532d; }
+
+    .privacy-link {
+        background: none; border: none; cursor: pointer;
+        color: #4f46e5; font-size: 12px; font-weight: 600;
+        text-decoration: underline; padding: 0;
+        font-family: 'Plus Jakarta Sans', sans-serif;
+        display: inline; margin-top: 4px;
+        -webkit-tap-highlight-color: transparent;
+    }
+
+    .privacy-link:hover { color: #3730a3; }
+
+    /* Privacy Modal */
+    .privacy-modal-overlay {
+        position: fixed; inset: 0;
+        background: rgba(15,23,42,0.65);
+        backdrop-filter: blur(4px);
+        -webkit-backdrop-filter: blur(4px);
+        z-index: 2000; display: none;
+        align-items: center; justify-content: center;
+        padding: 20px;
+    }
+
+    .privacy-modal-overlay.open { display: flex; }
+
+    .privacy-modal {
+        background: white;
+        border-radius: 20px;
+        width: 100%; max-width: 640px;
+        box-shadow: 0 25px 60px rgba(0,0,0,0.3);
+        display: flex; flex-direction: column;
+        max-height: 90vh;
+        overflow: hidden;
+    }
+
+    .privacy-modal-header {
+        padding: 24px 28px 16px;
+        border-bottom: 1px solid #e2e8f0;
+        flex-shrink: 0;
+    }
+
+    .privacy-modal-header h2 {
+        font-size: 16px; font-weight: 800;
+        color: #0f172a; margin-bottom: 4px;
+    }
+
+    .privacy-modal-header p {
+        font-size: 12px; color: #64748b;
+    }
+
+    .privacy-modal-badge {
+        display: inline-flex; align-items: center; gap: 6px;
+        background: #dbeafe; color: #1e40af;
+        border-radius: 100px; padding: 3px 10px;
+        font-size: 11px; font-weight: 700;
+        margin-bottom: 10px;
+    }
+
+    .privacy-modal-body {
+        padding: 20px 28px;
+        overflow-y: auto;
+        flex: 1;
+        font-size: 13px; color: #334155;
+        line-height: 1.75;
+    }
+
+    .privacy-modal-body h3 {
+        font-size: 12px; font-weight: 800;
+        color: #0f172a; text-transform: uppercase;
+        letter-spacing: 0.5px; margin: 18px 0 6px;
+        padding-bottom: 4px;
+        border-bottom: 1px solid #f1f5f9;
+    }
+
+    .privacy-modal-body h3:first-child { margin-top: 0; }
+
+    .privacy-modal-body p { margin-bottom: 8px; }
+
+    .privacy-modal-body ul {
+        margin: 6px 0 10px 16px;
+    }
+
+    .privacy-modal-body ul li { margin-bottom: 4px; }
+
+    .privacy-modal-footer {
+        padding: 16px 28px;
+        border-top: 1px solid #e2e8f0;
+        display: flex; gap: 10px;
+        justify-content: flex-end;
+        flex-shrink: 0;
+        flex-wrap: wrap;
+    }
+
+    .btn-privacy-download {
+        padding: 10px 18px; min-height: 44px;
+        border: 1.5px solid #e2e8f0; border-radius: 9px;
+        font-size: 13px; font-weight: 600; color: #334155;
+        background: #f8fafc; cursor: pointer;
+        font-family: 'Plus Jakarta Sans', sans-serif;
+        text-decoration: none; display: inline-flex;
+        align-items: center; gap: 6px;
+        transition: all 0.2s;
+    }
+
+    .btn-privacy-download:hover { background: #f1f5f9; }
+
+    .btn-privacy-accept {
+        padding: 10px 22px; min-height: 44px;
+        background: #4f46e5; color: white;
+        border: none; border-radius: 9px;
+        font-size: 13px; font-weight: 700;
+        cursor: pointer;
+        font-family: 'Plus Jakarta Sans', sans-serif;
+        transition: all 0.2s;
+    }
+
+    .btn-privacy-accept:hover { background: #4338ca; }
         display: flex; align-items: flex-start; gap: 12px;
         background: var(--slate-50);
         border: 1.5px solid var(--slate-200);
@@ -1529,6 +1671,18 @@
                     <label for="acknowledgeNote">I have read and understood that requests must be submitted at least <strong>3 working days</strong> before the event and are subject to CIO personnel and equipment availability.</label>
                 </div>
 
+                <!-- DATA PRIVACY CONSENT -->
+                <div class="privacy-consent-wrap">
+                    <input type="checkbox" id="privacyConsent" onchange="toggleSubmitButton()">
+                    <div>
+                        <label for="privacyConsent">
+                            I hereby authorize the City Information Office (CIO) of Bago City to collect and process the personal information provided in this form solely for processing my service request, in compliance with <strong>RA 10173 (Data Privacy Act of 2012)</strong>.
+                        </label>
+                        <br>
+                        <button type="button" class="privacy-link" onclick="openPrivacyModal()">Read Full Data Privacy Statement →</button>
+                    </div>
+                </div>
+
                 <div class="form-actions">
                     <button type="button" class="btn-form-reset" onclick="resetForm()">Reset</button>
                     <button type="button" class="btn-form-print" id="printButton" disabled onclick="printForm()">Print Form</button>
@@ -1540,6 +1694,74 @@
         </div>
     </div>
 </section>
+
+<!-- PRIVACY MODAL -->
+<div class="privacy-modal-overlay no-print" id="privacyModal">
+    <div class="privacy-modal">
+        <div class="privacy-modal-header">
+            <div class="privacy-modal-badge">📋 RA 10173 — Data Privacy Act of 2012</div>
+            <h2>Data Privacy Notice & Consent Policy</h2>
+            <p>City Information Office (CIO) — City Government of Bago</p>
+        </div>
+        <div class="privacy-modal-body">
+            <h3>1. Introduction</h3>
+            <p>The City Government of Bago — City Information Office (CIO) is committed to protecting your personal data in accordance with Republic Act No. 10173, otherwise known as the <strong>Data Privacy Act of 2012 (DPA)</strong>, its Implementing Rules and Regulations (IRR), and issuances of the National Privacy Commission (NPC).</p>
+
+            <h3>2. Personal Data Collected</h3>
+            <p>When you submit an official service request through this portal, we collect the following personal and organizational information:</p>
+            <ul>
+                <li>Requesting Office / Department Name</li>
+                <li>Full Name of Contact Person</li>
+                <li>Official Phone / Viber Number</li>
+                <li>Social Media / Messenger Profile Details</li>
+                <li>Event Details (Activity Name, Date, Time, Location)</li>
+                <li>Requested Services &amp; Additional Remarks</li>
+            </ul>
+
+            <h3>3. Purpose of Data Processing</h3>
+            <p>Your personal information is collected strictly for official municipal administrative functions, specifically:</p>
+            <ul>
+                <li>Evaluating, scheduling, and processing your service request.</li>
+                <li>Contacting you for project coordination, clarification, or site deployment.</li>
+                <li>Logging official event documentations in internal LGU system audit logs.</li>
+            </ul>
+
+            <h3>4. Data Protection & Security Measures</h3>
+            <p>We implement enterprise-grade technical, physical, and administrative security measures to prevent unauthorized access, collection, use, disclosure, or modification of your data:</p>
+            <ul>
+                <li>Database records are secured using database-level Row Level Security (RLS) and encrypted connections (HTTPS/SSL).</li>
+                <li>Access to request details is strictly restricted to authorized CIO administrative personnel.</li>
+            </ul>
+
+            <h3>5. Data Retention & Disposal</h3>
+            <p>Your personal data will be retained only as long as necessary to fulfill the purpose for which it was collected or to satisfy statutory legal and municipal record requirements. Upon expiration of the retention period, digital records will be securely archived or anonymized in accordance with national archival standards.</p>
+
+            <h3>6. Rights of the Data Subject</h3>
+            <p>Under the Data Privacy Act of 2012, you have the following rights regarding your personal information:</p>
+            <ul>
+                <li>The right to be informed about how your data is processed.</li>
+                <li>The right to reasonable access to your personal data held by the CIO.</li>
+                <li>The right to dispute and request correction of inaccurate data.</li>
+                <li>The right to request the suspension or removal of your personal data from our active processing systems.</li>
+            </ul>
+
+            <h3>7. Contact Information</h3>
+            <p>For inquiries or concerns regarding the processing of your personal data, contact:</p>
+            <ul>
+                <li><strong>Office:</strong> City Information Office (CIO) — Bago City Hall</li>
+                <li><strong>Address:</strong> Bago City, Western Visayas, Philippines</li>
+            </ul>
+        </div>
+        <div class="privacy-modal-footer">
+            <a href="/docs/Bago_CIO_Data_Privacy_Policy.pdf" download class="btn-privacy-download">
+                📄 Download PDF Copy
+            </a>
+            <button type="button" class="btn-privacy-accept" onclick="acceptPrivacy()">
+                I Accept &amp; Understand
+            </button>
+        </div>
+    </div>
+</div>
 
 <!-- ============================================================
      FOOTER
@@ -1596,8 +1818,38 @@
 
     // ---- Acknowledge checkbox ----
     document.getElementById('acknowledgeNote').addEventListener('change', function () {
-        document.getElementById('submitButton').disabled = !this.checked;
-        document.getElementById('printButton').disabled  = !this.checked;
+        toggleSubmitButton();
+    });
+
+    function toggleSubmitButton() {
+        const acknowledged = document.getElementById('acknowledgeNote').checked;
+        const privacyConsent = document.getElementById('privacyConsent').checked;
+        const submitBtn = document.getElementById('submitButton');
+        const printBtn = document.getElementById('printButton');
+        const enabled = acknowledged && privacyConsent;
+        submitBtn.disabled = !enabled;
+        printBtn.disabled  = !enabled;
+    }
+
+    function openPrivacyModal() {
+        document.getElementById('privacyModal').classList.add('open');
+        document.body.style.overflow = 'hidden';
+    }
+
+    function closePrivacyModal() {
+        document.getElementById('privacyModal').classList.remove('open');
+        document.body.style.overflow = '';
+    }
+
+    function acceptPrivacy() {
+        document.getElementById('privacyConsent').checked = true;
+        toggleSubmitButton();
+        closePrivacyModal();
+    }
+
+    // Close modal on backdrop click
+    document.getElementById('privacyModal').addEventListener('click', function(e) {
+        if (e.target === this) closePrivacyModal();
     });
 
     // ---- Toast ----
@@ -1834,6 +2086,7 @@
         document.getElementById('requestForm').reset();
         document.getElementById('formDate').value = new Date().toISOString().split('T')[0];
         document.getElementById('acknowledgeNote').checked = false;
+        document.getElementById('privacyConsent').checked = false;
         document.getElementById('submitButton').disabled = true;
         document.getElementById('printButton').disabled  = true;
         document.querySelectorAll('.conditional-field').forEach(f => f.classList.remove('active'));
