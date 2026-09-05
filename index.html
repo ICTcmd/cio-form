@@ -1124,23 +1124,23 @@
     .footer {
         background: var(--navy);
         color: rgba(255,255,255,0.4);
-        padding: 28px 40px calc(28px + env(safe-area-inset-bottom));
-        font-size: 13px;
+        padding: 16px 24px calc(16px + env(safe-area-inset-bottom));
+        font-size: 12px;
         border-top: 1px solid rgba(255,255,255,0.06);
     }
 
     .footer-inner {
-        max-width: 1200px;
+        max-width: 1280px;
         margin: 0 auto;
         display: flex;
+        flex-direction: row;
         align-items: center;
         justify-content: space-between;
         gap: 16px;
-        flex-wrap: wrap;
     }
 
     .footer-bago-logo {
-        height: 40px;
+        height: 36px;
         width: auto;
         object-fit: contain;
         opacity: 0.85;
@@ -1148,21 +1148,22 @@
     }
 
     .footer-cio-logo {
-        height: 40px;
+        height: 36px;
         width: auto;
         object-fit: contain;
         background: white;
-        padding: 3px 7px;
-        border-radius: 6px;
+        padding: 2px 6px;
+        border-radius: 5px;
         opacity: 0.9;
         flex-shrink: 0;
     }
 
     .footer-text {
         text-align: center;
-        font-size: 12px;
-        line-height: 1.7;
+        font-size: 11px;
+        line-height: 1.55;
         color: rgba(255,255,255,0.45);
+    }
     }
 
     .footer strong { color: rgba(255,255,255,0.75); }
@@ -1306,8 +1307,8 @@
         .services-grid { grid-template-columns: 1fr 1fr; }
         .hero-chips { gap: 8px; }
 
-        .footer-inner { flex-direction: column; align-items: center; gap: 12px; }
-        .footer { padding: 20px 16px calc(20px + env(safe-area-inset-bottom)); }
+        .footer-inner { flex-direction: column; align-items: center; gap: 8px; }
+        .footer { padding: 14px 16px calc(14px + env(safe-area-inset-bottom)); }
         .form-section-wrapper { padding: 32px 12px 60px; }
     }
 
@@ -1825,9 +1826,9 @@
 
         <!-- CENTER: Text -->
         <div class="footer-text">
-            <strong>City Information Office</strong><br>
+            <strong style="font-size:12px;color:rgba(255,255,255,0.75);">City Information Office</strong><br>
             <span style="white-space:nowrap;">City Government of Bago</span><br>
-            <span style="font-size:11px;opacity:0.6;">© 2026 All rights reserved</span>
+            <span style="font-size:10px;opacity:0.55;">© 2026 All rights reserved</span>
         </div>
 
         <!-- RIGHT: CIO Logo -->
