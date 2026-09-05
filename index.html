@@ -77,11 +77,11 @@
         top: 0; left: 0; right: 0;
         z-index: 1000;
         width: 100%;
-        background: #0d111a;
+        background: rgba(13,17,26,0.97);
         border-bottom: 1px solid #1e293b;
         backdrop-filter: blur(16px);
         -webkit-backdrop-filter: blur(16px);
-        height: 72px;
+        min-height: 64px;
         display: flex;
         align-items: center;
         padding-top: env(safe-area-inset-top);
@@ -89,30 +89,15 @@
 
     .navbar-inner {
         width: 100%;
-        padding: 0 40px;
+        padding: 10px 40px;
         display: flex;
         align-items: center;
         justify-content: space-between;
-    }
-
-    .nav-brand {
-        display: flex;
-        align-items: center;
-        gap: 12px;
-        text-decoration: none;
-        flex-shrink: 0;
-    }
-
-    .nav-links {
-        display: flex;
-        align-items: center;
-        gap: 4px;
-        list-style: none;
-        margin-left: auto;
+        gap: 8px;
     }
 
     .nav-emblem {
-        height: 48px;
+        height: 40px;
         width: auto;
         border-radius: 6px;
         overflow: hidden;
@@ -129,21 +114,24 @@
     }
 
     .nav-emblem-bago {
-        height: 52px;
+        height: 42px;
         width: auto;
+        max-width: 42px;
         flex-shrink: 0;
+        object-fit: contain;
     }
 
     .nav-emblem-bago img {
         height: 100%;
         width: auto;
+        max-width: 42px;
         display: block;
         object-fit: contain;
     }
 
     .nav-divider {
         width: 1px;
-        height: 36px;
+        height: 28px;
         background: rgba(255,255,255,0.15);
         flex-shrink: 0;
     }
@@ -152,17 +140,19 @@
 
     .nav-brand-text span:first-child {
         display: block;
-        font-size: 14px; font-weight: 800;
+        font-size: 13px; font-weight: 800;
         color: white;
         letter-spacing: 0.4px;
         text-transform: uppercase;
+        white-space: nowrap;
     }
 
     .nav-brand-text span:last-child {
         display: block;
-        font-size: 11px; font-weight: 500;
-        color: rgba(255,255,255,0.6);
+        font-size: 10px; font-weight: 500;
+        color: #a5b4fc;
         letter-spacing: 0.2px;
+        white-space: nowrap;
     }
 
     .nav-links a {
@@ -1103,8 +1093,9 @@
     .footer {
         background: var(--navy);
         color: rgba(255,255,255,0.4);
-        padding: 32px 40px;
+        padding: 28px 40px calc(28px + env(safe-area-inset-bottom));
         font-size: 13px;
+        border-top: 1px solid rgba(255,255,255,0.06);
     }
 
     .footer-inner {
@@ -1114,10 +1105,11 @@
         align-items: center;
         justify-content: center;
         gap: 14px;
+        flex-wrap: wrap;
     }
 
     .footer-bago-logo {
-        height: 48px;
+        height: 44px;
         width: auto;
         object-fit: contain;
         opacity: 0.85;
@@ -1125,7 +1117,7 @@
     }
 
     .footer-cio-logo {
-        height: 36px;
+        height: 32px;
         width: auto;
         object-fit: contain;
         background: white;
@@ -1137,9 +1129,12 @@
 
     .footer-text {
         text-align: center;
+        font-size: 12px;
+        line-height: 1.7;
+        color: rgba(255,255,255,0.45);
     }
 
-    .footer strong { color: rgba(255,255,255,0.7); }
+    .footer strong { color: rgba(255,255,255,0.75); }
 
     /* ============================================
        PRINT STYLES
@@ -1256,19 +1251,37 @@
     ============================================ */
     @media (max-width: 768px) {
         .nav-links { display: none; }
+        .navbar-inner { padding: 10px 16px; gap: 6px; }
+        .nav-emblem-bago { height: 36px; max-width: 36px; }
+        .nav-emblem { height: 34px; }
+        .nav-divider { height: 22px; }
+        .nav-brand-text span:first-child { font-size: 11px; }
+        .nav-brand-text span:last-child { font-size: 9px; }
+
+        .hero { padding-top: 60px; }
+        .hero-inner { padding: 40px 16px 60px; }
+        .hero-glass-card { padding: 28px 20px; border-radius: 16px; }
+
         .form-row-3 { grid-template-columns: 1fr; }
         .checkbox-grid { grid-template-columns: 1fr; }
-        .form-card-body { padding: 24px; }
-        .form-card-header { padding: 24px; }
+        .form-card-body { padding: 20px 16px; }
+        .form-card-header { padding: 20px 16px; }
         .form-actions { justify-content: stretch; }
         .btn-form-submit, .btn-form-print, .btn-form-reset { width: 100%; justify-content: center; }
         .services-grid { grid-template-columns: 1fr 1fr; }
-        .tracker-input-row { flex-direction: column; }
         .hero-chips { gap: 8px; }
+
+        .footer-inner { flex-direction: column; gap: 10px; }
+        .footer { padding: 24px 16px calc(24px + env(safe-area-inset-bottom)); }
     }
 
     @media (max-width: 480px) {
         .services-grid { grid-template-columns: 1fr; }
+        .nav-brand-text span:first-child { font-size: 10px; }
+        .form-card-header { flex-direction: column; align-items: flex-start; gap: 12px; }
+        .form-header-logo { width: 48px; height: 48px; }
+        .hero-glass-card { padding: 24px 16px; }
+        .hero h1 { font-size: 26px; }
     }
     </style>
 </head>
@@ -1768,11 +1781,15 @@
 ============================================================ -->
 <footer class="footer no-print">
     <div class="footer-inner">
-        <img src="bago-city-logo.png" alt="Bago City" class="footer-bago-logo">
-        <div class="footer-text">
-            <strong>City Information Office</strong> — City Government of Bago &nbsp;|&nbsp; All rights reserved &copy; 2026
+        <div style="display:flex;align-items:center;gap:10px;flex-shrink:0;">
+            <img src="bago-city-logo.png" alt="Bago City" class="footer-bago-logo">
+            <img src="cio-logo.jpg" alt="CIO" class="footer-cio-logo">
         </div>
-        <img src="cio-logo.jpg" alt="CIO" class="footer-cio-logo">
+        <div class="footer-text">
+            <strong>City Information Office</strong><br>
+            <span style="white-space:nowrap;">City Government of Bago</span><br>
+            <span style="font-size:11px;opacity:0.6;">© 2026 All rights reserved</span>
+        </div>
     </div>
 </footer>
 
