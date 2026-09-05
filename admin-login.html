@@ -218,7 +218,7 @@
             <button type="submit" class="btn-login" id="loginBtn">Login</button>
         </form>
 
-        <button class="back-link" onclick="window.location.href='index.html'">Back to public form</button>
+        <button class="back-link" onclick="window.location.href='/'">Back to public form</button>
     </div>
 
     <script>
@@ -231,7 +231,7 @@
         // If already logged in, redirect to dashboard
         window.addEventListener('DOMContentLoaded', async () => {
             const { data: { session } } = await sb.auth.getSession();
-            if (session) window.location.href = 'admin-dashboard.html';
+            if (session) window.location.href = '/admin-dashboard';
 
             // Show timeout message if redirected due to inactivity
             if (window.location.search.includes('reason=timeout')) {
@@ -283,7 +283,7 @@
                 return;
             }
 
-            window.location.href = 'admin-dashboard.html';
+            window.location.href = '/admin-dashboard';
         });
 
         // ---- SERVICE WORKER ----

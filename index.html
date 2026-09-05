@@ -14,6 +14,11 @@
     <link rel="apple-touch-icon" href="/icon-192.png">
     <meta name="mobile-web-app-capable" content="yes">
     <meta name="application-name" content="CIO Portal">
+    <!-- Critical image preloads for above-the-fold background slideshow -->
+    <link rel="preload" as="image" href="camera new.jpg" fetchpriority="high">
+    <link rel="preload" as="image" href="cio-logo.jpg" fetchpriority="high">
+    <link rel="preload" as="image" href="bago-city-logo.png" fetchpriority="high">
+
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
     <style>
@@ -50,6 +55,14 @@
     }
 
     /* ============================================
+       FONT DISPLAY — prevent invisible text flashes
+    ============================================ */
+    @font-face {
+        font-family: 'Plus Jakarta Sans';
+        font-display: swap;
+    }
+
+    /* ============================================
        RESET & BASE
     ============================================ */
     *, *::before, *::after { margin:0; padding:0; box-sizing:border-box; }
@@ -78,13 +91,22 @@
         top: 0; left: 0; right: 0;
         z-index: 1000;
         width: 100%;
-        background: rgba(13,17,26,0.82);
+        /* Mobile: solid bg to avoid GPU frame drops on scroll */
+        background: rgba(13,17,26,0.97);
         border-bottom: 1px solid rgba(255,255,255,0.07);
-        backdrop-filter: blur(20px);
-        -webkit-backdrop-filter: blur(20px);
+        /* No backdrop-filter on mobile — applied via media query below */
         display: flex;
         align-items: center;
         padding-top: env(safe-area-inset-top);
+    }
+
+    /* Enable backdrop-blur only on md+ screens where GPU can handle it */
+    @media (min-width: 768px) {
+        .navbar {
+            background: rgba(13,17,26,0.82);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+        }
     }
 
     .navbar-inner {
@@ -157,6 +179,14 @@
         white-space: nowrap;
     }
 
+    .nav-links {
+        list-style: none;
+        display: flex;
+        align-items: center;
+        gap: 4px;
+        margin: 0; padding: 0;
+    }
+
     .nav-links a {
         text-decoration: none;
         font-size: 13px; font-weight: 500;
@@ -186,6 +216,9 @@
         position: absolute;
         inset: 0;
         z-index: 0;
+        /* Promote to GPU composite layer */
+        will-change: transform;
+        transform: translateZ(0);
     }
 
     .hero-slide {
@@ -195,6 +228,9 @@
         transition: opacity 1s ease-in-out;
         pointer-events: none;
         background-color: #0b0f17;
+        /* Each slide on its own GPU layer for smooth crossfade */
+        will-change: opacity;
+        transform: translateZ(0);
     }
 
     .hero-slide.active {
@@ -218,7 +254,7 @@
     }
     .hero {
         min-height: 100svh;
-        background: transparent;
+        background: #0d111a;
         display: flex; flex-direction: column;
         justify-content: center; align-items: center;
         text-align: center;
@@ -1094,17 +1130,17 @@
     }
 
     .footer-inner {
-        max-width: 1400px;
+        max-width: 1200px;
         margin: 0 auto;
         display: flex;
         align-items: center;
-        justify-content: center;
-        gap: 14px;
+        justify-content: space-between;
+        gap: 16px;
         flex-wrap: wrap;
     }
 
     .footer-bago-logo {
-        height: 44px;
+        height: 40px;
         width: auto;
         object-fit: contain;
         opacity: 0.85;
@@ -1112,7 +1148,7 @@
     }
 
     .footer-cio-logo {
-        height: 32px;
+        height: 40px;
         width: auto;
         object-fit: contain;
         background: white;
@@ -1270,7 +1306,7 @@
         .services-grid { grid-template-columns: 1fr 1fr; }
         .hero-chips { gap: 8px; }
 
-        .footer-inner { flex-direction: column; gap: 10px; }
+        .footer-inner { flex-direction: column; align-items: center; gap: 12px; }
         .footer { padding: 20px 16px calc(20px + env(safe-area-inset-bottom)); }
         .form-section-wrapper { padding: 32px 12px 60px; }
     }
@@ -1289,48 +1325,6 @@
 </head>
 <body>
 
-<!-- Fixed background slideshow layer -->
-<div style="position:fixed;inset:0;z-index:-1;overflow:hidden;pointer-events:none;" id="bgFixed">
-    <div class="hero-slides" id="heroSlides" style="position:absolute;inset:0;">
-        <div class="hero-slide active" id="slide-0">
-            <img src="camera new.jpg" alt="" style="width:100%;height:100%;object-fit:cover;object-position:center;filter:brightness(0.45);display:block;">
-            <div class="hero-slide-overlay"></div>
-        </div>
-        <div class="hero-slide" id="slide-1">
-            <img src="camera new2.jpg" alt="" style="width:100%;height:100%;object-fit:cover;object-position:center;filter:brightness(0.45);display:block;">
-            <div class="hero-slide-overlay"></div>
-        </div>
-        <div class="hero-slide" id="slide-2">
-            <img src="drone new.jpg" alt="" style="width:100%;height:100%;object-fit:cover;object-position:center;filter:brightness(0.45);display:block;">
-            <div class="hero-slide-overlay"></div>
-        </div>
-        <div class="hero-slide" id="slide-3">
-            <img src="drone new1.jpg" alt="" style="width:100%;height:100%;object-fit:cover;object-position:center;filter:brightness(0.45);display:block;">
-            <div class="hero-slide-overlay"></div>
-        </div>
-        <div class="hero-slide" id="slide-4">
-            <img src="editing new.jpg" alt="" style="width:100%;height:100%;object-fit:cover;object-position:center;filter:brightness(0.45);display:block;">
-            <div class="hero-slide-overlay"></div>
-        </div>
-        <div class="hero-slide" id="slide-5">
-            <img src="video camera new.jpg" alt="" style="width:100%;height:100%;object-fit:cover;object-position:center;filter:brightness(0.45);display:block;">
-            <div class="hero-slide-overlay"></div>
-        </div>
-        <div class="hero-slide" id="slide-6">
-            <img src="video camera.jpg" alt="" style="width:100%;height:100%;object-fit:cover;object-position:center;filter:brightness(0.45);display:block;">
-            <div class="hero-slide-overlay"></div>
-        </div>
-        <div class="hero-slide" id="slide-7">
-            <img src="new camera picture.jpg" alt="" style="width:100%;height:100%;object-fit:cover;object-position:center;filter:brightness(0.45);display:block;">
-            <div class="hero-slide-overlay"></div>
-        </div>
-        <div class="hero-slide" id="slide-8">
-            <img src="radio.jpg" alt="" style="width:100%;height:100%;object-fit:cover;object-position:center;filter:brightness(0.45);display:block;">
-            <div class="hero-slide-overlay"></div>
-        </div>
-    </div>
-</div>
-
 <!-- Toast -->
 <div class="toast" id="toast"></div>
 
@@ -1342,7 +1336,7 @@
         <!-- LEFT: Bago City logo + text -->
         <div style="display:flex;align-items:center;gap:14px;">
             <div class="nav-emblem-bago">
-                <img src="bago-city-logo.png" alt="Bago City Logo">
+                <img src="bago-city-logo.png" alt="Bago City Logo" loading="eager" fetchpriority="high">
             </div>
             <div class="nav-divider"></div>
             <div class="nav-brand-text">
@@ -1356,10 +1350,10 @@
             <ul class="nav-links">
                 <li><a href="#services">Services</a></li>
                 <li><a href="#request-form">Submit Form</a></li>
-                <li><a href="admin-login.html" class="nav-login">Staff Login</a></li>
+                <li><a href="/admin-login" class="nav-login">Staff Login</a></li>
             </ul>
             <div class="nav-emblem">
-                <img src="cio-logo.jpg" alt="CIO Logo">
+                <img src="cio-logo.jpg" alt="CIO Logo" loading="eager" fetchpriority="high">
             </div>
         </div>
     </div>
@@ -1369,6 +1363,47 @@
      HERO
 ============================================================ -->
 <section class="hero no-print" id="hero">
+    <!-- Background slideshow scoped to hero only -->
+    <div style="position:absolute;inset:0;z-index:0;overflow:hidden;pointer-events:none;will-change:transform;transform:translateZ(0);" id="bgFixed">
+        <div class="hero-slides" id="heroSlides" style="position:absolute;inset:0;">
+            <div class="hero-slide active" id="slide-0">
+                <img src="camera new.jpg" alt="" loading="eager" fetchpriority="high" style="width:100%;height:100%;object-fit:cover;object-position:center;filter:brightness(0.45);display:block;will-change:transform;transform:translateZ(0);">
+                <div class="hero-slide-overlay"></div>
+            </div>
+            <div class="hero-slide" id="slide-1">
+                <img src="camera new2.jpg" alt="" loading="lazy" style="width:100%;height:100%;object-fit:cover;object-position:center;filter:brightness(0.45);display:block;">
+                <div class="hero-slide-overlay"></div>
+            </div>
+            <div class="hero-slide" id="slide-2">
+                <img src="drone new.jpg" alt="" loading="lazy" style="width:100%;height:100%;object-fit:cover;object-position:center;filter:brightness(0.45);display:block;">
+                <div class="hero-slide-overlay"></div>
+            </div>
+            <div class="hero-slide" id="slide-3">
+                <img src="drone new1.jpg" alt="" loading="lazy" style="width:100%;height:100%;object-fit:cover;object-position:center;filter:brightness(0.45);display:block;">
+                <div class="hero-slide-overlay"></div>
+            </div>
+            <div class="hero-slide" id="slide-4">
+                <img src="editing new.jpg" alt="" loading="lazy" style="width:100%;height:100%;object-fit:cover;object-position:center;filter:brightness(0.45);display:block;">
+                <div class="hero-slide-overlay"></div>
+            </div>
+            <div class="hero-slide" id="slide-5">
+                <img src="video camera new.jpg" alt="" loading="lazy" style="width:100%;height:100%;object-fit:cover;object-position:center;filter:brightness(0.45);display:block;">
+                <div class="hero-slide-overlay"></div>
+            </div>
+            <div class="hero-slide" id="slide-6">
+                <img src="video camera.jpg" alt="" loading="lazy" style="width:100%;height:100%;object-fit:cover;object-position:center;filter:brightness(0.45);display:block;">
+                <div class="hero-slide-overlay"></div>
+            </div>
+            <div class="hero-slide" id="slide-7">
+                <img src="new camera picture.jpg" alt="" loading="lazy" style="width:100%;height:100%;object-fit:cover;object-position:center;filter:brightness(0.45);display:block;">
+                <div class="hero-slide-overlay"></div>
+            </div>
+            <div class="hero-slide" id="slide-8">
+                <img src="radio.jpg" alt="" loading="lazy" style="width:100%;height:100%;object-fit:cover;object-position:center;filter:brightness(0.45);display:block;">
+                <div class="hero-slide-overlay"></div>
+            </div>
+        </div>
+    </div>
     <div class="hero-grid-overlay"></div>
     <div class="hero-inner">
         <div class="hero-glass-card">
@@ -1420,7 +1455,7 @@
         <div class="services-grid">
             <div class="service-card">
                 <div class="service-card-img">
-                    <img src="radio.jpg" alt="Radio & Broadcasting">
+                    <img src="radio.jpg" alt="Radio & Broadcasting" loading="lazy">
                 </div>
                 <div class="service-card-body">
                     <h3>Radio & Broadcasting</h3>
@@ -1429,7 +1464,7 @@
             </div>
             <div class="service-card">
                 <div class="service-card-img">
-                    <img src="video camera new.jpg" alt="Video Production">
+                    <img src="video camera new.jpg" alt="Video Production" loading="lazy">
                 </div>
                 <div class="service-card-body">
                     <h3>Video Production & Drone</h3>
@@ -1438,7 +1473,7 @@
             </div>
             <div class="service-card">
                 <div class="service-card-img">
-                    <img src="camera new.jpg" alt="Photography">
+                    <img src="camera new.jpg" alt="Photography" loading="lazy">
                 </div>
                 <div class="service-card-body">
                     <h3>Photography & Archiving</h3>
@@ -1447,7 +1482,7 @@
             </div>
             <div class="service-card">
                 <div class="service-card-img">
-                    <img src="editing new.jpg" alt="Graphic Design">
+                    <img src="editing new.jpg" alt="Graphic Design" loading="lazy">
                 </div>
                 <div class="service-card-body">
                     <h3>Graphic Design & Digital Media</h3>
@@ -1785,15 +1820,18 @@
 ============================================================ -->
 <footer class="footer no-print">
     <div class="footer-inner">
-        <div style="display:flex;align-items:center;gap:10px;flex-shrink:0;">
-            <img src="bago-city-logo.png" alt="Bago City" class="footer-bago-logo">
-            <img src="cio-logo.jpg" alt="CIO" class="footer-cio-logo">
-        </div>
+        <!-- LEFT: Bago City Seal -->
+        <img src="bago-city-logo.png" alt="Bago City" class="footer-bago-logo" loading="lazy">
+
+        <!-- CENTER: Text -->
         <div class="footer-text">
             <strong>City Information Office</strong><br>
             <span style="white-space:nowrap;">City Government of Bago</span><br>
             <span style="font-size:11px;opacity:0.6;">© 2026 All rights reserved</span>
         </div>
+
+        <!-- RIGHT: CIO Logo -->
+        <img src="cio-logo.jpg" alt="CIO" class="footer-cio-logo" loading="lazy">
     </div>
 </footer>
 

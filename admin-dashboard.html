@@ -741,7 +741,7 @@
     window.addEventListener('DOMContentLoaded', async () => {
         const { data: { session } } = await sb.auth.getSession();
         if (!session) {
-            window.location.href = 'admin-login.html';
+            window.location.href = '/admin-login';
             return;
         }
 
@@ -769,7 +769,7 @@
         // Logout button
         document.getElementById('logoutBtn').addEventListener('click', async () => {
             await sb.auth.signOut();
-            window.location.href = 'admin-login.html';
+            window.location.href = '/admin-login';
         });
 
         // Search & filter listeners
@@ -789,7 +789,7 @@
         clearTimeout(inactivityTimer);
         inactivityTimer = setTimeout(async () => {
             await sb.auth.signOut();
-            window.location.href = 'admin-login.html?reason=timeout';
+            window.location.href = '/admin-login?reason=timeout';
         }, 15 * 60 * 1000); // 15 minutes
     }
 

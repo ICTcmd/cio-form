@@ -65,7 +65,7 @@ self.addEventListener('fetch', event => {
           if (cached) return cached;
           // Return offline page for navigation requests
           if (event.request.mode === 'navigate') {
-            return caches.match('/index.html');
+            return caches.match('/');
           }
         });
       })
