@@ -467,6 +467,28 @@
             font-size: 13px;
         }
 
+        /* Image attachment card — stacks vertically to show thumbnail */
+        .attachment-item.has-thumb {
+            flex-direction: column;
+            align-items: flex-start;
+            gap: 8px;
+            padding: 12px 14px;
+        }
+
+        .attachment-thumb {
+            width: 100%;
+            max-height: 180px;
+            object-fit: cover;
+            border-radius: 7px;
+            border: 1px solid #e2e8f0;
+            display: block;
+        }
+
+        .attachment-thumb-row {
+            display: flex; align-items: center;
+            gap: 8px; width: 100%;
+        }
+
         .attachment-icon { font-size: 18px; flex-shrink: 0; }
         .attachment-name { flex: 1; color: #0f172a; font-weight: 500; word-break: break-all; }
 
@@ -1347,27 +1369,35 @@
 
         // ---- Generate signed URLs for each file (60 min) ----
         for (const file of allFiles) {
+            const isImg = /\.(jpg|jpeg|png|webp|gif)$/i.test(file.name);
             const item = document.createElement('div');
-            item.className = 'attachment-item';
-            item.innerHTML = `<span class="attachment-icon">${getFileIcon(file.name)}</span>
-                <span class="attachment-name">${sanitize(file.name)}</span>
-                <span class="attachment-generating" style="font-size:11px;color:#94a3b8;">Generating link…</span>`;
+            item.className = 'attachment-item' + (isImg ? ' has-thumb' : '');
+
+            // Placeholder while loading
+            item.innerHTML = isImg
+                ? `<div class="attachment-thumb-row">
+                       <span class="attachment-icon">🖼️</span>
+                       <span class="attachment-name">${sanitize(file.name)}</span>
+                       <span class="attachment-generating" style="font-size:11px;color:#94a3b8;margin-left:auto;">Generating…</span>
+                   </div>`
+                : `<span class="attachment-icon">${getFileIcon(file.name)}</span>
+                   <span class="attachment-name">${sanitize(file.name)}</span>
+                   <span class="attachment-generating" style="font-size:11px;color:#94a3b8;margin-left:auto;">Generating…</span>`;
             listEl.appendChild(item);
 
             try {
-                // Route to correct bucket — legacy files are in cio-uploads
                 const bucket = (file.path.startsWith('graphic-design/') || file.path.startsWith('press-release/'))
                     ? 'cio-uploads'
                     : 'request-attachments';
 
-                // Download URL (forces save-as prompt)
+                // Download URL (triggers save-as)
                 const { data: dlData, error: dlErr } = await sb.storage
                     .from(bucket)
                     .createSignedUrl(file.path, 3600, { download: file.name });
 
                 if (dlErr || !dlData?.signedUrl) throw dlErr || new Error('Signed URL unavailable');
 
-                // Preview URL (inline, opens in browser tab) — only for previewable types
+                // Preview/inline URL for images and PDFs
                 let previewUrl = null;
                 if (isPreviewable(file.name)) {
                     const { data: pvData } = await sb.storage
@@ -1376,18 +1406,40 @@
                     previewUrl = pvData?.signedUrl || null;
                 }
 
-                const btns = document.createElement('div');
-                btns.style.cssText = 'display:flex;gap:6px;flex-shrink:0;flex-wrap:wrap;';
-                btns.innerHTML = `
-                    <a href="${dlData.signedUrl}" class="attachment-btn download" download="${sanitize(file.name)}">⬇ Download File</a>
-                    ${previewUrl ? `<a href="${previewUrl}" target="_blank" rel="noopener noreferrer" class="attachment-btn preview">👁 Open Preview</a>` : ''}`;
+                const genEl = item.querySelector('.attachment-generating');
 
-                item.querySelector('.attachment-generating').replaceWith(btns);
+                if (isImg && previewUrl) {
+                    // ---- Image card: thumbnail + buttons ----
+                    const thumbAndBtns = document.createElement('div');
+                    thumbAndBtns.style.cssText = 'width:100%;';
+                    thumbAndBtns.innerHTML = `
+                        <img src="${previewUrl}" alt="${sanitize(file.name)}" class="attachment-thumb"
+                             onerror="this.style.display='none'">
+                        <div style="display:flex;gap:6px;margin-top:8px;flex-wrap:wrap;">
+                            <a href="${dlData.signedUrl}" class="attachment-btn download" download="${sanitize(file.name)}">⬇ Download Original Image</a>
+                            <a href="${previewUrl}" target="_blank" rel="noopener noreferrer" class="attachment-btn preview">👁 Open Preview</a>
+                        </div>`;
+                    genEl.replaceWith(thumbAndBtns);
+                } else {
+                    // ---- Document card: icon + name + buttons ----
+                    const btns = document.createElement('div');
+                    btns.style.cssText = 'display:flex;gap:6px;flex-shrink:0;flex-wrap:wrap;margin-left:auto;';
+                    const isDoc = /\.(pdf|doc|docx|txt)$/i.test(file.name);
+                    btns.innerHTML = `
+                        <a href="${dlData.signedUrl}" class="attachment-btn download" download="${sanitize(file.name)}">
+                            ${isDoc ? '⬇ Download Document' : '⬇ Download File'}
+                        </a>
+                        ${previewUrl ? `<a href="${previewUrl}" target="_blank" rel="noopener noreferrer" class="attachment-btn preview">👁 Open Preview</a>` : ''}`;
+                    genEl.replaceWith(btns);
+                }
 
             } catch (err) {
-                const errSpan = item.querySelector('.attachment-generating');
-                errSpan.textContent = '⚠ Could not generate link';
-                errSpan.style.color = '#ef4444';
+                console.error('Attachment signed URL error:', file.name, err);
+                const genEl = item.querySelector('.attachment-generating');
+                if (genEl) {
+                    genEl.textContent = '⚠ Could not generate link';
+                    genEl.style.color = '#ef4444';
+                }
             }
         }
 

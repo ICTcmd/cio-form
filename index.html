@@ -2093,8 +2093,11 @@
                 txt.textContent = '⏳ Uploading attachments...';
                 const uploaded = await uploadFiles(attachFiles, 'attachments', controlNumber);
                 if (uploaded.length) {
-                    // Store as array of {path, name} objects for rich display in admin
+                    // Full array for multi-file display in admin
                     payload.attachment_files = uploaded.map(f => ({ path: f.path, name: f.name }));
+                    // Flat columns for simple single-file access
+                    payload.attachment_path = uploaded[0].path;
+                    payload.attachment_name = uploaded[0].name;
                 }
             }
 
