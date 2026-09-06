@@ -1649,10 +1649,10 @@
                     <!-- Conditional: Graphic Design Upload -->
                     <div id="graphicDesignFields" class="conditional-field">
                         <div class="cond-title">🎨 For Graphic / Lay-out Design — Upload Reference File</div>
-                        <p style="font-size:12px;color:var(--slate-600);margin-bottom:10px;">Upload your content reference, text file, or images. Accepted: .doc, .docx, .txt, .jpg, .jpeg, .png (max 10MB each)</p>
+                        <p style="font-size:12px;color:var(--slate-600);margin-bottom:10px;">Upload your content reference, text file, or images. Accepted: .jpg, .jpeg, .png, .pdf, .docx, .txt (max 50MB each)</p>
                         <div class="form-group" style="margin:0;">
                             <input type="file" id="graphicDesignFile" name="graphicDesignFile"
-                                accept=".doc,.docx,.txt,.jpg,.jpeg,.png"
+                                accept=".jpg,.jpeg,.png,.pdf,.docx,.txt"
                                 multiple
                                 style="width:100%;padding:10px;border:1.5px dashed var(--slate-300);border-radius:var(--radius-sm);font-size:13px;background:white;cursor:pointer;">
                         </div>
@@ -1662,10 +1662,10 @@
                     <!-- Conditional: Press Release Upload -->
                     <div id="pressReleaseFields" class="conditional-field">
                         <div class="cond-title">📄 For Press Release / Write-up — Upload Your File</div>
-                        <p style="font-size:12px;color:var(--slate-600);margin-bottom:10px;">Upload your draft, write-up, or reference materials. Accepted: .doc, .docx, .txt, .pdf, .jpg, .jpeg, .png (max 10MB each)</p>
+                        <p style="font-size:12px;color:var(--slate-600);margin-bottom:10px;">Upload your draft, write-up, or reference materials. Accepted: .jpg, .jpeg, .png, .pdf, .docx, .txt (max 50MB each)</p>
                         <div class="form-group" style="margin:0;">
                             <input type="file" id="pressReleaseFile" name="pressReleaseFile"
-                                accept=".doc,.docx,.txt,.pdf,.jpg,.jpeg,.png"
+                                accept=".jpg,.jpeg,.png,.pdf,.docx,.txt"
                                 multiple
                                 style="width:100%;padding:10px;border:1.5px dashed var(--slate-300);border-radius:var(--radius-sm);font-size:13px;background:white;cursor:pointer;">
                         </div>
@@ -1701,8 +1701,7 @@
                     </div>
                 </div>
 
-                <!-- NOTE -->
-                <!-- Remarks -->
+                <!-- REMARKS -->
                 <div class="form-block">
                     <div class="form-block-header">
                         <span class="accent-bar"></span>
@@ -1711,6 +1710,26 @@
                     <div class="form-group">
                         <label for="remarks">Remarks <span style="color:var(--slate-400);font-weight:400;">(optional)</span></label>
                         <textarea id="remarks" name="remarks" rows="3" placeholder="Any special instructions, additional notes, or specific requirements for this request..." style="width:100%;padding:10px 14px;border:1.5px solid var(--slate-200);border-radius:var(--radius-sm);font-size:14px;color:var(--navy);font-family:'Plus Jakarta Sans',sans-serif;outline:none;resize:vertical;transition:all 0.2s;background:var(--slate-50);line-height:1.6;"></textarea>
+                    </div>
+                </div>
+
+                <!-- ATTACHMENTS & CLOUD LINK -->
+                <div class="form-block">
+                    <div class="form-block-header">
+                        <span class="accent-bar"></span>
+                        <h3>ATTACHMENTS <span style="color:var(--slate-400);font-size:12px;font-weight:400;">(optional)</span></h3>
+                    </div>
+                    <div class="form-group">
+                        <label>Upload File <span style="color:var(--slate-400);font-weight:400;">(jpg, jpeg, png, pdf, docx, txt — max 50MB each)</span></label>
+                        <input type="file" id="attachmentFile" name="attachmentFile"
+                            accept=".jpg,.jpeg,.png,.pdf,.docx,.txt"
+                            multiple
+                            style="width:100%;padding:10px;border:1.5px dashed var(--slate-300);border-radius:var(--radius-sm);font-size:13px;background:white;cursor:pointer;">
+                        <div id="attachmentFilePreview" style="margin-top:10px;display:flex;flex-wrap:wrap;gap:8px;"></div>
+                    </div>
+                    <div class="form-group" style="margin-top:12px;">
+                        <label for="cloudDriveLink">Drive / Cloud Storage Link <span style="color:var(--slate-400);font-weight:400;">(for files over 50MB or heavy RAW media)</span></label>
+                        <input type="text" id="cloudDriveLink" placeholder="https://drive.google.com/... or OneDrive link">
                     </div>
                 </div>
 
@@ -1946,27 +1965,52 @@
         return `CIO-${d.getFullYear()}${p(d.getMonth()+1)}${p(d.getDate())}-${Math.floor(Math.random()*9000+1000)}`;
     }
 
-    // ---- File preview for graphic design ----
-    document.getElementById('graphicDesignFile').addEventListener('change', function () {
-        showFilePreview(this.files, 'graphicFilePreview');
-    });
-
-    // ---- File preview for press release ----
-    document.getElementById('pressReleaseFile').addEventListener('change', function () {
-        showFilePreview(this.files, 'pressReleaseFilePreview');
-    });
-
+    // ---- File preview with 50MB validation ----
     function showFilePreview(files, previewId) {
         const preview = document.getElementById(previewId);
         preview.innerHTML = '';
+        const MAX_MB = 50;
         Array.from(files).forEach(file => {
+            const sizeMB = file.size / 1024 / 1024;
             const tag = document.createElement('div');
-            tag.style.cssText = 'padding:6px 12px;background:var(--blue-pale);border:1px solid var(--slate-200);border-radius:6px;font-size:12px;color:var(--navy);display:flex;align-items:center;gap:6px;';
+            const tooLarge = sizeMB > MAX_MB;
+            tag.style.cssText = `padding:6px 12px;background:${tooLarge ? '#fef2f2' : 'var(--blue-pale)'};border:1px solid ${tooLarge ? '#fca5a5' : 'var(--slate-200)'};border-radius:6px;font-size:12px;color:${tooLarge ? '#dc2626' : 'var(--navy)'};display:flex;align-items:center;gap:6px;`;
             const icon = file.type.startsWith('image/') ? '🖼️' : '📄';
-            const size = (file.size / 1024 / 1024).toFixed(2);
-            tag.innerHTML = `${icon} <span>${file.name}</span> <span style="color:var(--slate-400)">(${size}MB)</span>`;
+            tag.innerHTML = `${icon} <span>${file.name}</span> <span style="opacity:0.6">(${sizeMB.toFixed(2)}MB)</span>${tooLarge ? ' <strong style="color:#dc2626">⚠ Exceeds 50MB</strong>' : ''}`;
             preview.appendChild(tag);
+            if (tooLarge) showToast(`⚠ "${file.name}" exceeds 50MB limit and will not be uploaded.`, 'error');
         });
+    }
+
+    // ---- File input event listeners ----
+    document.getElementById('graphicDesignFile').addEventListener('change', function () {
+        showFilePreview(this.files, 'graphicFilePreview');
+    });
+    document.getElementById('pressReleaseFile').addEventListener('change', function () {
+        showFilePreview(this.files, 'pressReleaseFilePreview');
+    });
+    document.getElementById('attachmentFile').addEventListener('change', function () {
+        showFilePreview(this.files, 'attachmentFilePreview');
+    });
+
+    // ---- Upload files to Supabase Storage, skip >50MB, return metadata array ----
+    async function uploadFiles(fileList, folder, controlNumber) {
+        const MAX_BYTES = 50 * 1024 * 1024;
+        const results = [];
+        for (const file of fileList) {
+            if (file.size > MAX_BYTES) continue; // already warned in preview
+            const safeName = file.name.replace(/[^a-zA-Z0-9._-]/g, '_');
+            const filePath = `${folder}/${controlNumber}/${safeName}`;
+            const { error } = await sb.storage
+                .from('request-attachments')
+                .upload(filePath, file, { upsert: true, contentType: file.type });
+            if (!error) {
+                results.push({ path: filePath, name: file.name, size: file.size, type: file.type });
+            } else {
+                console.warn('Upload error for', file.name, error.message);
+            }
+        }
+        return results;
     }
 
     // ---- Selected services ----
@@ -1998,8 +2042,10 @@
         btn.disabled = true;
         txt.textContent = '⏳ Submitting...';
 
+        const controlNumber = generateControlNumber();
+
         const payload = {
-            control_number: generateControlNumber(),
+            control_number: controlNumber,
             form_date: document.getElementById('formDate').value,
             requesting_office: document.getElementById('requestingOffice').value,
             contact_person: document.getElementById('contactPerson').value,
@@ -2016,48 +2062,53 @@
             copy_event: document.getElementById('copyEvent').value || null,
             copy_date_taken: document.getElementById('copyDateTaken').value || null,
             remarks: document.getElementById('remarks').value || null,
+            cloud_drive_link: document.getElementById('cloudDriveLink').value.trim() || null,
             status: 'Pending'
         };
 
         try {
-            // Upload graphic design files if any
-            const fileInput = document.getElementById('graphicDesignFile');
-            let uploadedFiles = [];
-            if (document.getElementById('graphicDesign').checked && fileInput.files.length > 0) {
-                for (const file of fileInput.files) {
-                    const filePath = `graphic-design/${payload.control_number}/${file.name}`;
-                    const { error: uploadError } = await sb.storage
-                        .from('cio-uploads')
-                        .upload(filePath, file, { upsert: true });
-                    if (!uploadError) uploadedFiles.push(filePath);
+            txt.textContent = '⏳ Uploading files...';
+
+            // Upload graphic design files
+            if (document.getElementById('graphicDesign').checked) {
+                const files = document.getElementById('graphicDesignFile').files;
+                if (files.length) {
+                    const uploaded = await uploadFiles(files, 'graphic-design', controlNumber);
+                    if (uploaded.length) payload.graphic_design_files = uploaded.map(f => f.path);
                 }
-                payload.graphic_design_files = uploadedFiles;
             }
 
-            // Upload press release files if any
-            const prFileInput = document.getElementById('pressReleaseFile');
-            let prUploadedFiles = [];
-            if (document.getElementById('pressRelease').checked && prFileInput.files.length > 0) {
-                for (const file of prFileInput.files) {
-                    const filePath = `press-release/${payload.control_number}/${file.name}`;
-                    const { error: uploadError } = await sb.storage
-                        .from('cio-uploads')
-                        .upload(filePath, file, { upsert: true });
-                    if (!uploadError) prUploadedFiles.push(filePath);
+            // Upload press release files
+            if (document.getElementById('pressRelease').checked) {
+                const files = document.getElementById('pressReleaseFile').files;
+                if (files.length) {
+                    const uploaded = await uploadFiles(files, 'press-release', controlNumber);
+                    if (uploaded.length) payload.press_release_files = uploaded.map(f => f.path);
                 }
-                payload.press_release_files = prUploadedFiles;
             }
 
+            // Upload general attachments
+            const attachFiles = document.getElementById('attachmentFile').files;
+            if (attachFiles.length) {
+                txt.textContent = '⏳ Uploading attachments...';
+                const uploaded = await uploadFiles(attachFiles, 'attachments', controlNumber);
+                if (uploaded.length) {
+                    // Store as array of {path, name} objects for rich display in admin
+                    payload.attachment_files = uploaded.map(f => ({ path: f.path, name: f.name }));
+                }
+            }
+
+            txt.textContent = '⏳ Saving request...';
             const { error } = await sb.from('requests').insert([payload]);
             if (error) throw error;
 
-            showToast('✅ Request submitted! Control #: ' + payload.control_number, 'success');
+            showToast('✅ Request submitted! Control #: ' + controlNumber, 'success');
 
             setTimeout(() => {
-                alert(`✅ Request Submitted Successfully!\n\nControl Number: ${payload.control_number}\n\nSave this number to track your request.\nThe CIO team will contact you soon.`);
+                alert(`✅ Request Submitted Successfully!\n\nControl Number: ${controlNumber}\n\nSave this number to track your request.\nThe CIO team will contact you soon.`);
             }, 300);
 
-            // Reset
+            // Reset form
             form.reset();
             document.getElementById('formDate').value = new Date().toISOString().split('T')[0];
             document.getElementById('leadTimeConsent').checked = false;
@@ -2066,10 +2117,20 @@
             document.querySelectorAll('.conditional-field').forEach(f => f.classList.remove('active'));
             document.getElementById('othersSpecify').value = '';
             document.getElementById('remarks').value = '';
+            document.getElementById('cloudDriveLink').value = '';
             document.getElementById('graphicDesignFile').value = '';
             document.getElementById('graphicFilePreview').innerHTML = '';
             document.getElementById('pressReleaseFile').value = '';
             document.getElementById('pressReleaseFilePreview').innerHTML = '';
+            document.getElementById('attachmentFile').value = '';
+            document.getElementById('attachmentFilePreview').innerHTML = '';
+
+            // Re-lock privacy after reset
+            const cb = document.getElementById('privacyConsent');
+            cb.checked = false;
+            cb.disabled = true;
+            cb.style.cursor = 'not-allowed';
+            cb.style.opacity = '0.4';
 
         } catch (err) {
             console.error(err);

@@ -387,7 +387,115 @@
 
         .empty-state p { font-size: 14px; }
 
-        .act-btn.del { display: var(--del-btn-display); }
+        .act-btn.view { color: #0891b2; border-color: #e0f2fe; }
+        .act-btn.view:hover, .act-btn.view:active { border-color: #0891b2; color: #0e7490; background: #f0f9ff; }
+
+        /* ---- DETAIL MODAL ---- */
+        .detail-modal-overlay {
+            position: fixed; inset: 0;
+            background: rgba(0,0,0,0.5);
+            backdrop-filter: blur(4px);
+            -webkit-backdrop-filter: blur(4px);
+            z-index: 200;
+            display: none;
+            align-items: center; justify-content: center;
+            padding: 16px;
+        }
+        .detail-modal-overlay.open { display: flex; }
+
+        .detail-modal {
+            background: white;
+            border-radius: 16px;
+            width: 100%; max-width: 640px;
+            max-height: 90vh;
+            display: flex; flex-direction: column;
+            box-shadow: 0 25px 60px rgba(0,0,0,0.25);
+            overflow: hidden;
+        }
+
+        .detail-modal-header {
+            background: #0f172a;
+            padding: 20px 24px;
+            display: flex; justify-content: space-between; align-items: center;
+            flex-shrink: 0;
+        }
+
+        .detail-modal-header h2 {
+            font-size: 15px; font-weight: 700; color: white; margin: 0;
+        }
+
+        .detail-modal-header p {
+            font-size: 11px; color: rgba(255,255,255,0.45); margin: 2px 0 0;
+        }
+
+        .detail-modal-close {
+            background: rgba(255,255,255,0.1); border: none;
+            width: 32px; height: 32px; border-radius: 8px;
+            cursor: pointer; color: white; font-size: 18px; line-height: 1;
+            display: flex; align-items: center; justify-content: center;
+            transition: background 0.2s;
+        }
+        .detail-modal-close:hover { background: rgba(255,255,255,0.2); }
+
+        .detail-modal-body {
+            padding: 24px; overflow-y: auto; flex: 1;
+        }
+
+        .detail-section { margin-bottom: 20px; }
+
+        .detail-section-title {
+            font-size: 10px; font-weight: 700; text-transform: uppercase;
+            letter-spacing: 0.8px; color: #94a3b8; margin-bottom: 10px;
+            padding-bottom: 6px; border-bottom: 1px solid #f1f5f9;
+        }
+
+        .detail-row {
+            display: flex; gap: 8px; margin-bottom: 6px;
+            font-size: 13px;
+        }
+        .detail-label { color: #64748b; font-weight: 500; min-width: 130px; flex-shrink: 0; }
+        .detail-value { color: #0f172a; font-weight: 500; }
+
+        .attachment-list { display: flex; flex-direction: column; gap: 8px; }
+
+        .attachment-item {
+            display: flex; align-items: center; gap: 10px;
+            padding: 10px 14px;
+            background: #f8fafc;
+            border: 1px solid #e2e8f0;
+            border-radius: 9px;
+            font-size: 13px;
+        }
+
+        .attachment-icon { font-size: 18px; flex-shrink: 0; }
+        .attachment-name { flex: 1; color: #0f172a; font-weight: 500; word-break: break-all; }
+
+        .attachment-btn {
+            padding: 6px 12px; border-radius: 7px;
+            font-size: 12px; font-weight: 600;
+            border: 1.5px solid; cursor: pointer;
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            transition: all 0.15s; white-space: nowrap;
+            text-decoration: none; display: inline-flex; align-items: center; gap: 4px;
+        }
+        .attachment-btn.download { color: #1d4ed8; border-color: #bfdbfe; background: #eff6ff; }
+        .attachment-btn.download:hover { background: #dbeafe; }
+        .attachment-btn.preview  { color: #7c3aed; border-color: #ddd6fe; background: #f5f3ff; }
+        .attachment-btn.preview:hover  { background: #ede9fe; }
+
+        .cloud-link-btn {
+            display: inline-flex; align-items: center; gap: 8px;
+            padding: 10px 16px; border-radius: 9px;
+            background: #f0fdf4; border: 1.5px solid #86efac;
+            color: #15803d; font-size: 13px; font-weight: 600;
+            text-decoration: none; transition: all 0.15s;
+        }
+        .cloud-link-btn:hover { background: #dcfce7; }
+
+        .attachment-loading {
+            font-size: 13px; color: #64748b;
+            display: flex; align-items: center; gap: 8px;
+        }
 
         .role-pill {
             padding: 2px 8px;
@@ -689,6 +797,22 @@
 
 </div><!-- end page-body -->
 
+<!-- REQUEST DETAIL MODAL -->
+<div class="detail-modal-overlay" id="detailModal">
+    <div class="detail-modal">
+        <div class="detail-modal-header">
+            <div>
+                <h2 id="detailModalTitle">Request Details</h2>
+                <p id="detailModalSub"></p>
+            </div>
+            <button class="detail-modal-close" onclick="closeDetailModal()">✕</button>
+        </div>
+        <div class="detail-modal-body" id="detailModalBody">
+            <!-- populated by JS -->
+        </div>
+    </div>
+</div>
+
 <!-- CREATE USER MODAL -->
 <div class="modal-overlay" id="createUserModal">
     <div class="modal-card">
@@ -927,6 +1051,9 @@
             // Actions cell
             const tdActions = document.createElement('td');
             tdActions.innerHTML = `<div class="action-wrap">
+                <button class="act-btn view" data-tip="View Details" onclick="openDetailModal('${sanitize(req.id)}')">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+                </button>
                 <button class="act-btn call" data-tip="Call" onclick="callContact('${sanitize(req.contact_no)}')">
                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.69 12a19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 3.6 1.3h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L7.91 8.77a16 16 0 0 0 6.29 6.29l1.83-1.83a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
                 </button>
@@ -1093,6 +1220,169 @@
         a.href = URL.createObjectURL(new Blob([csv], { type: 'text/csv' }));
         a.download = `CIO_Requests_${new Date().toISOString().split('T')[0]}.csv`;
         a.click();
+    }
+
+    // ---- DETAIL MODAL ----
+    function closeDetailModal() {
+        document.getElementById('detailModal').classList.remove('open');
+        document.body.style.overflow = '';
+    }
+
+    document.getElementById('detailModal').addEventListener('click', function(e) {
+        if (e.target === this) closeDetailModal();
+    });
+
+    async function openDetailModal(id) {
+        const req = allRequests.find(r => r.id === id);
+        if (!req) return;
+
+        document.getElementById('detailModalTitle').textContent = req.control_number || 'Request Details';
+        document.getElementById('detailModalSub').textContent = req.requesting_office || '';
+        document.getElementById('detailModalBody').innerHTML = buildDetailHTML(req);
+        document.getElementById('detailModal').classList.add('open');
+        document.body.style.overflow = 'hidden';
+
+        // Load attachments async
+        await renderAttachments(req);
+    }
+
+    function buildDetailHTML(req) {
+        const services = Array.isArray(req.services) ? req.services.join(', ') : (req.services || '—');
+        const fmtDate = d => d ? new Date(d + 'T00:00').toLocaleDateString('en-PH', { year:'numeric', month:'long', day:'numeric' }) : '—';
+
+        return `
+        <div class="detail-section">
+            <div class="detail-section-title">Request Info</div>
+            <div class="detail-row"><span class="detail-label">Requesting Office</span><span class="detail-value">${sanitize(req.requesting_office || '—')}</span></div>
+            <div class="detail-row"><span class="detail-label">Contact Person</span><span class="detail-value">${sanitize(req.contact_person || '—')}</span></div>
+            <div class="detail-row"><span class="detail-label">Phone / Viber</span><span class="detail-value">${sanitize(req.contact_no || '—')}</span></div>
+            <div class="detail-row"><span class="detail-label">Messenger</span><span class="detail-value">${sanitize(req.messenger_name || '—')}</span></div>
+        </div>
+        <div class="detail-section">
+            <div class="detail-section-title">Event Details</div>
+            <div class="detail-row"><span class="detail-label">Event / Activity</span><span class="detail-value">${sanitize(req.event_activity || '—')}</span></div>
+            <div class="detail-row"><span class="detail-label">Date</span><span class="detail-value">${fmtDate(req.event_date)}</span></div>
+            <div class="detail-row"><span class="detail-label">Time</span><span class="detail-value">${sanitize(req.event_time || '—')}</span></div>
+            <div class="detail-row"><span class="detail-label">Venue</span><span class="detail-value">${sanitize(req.event_venue || '—')}</span></div>
+        </div>
+        <div class="detail-section">
+            <div class="detail-section-title">Services Requested</div>
+            <div class="detail-value" style="font-size:13px;">${sanitize(services)}</div>
+        </div>
+        ${req.remarks ? `<div class="detail-section">
+            <div class="detail-section-title">Remarks</div>
+            <div class="detail-value" style="font-size:13px;">${sanitize(req.remarks)}</div>
+        </div>` : ''}
+        <div class="detail-section" id="attachmentsSection">
+            <div class="detail-section-title">Attachments</div>
+            <div class="attachment-loading" id="attachmentsLoading">
+                <span>⏳ Loading attachments...</span>
+            </div>
+            <div class="attachment-list" id="attachmentsList" style="display:none;"></div>
+        </div>`;
+    }
+
+    function getFileIcon(name) {
+        const ext = (name || '').split('.').pop().toLowerCase();
+        if (['jpg','jpeg','png','gif','webp'].includes(ext)) return '🖼️';
+        if (ext === 'pdf') return '📕';
+        if (['doc','docx'].includes(ext)) return '📝';
+        if (ext === 'txt') return '📄';
+        return '📎';
+    }
+
+    function isPreviewable(name) {
+        const ext = (name || '').split('.').pop().toLowerCase();
+        return ['jpg','jpeg','png','pdf'].includes(ext);
+    }
+
+    async function renderAttachments(req) {
+        const loadingEl = document.getElementById('attachmentsLoading');
+        const listEl = document.getElementById('attachmentsList');
+        if (!loadingEl || !listEl) return;
+
+        // Collect all file paths from all attachment columns
+        const allFiles = [];
+
+        // New unified attachments (array of {path, name} objects)
+        if (Array.isArray(req.attachment_files)) {
+            req.attachment_files.forEach(f => {
+                allFiles.push({ path: f.path, name: f.name });
+            });
+        }
+
+        // Legacy graphic design files (array of path strings)
+        if (Array.isArray(req.graphic_design_files)) {
+            req.graphic_design_files.forEach(p => {
+                allFiles.push({ path: p, name: p.split('/').pop() });
+            });
+        }
+
+        // Legacy press release files (array of path strings)
+        if (Array.isArray(req.press_release_files)) {
+            req.press_release_files.forEach(p => {
+                allFiles.push({ path: p, name: p.split('/').pop() });
+            });
+        }
+
+        if (!allFiles.length && !req.cloud_drive_link) {
+            loadingEl.innerHTML = '<span style="color:#94a3b8;font-size:13px;">No attachments for this request.</span>';
+            return;
+        }
+
+        loadingEl.style.display = 'none';
+        listEl.style.display = 'flex';
+
+        // Generate signed URLs for each file (60 min)
+        for (const file of allFiles) {
+            const item = document.createElement('div');
+            item.className = 'attachment-item';
+            item.innerHTML = `<span class="attachment-icon">${getFileIcon(file.name)}</span>
+                <span class="attachment-name">${sanitize(file.name)}</span>
+                <span style="font-size:11px;color:#94a3b8;">Generating link…</span>`;
+            listEl.appendChild(item);
+
+            try {
+                // Use the correct bucket — request-attachments for new, cio-uploads for legacy
+                const bucket = file.path.startsWith('graphic-design/') || file.path.startsWith('press-release/')
+                    ? 'cio-uploads'
+                    : 'request-attachments';
+
+                const { data, error } = await sb.storage
+                    .from(bucket)
+                    .createSignedUrl(file.path, 3600, { download: true });
+
+                if (error || !data?.signedUrl) throw error || new Error('No URL');
+
+                // Preview URL (no download header) for in-browser open
+                const { data: previewData } = await sb.storage
+                    .from(bucket)
+                    .createSignedUrl(file.path, 3600);
+
+                const btns = document.createElement('div');
+                btns.style.cssText = 'display:flex;gap:6px;flex-shrink:0;';
+                btns.innerHTML = `<a href="${data.signedUrl}" class="attachment-btn download" download="${sanitize(file.name)}">⬇ Download</a>
+                    ${isPreviewable(file.name) && previewData?.signedUrl
+                        ? `<a href="${previewData.signedUrl}" target="_blank" rel="noopener" class="attachment-btn preview">👁 Preview</a>`
+                        : ''}`;
+
+                // Replace the placeholder text with buttons
+                item.lastElementChild.replaceWith(btns);
+            } catch (err) {
+                item.lastElementChild.textContent = '⚠ Link error';
+                item.lastElementChild.style.color = '#ef4444';
+            }
+        }
+
+        // Cloud drive link
+        if (req.cloud_drive_link) {
+            const cloudItem = document.createElement('div');
+            cloudItem.style.marginTop = '8px';
+            cloudItem.innerHTML = `<a href="${sanitize(req.cloud_drive_link)}" target="_blank" rel="noopener" class="cloud-link-btn">
+                📂 Open External Cloud Link
+            </a>`;
+            listEl.appendChild(cloudItem);
+        }
     }
 
     // ---- TAB SWITCHING ----
