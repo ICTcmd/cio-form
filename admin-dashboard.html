@@ -1274,7 +1274,7 @@
             <div class="detail-value" style="font-size:13px;">${sanitize(req.remarks)}</div>
         </div>` : ''}
         <div class="detail-section" id="attachmentsSection">
-            <div class="detail-section-title">Attachments</div>
+            <div class="detail-section-title">Attached Files &amp; Links</div>
             <div class="attachment-loading" id="attachmentsLoading">
                 <span>⏳ Loading attachments...</span>
             </div>
@@ -1298,88 +1298,105 @@
 
     async function renderAttachments(req) {
         const loadingEl = document.getElementById('attachmentsLoading');
-        const listEl = document.getElementById('attachmentsList');
+        const listEl    = document.getElementById('attachmentsList');
         if (!loadingEl || !listEl) return;
 
-        // Collect all file paths from all attachment columns
+        // ---- Session guard: only signed-in admins may generate signed URLs ----
+        const { data: { session } } = await sb.auth.getSession();
+        if (!session) {
+            loadingEl.innerHTML = '<span style="color:#ef4444;font-size:13px;">⚠ Session expired. Please log in again.</span>';
+            return;
+        }
+
+        // ---- Collect all file entries ----
         const allFiles = [];
 
-        // New unified attachments (array of {path, name} objects)
+        // New unified attachments — array of {path, name}
         if (Array.isArray(req.attachment_files)) {
-            req.attachment_files.forEach(f => {
-                allFiles.push({ path: f.path, name: f.name });
+            req.attachment_files.forEach(f => allFiles.push({ path: f.path, name: f.name }));
+        }
+
+        // Single-column flat fields (attachment_path + attachment_name)
+        if (req.attachment_path) {
+            allFiles.push({
+                path: req.attachment_path,
+                name: req.attachment_name || req.attachment_path.split('/').pop()
             });
         }
 
-        // Legacy graphic design files (array of path strings)
+        // Legacy graphic design files — array of path strings
         if (Array.isArray(req.graphic_design_files)) {
-            req.graphic_design_files.forEach(p => {
-                allFiles.push({ path: p, name: p.split('/').pop() });
-            });
+            req.graphic_design_files.forEach(p => allFiles.push({ path: p, name: p.split('/').pop() }));
         }
 
-        // Legacy press release files (array of path strings)
+        // Legacy press release files — array of path strings
         if (Array.isArray(req.press_release_files)) {
-            req.press_release_files.forEach(p => {
-                allFiles.push({ path: p, name: p.split('/').pop() });
-            });
+            req.press_release_files.forEach(p => allFiles.push({ path: p, name: p.split('/').pop() }));
         }
 
+        // ---- No attachments at all ----
         if (!allFiles.length && !req.cloud_drive_link) {
-            loadingEl.innerHTML = '<span style="color:#94a3b8;font-size:13px;">No attachments for this request.</span>';
+            loadingEl.innerHTML = `<span style="display:inline-flex;align-items:center;gap:6px;padding:6px 12px;background:#f1f5f9;border:1px solid #e2e8f0;border-radius:100px;color:#94a3b8;font-size:12px;font-weight:500;">
+                📎 No attachments provided
+            </span>`;
             return;
         }
 
         loadingEl.style.display = 'none';
         listEl.style.display = 'flex';
 
-        // Generate signed URLs for each file (60 min)
+        // ---- Generate signed URLs for each file (60 min) ----
         for (const file of allFiles) {
             const item = document.createElement('div');
             item.className = 'attachment-item';
             item.innerHTML = `<span class="attachment-icon">${getFileIcon(file.name)}</span>
                 <span class="attachment-name">${sanitize(file.name)}</span>
-                <span style="font-size:11px;color:#94a3b8;">Generating link…</span>`;
+                <span class="attachment-generating" style="font-size:11px;color:#94a3b8;">Generating link…</span>`;
             listEl.appendChild(item);
 
             try {
-                // Use the correct bucket — request-attachments for new, cio-uploads for legacy
-                const bucket = file.path.startsWith('graphic-design/') || file.path.startsWith('press-release/')
+                // Route to correct bucket — legacy files are in cio-uploads
+                const bucket = (file.path.startsWith('graphic-design/') || file.path.startsWith('press-release/'))
                     ? 'cio-uploads'
                     : 'request-attachments';
 
-                const { data, error } = await sb.storage
+                // Download URL (forces save-as prompt)
+                const { data: dlData, error: dlErr } = await sb.storage
                     .from(bucket)
-                    .createSignedUrl(file.path, 3600, { download: true });
+                    .createSignedUrl(file.path, 3600, { download: file.name });
 
-                if (error || !data?.signedUrl) throw error || new Error('No URL');
+                if (dlErr || !dlData?.signedUrl) throw dlErr || new Error('Signed URL unavailable');
 
-                // Preview URL (no download header) for in-browser open
-                const { data: previewData } = await sb.storage
-                    .from(bucket)
-                    .createSignedUrl(file.path, 3600);
+                // Preview URL (inline, opens in browser tab) — only for previewable types
+                let previewUrl = null;
+                if (isPreviewable(file.name)) {
+                    const { data: pvData } = await sb.storage
+                        .from(bucket)
+                        .createSignedUrl(file.path, 3600);
+                    previewUrl = pvData?.signedUrl || null;
+                }
 
                 const btns = document.createElement('div');
-                btns.style.cssText = 'display:flex;gap:6px;flex-shrink:0;';
-                btns.innerHTML = `<a href="${data.signedUrl}" class="attachment-btn download" download="${sanitize(file.name)}">⬇ Download</a>
-                    ${isPreviewable(file.name) && previewData?.signedUrl
-                        ? `<a href="${previewData.signedUrl}" target="_blank" rel="noopener" class="attachment-btn preview">👁 Preview</a>`
-                        : ''}`;
+                btns.style.cssText = 'display:flex;gap:6px;flex-shrink:0;flex-wrap:wrap;';
+                btns.innerHTML = `
+                    <a href="${dlData.signedUrl}" class="attachment-btn download" download="${sanitize(file.name)}">⬇ Download File</a>
+                    ${previewUrl ? `<a href="${previewUrl}" target="_blank" rel="noopener noreferrer" class="attachment-btn preview">👁 Open Preview</a>` : ''}`;
 
-                // Replace the placeholder text with buttons
-                item.lastElementChild.replaceWith(btns);
+                item.querySelector('.attachment-generating').replaceWith(btns);
+
             } catch (err) {
-                item.lastElementChild.textContent = '⚠ Link error';
-                item.lastElementChild.style.color = '#ef4444';
+                const errSpan = item.querySelector('.attachment-generating');
+                errSpan.textContent = '⚠ Could not generate link';
+                errSpan.style.color = '#ef4444';
             }
         }
 
-        // Cloud drive link
+        // ---- Cloud / external drive link ----
         if (req.cloud_drive_link) {
             const cloudItem = document.createElement('div');
             cloudItem.style.marginTop = '8px';
-            cloudItem.innerHTML = `<a href="${sanitize(req.cloud_drive_link)}" target="_blank" rel="noopener" class="cloud-link-btn">
-                📂 Open External Cloud Link
+            cloudItem.innerHTML = `<a href="${sanitize(req.cloud_drive_link)}" target="_blank" rel="noopener noreferrer" class="cloud-link-btn">
+                📂 Open External Cloud Link (Google Drive / OneDrive)
             </a>`;
             listEl.appendChild(cloudItem);
         }
