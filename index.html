@@ -1653,28 +1653,20 @@
 
                     <!-- Conditional: Graphic Design Upload -->
                     <div id="graphicDesignFields" class="conditional-field">
-                        <div class="cond-title">🎨 For Graphic / Lay-out Design — Upload Reference File</div>
-                        <p style="font-size:12px;color:var(--slate-600);margin-bottom:10px;">Upload your content reference, text file, or images. Accepted: .jpg, .jpeg, .png, .pdf, .docx, .txt (max 50MB each)</p>
+                        <div class="cond-title">🎨 For Graphic / Lay-out Design — Reference Files Link</div>
+                        <p style="font-size:12px;color:var(--slate-600);margin-bottom:10px;">Share your content reference, text, or images via Google Drive, OneDrive, or Dropbox. Set sharing to "Anyone with the link".</p>
                         <div class="form-group" style="margin:0;">
-                            <input type="file" id="graphicDesignFile" name="graphicDesignFile"
-                                accept=".jpg,.jpeg,.png,.pdf,.docx,.txt"
-                                multiple
-                                style="width:100%;padding:10px;border:1.5px dashed var(--slate-300);border-radius:var(--radius-sm);font-size:13px;background:white;cursor:pointer;">
+                            <input type="text" id="graphicDesignFile" placeholder="https://drive.google.com/drive/folders/...">
                         </div>
-                        <div id="graphicFilePreview" style="margin-top:10px;display:flex;flex-wrap:wrap;gap:8px;"></div>
                     </div>
 
                     <!-- Conditional: Press Release Upload -->
                     <div id="pressReleaseFields" class="conditional-field">
-                        <div class="cond-title">📄 For Press Release / Write-up — Upload Your File</div>
-                        <p style="font-size:12px;color:var(--slate-600);margin-bottom:10px;">Upload your draft, write-up, or reference materials. Accepted: .jpg, .jpeg, .png, .pdf, .docx, .txt (max 50MB each)</p>
+                        <div class="cond-title">📄 For Press Release / Write-up — Reference Files Link</div>
+                        <p style="font-size:12px;color:var(--slate-600);margin-bottom:10px;">Share your draft, write-up, or reference materials via Google Drive, OneDrive, or Dropbox. Set sharing to "Anyone with the link".</p>
                         <div class="form-group" style="margin:0;">
-                            <input type="file" id="pressReleaseFile" name="pressReleaseFile"
-                                accept=".jpg,.jpeg,.png,.pdf,.docx,.txt"
-                                multiple
-                                style="width:100%;padding:10px;border:1.5px dashed var(--slate-300);border-radius:var(--radius-sm);font-size:13px;background:white;cursor:pointer;">
+                            <input type="text" id="pressReleaseFile" placeholder="https://drive.google.com/drive/folders/...">
                         </div>
-                        <div id="pressReleaseFilePreview" style="margin-top:10px;display:flex;flex-wrap:wrap;gap:8px;"></div>
                     </div>
 
                     <!-- Conditional: Social Media -->
@@ -1982,13 +1974,7 @@
         });
     }
 
-    // ---- File input event listeners ----
-    document.getElementById('graphicDesignFile').addEventListener('change', function () {
-        showFilePreview(this.files, 'graphicFilePreview');
-    });
-    document.getElementById('pressReleaseFile').addEventListener('change', function () {
-        showFilePreview(this.files, 'pressReleaseFilePreview');
-    });
+    // ---- Conditional field drive link placeholders (no file handling needed) ----
 
     // ---- Selected services ----
     function getSelectedServices() {
@@ -2048,6 +2034,8 @@
             copy_date_taken: document.getElementById('copyDateTaken').value || null,
             remarks: document.getElementById('remarks').value || null,
             cloud_drive_link: cloudDriveLink || null,
+            graphic_design_link: document.getElementById('graphicDesignFile').value.trim() || null,
+            press_release_link: document.getElementById('pressReleaseFile').value.trim() || null,
             status: 'Pending'
         };
 
@@ -2073,9 +2061,7 @@
             document.getElementById('remarks').value = '';
             document.getElementById('cloudDriveLink').value = '';
             document.getElementById('graphicDesignFile').value = '';
-            document.getElementById('graphicFilePreview').innerHTML = '';
             document.getElementById('pressReleaseFile').value = '';
-            document.getElementById('pressReleaseFilePreview').innerHTML = '';
 
             // Re-lock privacy after reset
             const cb = document.getElementById('privacyConsent');
