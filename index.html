@@ -932,7 +932,7 @@
         -webkit-backdrop-filter: blur(4px);
         z-index: 2000; display: none;
         align-items: center; justify-content: center;
-        padding: 20px;
+        padding: 12px;
     }
 
     .privacy-modal-overlay.open { display: flex; }
@@ -943,7 +943,7 @@
         width: 100%; max-width: 640px;
         box-shadow: 0 25px 60px rgba(0,0,0,0.3);
         display: flex; flex-direction: column;
-        max-height: 90vh;
+        max-height: min(90vh, 680px);
         overflow: hidden;
     }
 
@@ -1756,7 +1756,7 @@
                             I hereby authorize the City Information Office (CIO) of Bago City to collect and process the personal information provided in this form solely for processing my service request, in compliance with <strong>RA 10173 (Data Privacy Act of 2012)</strong>.
                         </label>
                         <br>
-                        <button type="button" class="privacy-link" onclick="openPrivacyModal()">You must read the Full Data Privacy Statement before proceeding →</button>
+                        <button type="button" class="privacy-link" onclick="openPrivacyModal()">👉 Click here to read the Full Data Privacy Statement and Accept →</button>
                     </div>
                 </div>
 
