@@ -912,6 +912,9 @@
         // Hide delete buttons if not superadmin
         if (currentUserRole !== 'superadmin') {
             document.documentElement.style.setProperty('--del-btn-display', 'none');
+            // Also hide Export CSV — sensitive bulk data export
+            const exportBtn = document.querySelector('[onclick="exportRequests()"]');
+            if (exportBtn) exportBtn.style.display = 'none';
         } else {
             // Show User Management tab for superadmin
             document.getElementById('userMgmtTab').style.display = 'block';
@@ -1237,6 +1240,10 @@
     }
 
     function exportRequests() {
+        if (currentUserRole !== 'superadmin') {
+            showToast('Access Denied: Only Superadmins can export data.', 'error');
+            return;
+        }
         if (!allRequests.length) { alert('No requests to export.'); return; }
         let csv = 'Control Number,Date,Office,Contact Person,Phone,Messenger,Event,Event Date,Services,Status\n';
         allRequests.forEach(r => {
