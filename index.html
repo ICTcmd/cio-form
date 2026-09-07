@@ -999,8 +999,9 @@
     .privacy-modal-footer {
         padding: 16px 28px;
         border-top: 1px solid #e2e8f0;
-        display: flex; gap: 10px;
-        justify-content: flex-end;
+        display: flex;
+        flex-direction: column;
+        align-items: stretch;
         flex-shrink: 0;
         flex-wrap: wrap;
     }
@@ -1028,7 +1029,8 @@
         transition: all 0.2s;
     }
 
-    .btn-privacy-accept:hover { background: #4338ca; }
+    .btn-privacy-accept:hover:not(:disabled) { background: #4338ca; }
+    .btn-privacy-accept:disabled { opacity: 0.45; cursor: not-allowed; }
         display: flex; align-items: flex-start; gap: 12px;
         background: var(--slate-50);
         border: 1.5px solid var(--slate-200);
@@ -1768,11 +1770,11 @@
 <div class="privacy-modal-overlay no-print" id="privacyModal">
     <div class="privacy-modal">
         <div class="privacy-modal-header">
-            <div class="privacy-modal-badge">📋 RA 10173 — Data Privacy Act of 2012</div>
+            <div class="privacy-modal-badge">RA 10173 — Data Privacy Act of 2012</div>
             <h2>Data Privacy Notice & Consent Policy</h2>
             <p>City Information Office (CIO) — City Government of Bago</p>
         </div>
-        <div class="privacy-modal-body">
+        <div class="privacy-modal-body" id="privacyModalBody">
             <h3>1. Introduction</h3>
             <p>The City Government of Bago — City Information Office (CIO) is committed to protecting your personal data in accordance with Republic Act No. 10173, otherwise known as the <strong>Data Privacy Act of 2012 (DPA)</strong>, its Implementing Rules and Regulations (IRR), and issuances of the National Privacy Commission (NPC).</p>
 
@@ -1822,12 +1824,17 @@
             </ul>
         </div>
         <div class="privacy-modal-footer">
-            <a href="/docs/Bago_CIO_Data_Privacy_Policy.pdf" download class="btn-privacy-download">
-                📄 Download PDF Copy
-            </a>
-            <button type="button" class="btn-privacy-accept" onclick="acceptPrivacy()">
-                I Accept &amp; Understand
-            </button>
+            <div style="width:100%;margin-bottom:10px;text-align:center;display:block;" id="scrollNoticeText">
+                <span style="font-size:11px;color:#94a3b8;font-style:italic;">Please scroll to the end of the notice to enable acceptance.</span>
+            </div>
+            <div style="display:flex;gap:10px;justify-content:flex-end;flex-wrap:wrap;width:100%;">
+                <a href="/docs/Bago_CIO_Data_Privacy_Policy.pdf" download class="btn-privacy-download">
+                    Download PDF Copy
+                </a>
+                <button type="button" class="btn-privacy-accept" id="acceptPrivacyBtn" onclick="acceptPrivacy()" disabled style="opacity:0.45;cursor:not-allowed;">
+                    I Accept &amp; Understand
+                </button>
+            </div>
         </div>
     </div>
 </div>
@@ -1990,6 +1997,41 @@
     function openPrivacyModal() {
         document.getElementById('privacyModal').classList.add('open');
         document.body.style.overflow = 'hidden';
+
+        // Reset accept button to disabled on every open
+        const acceptBtn   = document.getElementById('acceptPrivacyBtn');
+        const noticeText  = document.getElementById('scrollNoticeText');
+        const modalBody   = document.getElementById('privacyModalBody');
+
+        acceptBtn.disabled = true;
+        acceptBtn.style.opacity = '0.45';
+        acceptBtn.style.cursor  = 'not-allowed';
+        if (noticeText) noticeText.style.display = 'block';
+
+        // Scroll back to top so user must scroll through
+        modalBody.scrollTop = 0;
+
+        // Scroll detection — enable button when user reaches within 15px of bottom
+        function onScroll() {
+            const atBottom = modalBody.scrollHeight - modalBody.scrollTop <= modalBody.clientHeight + 15;
+            if (atBottom) {
+                acceptBtn.disabled = false;
+                acceptBtn.style.opacity = '1';
+                acceptBtn.style.cursor  = 'pointer';
+                if (noticeText) noticeText.style.display = 'none';
+                modalBody.removeEventListener('scroll', onScroll);
+            }
+        }
+        modalBody.removeEventListener('scroll', onScroll); // clean up any prior listener
+        modalBody.addEventListener('scroll', onScroll);
+
+        // Edge case: content short enough to not need scrolling
+        if (modalBody.scrollHeight <= modalBody.clientHeight + 15) {
+            acceptBtn.disabled = false;
+            acceptBtn.style.opacity = '1';
+            acceptBtn.style.cursor  = 'pointer';
+            if (noticeText) noticeText.style.display = 'none';
+        }
     }
 
     function closePrivacyModal() {
