@@ -1725,7 +1725,7 @@
                         <label for="cloudDriveLink">Link to Request Files / Media Assets <span style="color:var(--slate-400);font-weight:400;">(Google Drive, OneDrive, Dropbox)</span></label>
                         <input type="text" id="cloudDriveLink" placeholder="https://drive.google.com/drive/folders/...">
                         <div style="margin-top:8px;padding:10px 14px;background:#fefce8;border:1px solid #fde047;border-radius:var(--radius-sm);font-size:12px;color:#713f12;line-height:1.6;">
-                            ⚠️ <strong>Important:</strong> Set your link sharing permission to <strong>"Anyone with the link"</strong> so the CIO team can view and download your files.
+                            <strong>Important:</strong> Set your link sharing permission to <strong>"Anyone with the link"</strong> so the CIO team can view and download your files.
                         </div>
                     </div>
                 </div>
@@ -1748,7 +1748,7 @@
                             I hereby authorize the City Information Office (CIO) of Bago City to collect and process the personal information provided in this form solely for processing my service request, in compliance with <strong>RA 10173 (Data Privacy Act of 2012)</strong>.
                         </label>
                         <br>
-                        <button type="button" class="privacy-link" onclick="openPrivacyModal()">👉 Click here to read the Full Data Privacy Statement and Accept →</button>
+                        <button type="button" class="privacy-link" onclick="openPrivacyModal()">Click here to read the Full Data Privacy Statement and Accept →</button>
                     </div>
                 </div>
 
@@ -2158,7 +2158,7 @@
             if (label) { label.style.opacity = '0.6'; label.style.cursor = 'default'; }
             const link = cb.nextElementSibling.querySelector('.privacy-link');
             if (link) {
-                link.textContent = '👉 Click here to read the Full Data Privacy Statement and Accept →';
+                link.textContent = 'Click here to read the Full Data Privacy Statement and Accept →';
                 link.style.color = '#4f46e5';
                 link.style.textDecoration = 'underline';
                 link.style.cursor = 'pointer';
