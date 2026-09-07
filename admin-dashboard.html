@@ -394,6 +394,22 @@
 
         .act-btn.view { color: #0891b2; border-color: #e0f2fe; }
         .act-btn.view:hover, .act-btn.view:active { border-color: #0891b2; color: #0e7490; background: #f0f9ff; }
+        .act-btn.key { color: #d97706; border-color: #fef3c7; }
+        .act-btn.key:hover, .act-btn.key:active { border-color: #d97706; color: #b45309; background: #fffbeb; }
+
+        /* ---- UPDATE PASSWORD BUTTON in topnav ---- */
+        .btn-update-pw {
+            padding: 8px 14px;
+            background: transparent;
+            border: 1px solid rgba(255,255,255,0.15);
+            border-radius: 8px;
+            font-size: 12px; font-weight: 500;
+            color: rgba(255,255,255,0.55);
+            cursor: pointer;
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            transition: all 0.2s;
+        }
+        .btn-update-pw:hover { background: rgba(255,255,255,0.08); color: white; }
 
         /* ---- DETAIL MODAL ---- */
         .detail-modal-overlay {
@@ -694,6 +710,7 @@
             <span class="admin-badge-dot"></span>
             <span>Admin</span>
         </div>
+        <button class="btn-update-pw" onclick="openUpdateMyPasswordModal()">🔑 My Password</button>
         <button class="btn-logout" id="logoutBtn">Logout</button>
     </div>
 </nav>
@@ -856,6 +873,55 @@
         <div class="modal-actions">
             <button class="btn-modal-cancel" onclick="closeCreateUserModal()">Cancel</button>
             <button class="btn-modal-confirm" id="createUserBtn" onclick="createAdminUser()">Create Account</button>
+        </div>
+    </div>
+</div>
+
+<!-- RESET PASSWORD MODAL (Superadmin resets another admin's password) -->
+<div class="modal-overlay" id="resetPasswordModal">
+    <div class="modal-card">
+        <h2>Reset Admin Password</h2>
+        <p id="resetPasswordSubtitle">Choose how to reset the password for this account.</p>
+
+        <!-- Option A: Direct reset -->
+        <div style="background:#f8fafc;border:1.5px solid #e2e8f0;border-radius:10px;padding:16px;margin-bottom:12px;">
+            <div style="font-size:12px;font-weight:700;color:#334155;margin-bottom:10px;text-transform:uppercase;letter-spacing:0.5px;">Option A — Set New Password Directly</div>
+            <div class="modal-field" style="margin-bottom:8px;">
+                <label>New Temporary Password</label>
+                <input type="text" id="resetNewPassword" placeholder="Min. 8 characters">
+            </div>
+            <button class="btn-modal-confirm" id="resetDirectBtn" onclick="resetPasswordDirect()" style="width:100%;">Set New Password</button>
+        </div>
+
+        <!-- Option B: Email recovery link -->
+        <div style="background:#f8fafc;border:1.5px solid #e2e8f0;border-radius:10px;padding:16px;">
+            <div style="font-size:12px;font-weight:700;color:#334155;margin-bottom:10px;text-transform:uppercase;letter-spacing:0.5px;">Option B — Send Password Reset Email</div>
+            <p style="font-size:13px;color:#64748b;margin-bottom:10px;">Sends a secure reset link to the admin's email address.</p>
+            <button class="btn-modal-confirm" id="resetEmailBtn" onclick="resetPasswordByEmail()" style="width:100%;background:#0891b2;">Send Reset Email</button>
+        </div>
+
+        <div class="modal-actions" style="margin-top:16px;">
+            <button class="btn-modal-cancel" onclick="closeResetPasswordModal()">Cancel</button>
+        </div>
+    </div>
+</div>
+
+<!-- UPDATE MY PASSWORD MODAL (self-service) -->
+<div class="modal-overlay" id="updateMyPasswordModal">
+    <div class="modal-card">
+        <h2>Update My Password</h2>
+        <p>Enter a new password for your account. You will be asked to log in again after updating.</p>
+        <div class="modal-field">
+            <label>New Password</label>
+            <input type="password" id="myNewPassword" placeholder="Min. 8 characters">
+        </div>
+        <div class="modal-field">
+            <label>Confirm New Password</label>
+            <input type="password" id="myConfirmPassword" placeholder="Re-enter new password">
+        </div>
+        <div class="modal-actions">
+            <button class="btn-modal-cancel" onclick="closeUpdateMyPasswordModal()">Cancel</button>
+            <button class="btn-modal-confirm" id="updateMyPwBtn" onclick="updateMyPassword()">Update Password</button>
         </div>
     </div>
 </div>
@@ -1364,6 +1430,110 @@
         listEl.appendChild(linkItem);
     }
 
+    // ---- RESET PASSWORD MODAL (superadmin resets another admin) ----
+    let resetTargetUserId = null;
+    let resetTargetEmail  = null;
+
+    function openResetPasswordModal(userId, email) {
+        resetTargetUserId = userId;
+        resetTargetEmail  = email;
+        document.getElementById('resetPasswordSubtitle').textContent = `Account: ${email}`;
+        document.getElementById('resetNewPassword').value = '';
+        document.getElementById('resetPasswordModal').classList.add('open');
+        document.body.style.overflow = 'hidden';
+    }
+
+    function closeResetPasswordModal() {
+        document.getElementById('resetPasswordModal').classList.remove('open');
+        document.body.style.overflow = '';
+        resetTargetUserId = null;
+        resetTargetEmail  = null;
+    }
+
+    async function resetPasswordDirect() {
+        const newPw = document.getElementById('resetNewPassword').value.trim();
+        if (!newPw || newPw.length < 8) {
+            showToast('Password must be at least 8 characters.', 'error'); return;
+        }
+        const btn = document.getElementById('resetDirectBtn');
+        btn.textContent = 'Resetting...'; btn.disabled = true;
+        try {
+            await callAdminFunction('resetPassword', { userId: resetTargetUserId, password: newPw });
+            showToast(`✅ Password reset for ${resetTargetEmail}`, 'success');
+            closeResetPasswordModal();
+        } catch (err) {
+            showToast('Error: ' + err.message, 'error');
+        } finally {
+            btn.textContent = 'Set New Password'; btn.disabled = false;
+        }
+    }
+
+    async function resetPasswordByEmail() {
+        if (!resetTargetEmail) return;
+        const btn = document.getElementById('resetEmailBtn');
+        btn.textContent = 'Sending...'; btn.disabled = true;
+        try {
+            const { error } = await sb.auth.resetPasswordForEmail(resetTargetEmail, {
+                redirectTo: 'https://cio-bago.digital/update-password'
+            });
+            if (error) throw error;
+            showToast(`✅ Reset email sent to ${resetTargetEmail}`, 'success');
+            closeResetPasswordModal();
+        } catch (err) {
+            showToast('Error: ' + err.message, 'error');
+        } finally {
+            btn.textContent = 'Send Reset Email'; btn.disabled = false;
+        }
+    }
+
+    // ---- UPDATE MY PASSWORD (self-service) ----
+    function openUpdateMyPasswordModal() {
+        document.getElementById('myNewPassword').value = '';
+        document.getElementById('myConfirmPassword').value = '';
+        document.getElementById('updateMyPasswordModal').classList.add('open');
+        document.body.style.overflow = 'hidden';
+    }
+
+    function closeUpdateMyPasswordModal() {
+        document.getElementById('updateMyPasswordModal').classList.remove('open');
+        document.body.style.overflow = '';
+    }
+
+    async function updateMyPassword() {
+        const newPw  = document.getElementById('myNewPassword').value;
+        const confPw = document.getElementById('myConfirmPassword').value;
+        if (!newPw || newPw.length < 8) {
+            showToast('Password must be at least 8 characters.', 'error'); return;
+        }
+        if (newPw !== confPw) {
+            showToast('Passwords do not match.', 'error'); return;
+        }
+        const btn = document.getElementById('updateMyPwBtn');
+        btn.textContent = 'Updating...'; btn.disabled = true;
+        try {
+            const { error } = await sb.auth.updateUser({ password: newPw });
+            if (error) throw error;
+            showToast('✅ Password updated. Please log in again.', 'success');
+            closeUpdateMyPasswordModal();
+            setTimeout(async () => {
+                await sb.auth.signOut();
+                window.location.href = '/admin-login';
+            }, 2000);
+        } catch (err) {
+            showToast('Error: ' + err.message, 'error');
+        } finally {
+            btn.textContent = 'Update Password'; btn.disabled = false;
+        }
+    }
+
+    // Close modals on backdrop click
+    document.getElementById('resetPasswordModal').addEventListener('click', function(e) {
+        if (e.target === this) closeResetPasswordModal();
+    });
+    document.getElementById('updateMyPasswordModal').addEventListener('click', function(e) {
+        if (e.target === this) closeUpdateMyPasswordModal();
+    });
+
     // ---- TAB SWITCHING ----
     function switchTab(tab) {
         document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
@@ -1422,16 +1592,34 @@
                 tr.appendChild(tdLast);
 
                 const tdActions = document.createElement('td');
+                const actWrap = document.createElement('div');
+                actWrap.className = 'action-wrap';
+
+                // Reset password button — superadmin can reset any non-self, non-superadmin account
+                if (currentUserRole === 'superadmin' && !isSelf) {
+                    const resetBtn = document.createElement('button');
+                    resetBtn.className = 'act-btn key';
+                    resetBtn.setAttribute('data-tip', 'Reset Password');
+                    resetBtn.innerHTML = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>`;
+                    resetBtn.onclick = () => openResetPasswordModal(user.id, user.email);
+                    actWrap.appendChild(resetBtn);
+                }
+
                 if (!isSelf && !isSuperadmin) {
                     const delBtn = document.createElement('button');
                     delBtn.className = 'act-btn del';
                     delBtn.setAttribute('data-tip', 'Delete Account');
                     delBtn.innerHTML = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/><path d="M10 11v6"/><path d="M14 11v6"/></svg>`;
                     delBtn.onclick = () => deleteAdminUser(user.id, user.email);
-                    tdActions.appendChild(delBtn);
-                } else {
-                    tdActions.innerHTML = `<span style="font-size:12px;color:#94a3b8;">${isSelf ? 'Current user' : 'Protected'}</span>`;
+                    actWrap.appendChild(delBtn);
+                } else if (isSelf || isSuperadmin) {
+                    const badge = document.createElement('span');
+                    badge.style.cssText = 'font-size:12px;color:#94a3b8;';
+                    badge.textContent = isSelf ? 'Current user' : 'Protected';
+                    actWrap.appendChild(badge);
                 }
+
+                tdActions.appendChild(actWrap);
                 tr.appendChild(tdActions);
                 tbody.appendChild(tr);
             });
