@@ -1335,135 +1335,33 @@
         const listEl    = document.getElementById('attachmentsList');
         if (!loadingEl || !listEl) return;
 
-        // ---- Session guard: only signed-in admins may generate signed URLs ----
-        const { data: { session } } = await sb.auth.getSession();
-        if (!session) {
-            loadingEl.innerHTML = '<span style="color:#ef4444;font-size:13px;">⚠ Session expired. Please log in again.</span>';
-            return;
-        }
+        loadingEl.style.display = 'none';
+        listEl.style.display = 'flex';
 
-        // ---- Collect all file entries ----
-        const allFiles = [];
-
-        // New unified attachments — array of {path, name}
-        if (Array.isArray(req.attachment_files)) {
-            req.attachment_files.forEach(f => allFiles.push({ path: f.path, name: f.name }));
-        }
-
-        // Single-column flat fields (attachment_path + attachment_name)
-        if (req.attachment_path) {
-            allFiles.push({
-                path: req.attachment_path,
-                name: req.attachment_name || req.attachment_path.split('/').pop()
-            });
-        }
-
-        // Legacy graphic design files — array of path strings
-        if (Array.isArray(req.graphic_design_files)) {
-            req.graphic_design_files.forEach(p => allFiles.push({ path: p, name: p.split('/').pop() }));
-        }
-
-        // Legacy press release files — array of path strings
-        if (Array.isArray(req.press_release_files)) {
-            req.press_release_files.forEach(p => allFiles.push({ path: p, name: p.split('/').pop() }));
-        }
-
-        // ---- No attachments at all ----
-        if (!allFiles.length && !req.cloud_drive_link) {
-            loadingEl.innerHTML = `<span style="display:inline-flex;align-items:center;gap:6px;padding:6px 12px;background:#f1f5f9;border:1px solid #e2e8f0;border-radius:100px;color:#94a3b8;font-size:12px;font-weight:500;">
-                📎 No attachments provided
+        if (!req.cloud_drive_link) {
+            listEl.innerHTML = `<span style="display:inline-flex;align-items:center;gap:6px;padding:6px 12px;background:#f1f5f9;border:1px solid #e2e8f0;border-radius:100px;color:#94a3b8;font-size:12px;font-weight:500;">
+                📎 No external cloud link provided
             </span>`;
             return;
         }
 
-        loadingEl.style.display = 'none';
-        listEl.style.display = 'flex';
-
-        // ---- Generate signed URLs for each file (60 min) ----
-        for (const file of allFiles) {
-            const isImg = /\.(jpg|jpeg|png|webp|gif)$/i.test(file.name);
-            const item = document.createElement('div');
-            item.className = 'attachment-item' + (isImg ? ' has-thumb' : '');
-
-            // Placeholder while loading
-            item.innerHTML = isImg
-                ? `<div class="attachment-thumb-row">
-                       <span class="attachment-icon">🖼️</span>
-                       <span class="attachment-name">${sanitize(file.name)}</span>
-                       <span class="attachment-generating" style="font-size:11px;color:#94a3b8;margin-left:auto;">Generating…</span>
-                   </div>`
-                : `<span class="attachment-icon">${getFileIcon(file.name)}</span>
-                   <span class="attachment-name">${sanitize(file.name)}</span>
-                   <span class="attachment-generating" style="font-size:11px;color:#94a3b8;margin-left:auto;">Generating…</span>`;
-            listEl.appendChild(item);
-
-            try {
-                const bucket = (file.path.startsWith('graphic-design/') || file.path.startsWith('press-release/'))
-                    ? 'cio-uploads'
-                    : 'request-attachments';
-
-                // Download URL (triggers save-as)
-                const { data: dlData, error: dlErr } = await sb.storage
-                    .from(bucket)
-                    .createSignedUrl(file.path, 3600, { download: file.name });
-
-                if (dlErr || !dlData?.signedUrl) throw dlErr || new Error('Signed URL unavailable');
-
-                // Preview/inline URL for images and PDFs
-                let previewUrl = null;
-                if (isPreviewable(file.name)) {
-                    const { data: pvData } = await sb.storage
-                        .from(bucket)
-                        .createSignedUrl(file.path, 3600);
-                    previewUrl = pvData?.signedUrl || null;
-                }
-
-                const genEl = item.querySelector('.attachment-generating');
-
-                if (isImg && previewUrl) {
-                    // ---- Image card: thumbnail + buttons ----
-                    const thumbAndBtns = document.createElement('div');
-                    thumbAndBtns.style.cssText = 'width:100%;';
-                    thumbAndBtns.innerHTML = `
-                        <img src="${previewUrl}" alt="${sanitize(file.name)}" class="attachment-thumb"
-                             onerror="this.style.display='none'">
-                        <div style="display:flex;gap:6px;margin-top:8px;flex-wrap:wrap;">
-                            <a href="${dlData.signedUrl}" class="attachment-btn download" download="${sanitize(file.name)}">⬇ Download Original Image</a>
-                            <a href="${previewUrl}" target="_blank" rel="noopener noreferrer" class="attachment-btn preview">👁 Open Preview</a>
-                        </div>`;
-                    genEl.replaceWith(thumbAndBtns);
-                } else {
-                    // ---- Document card: icon + name + buttons ----
-                    const btns = document.createElement('div');
-                    btns.style.cssText = 'display:flex;gap:6px;flex-shrink:0;flex-wrap:wrap;margin-left:auto;';
-                    const isDoc = /\.(pdf|doc|docx|txt)$/i.test(file.name);
-                    btns.innerHTML = `
-                        <a href="${dlData.signedUrl}" class="attachment-btn download" download="${sanitize(file.name)}">
-                            ${isDoc ? '⬇ Download Document' : '⬇ Download File'}
-                        </a>
-                        ${previewUrl ? `<a href="${previewUrl}" target="_blank" rel="noopener noreferrer" class="attachment-btn preview">👁 Open Preview</a>` : ''}`;
-                    genEl.replaceWith(btns);
-                }
-
-            } catch (err) {
-                console.error('Attachment signed URL error:', file.name, err);
-                const genEl = item.querySelector('.attachment-generating');
-                if (genEl) {
-                    genEl.textContent = '⚠ Could not generate link';
-                    genEl.style.color = '#ef4444';
-                }
-            }
-        }
-
-        // ---- Cloud / external drive link ----
-        if (req.cloud_drive_link) {
-            const cloudItem = document.createElement('div');
-            cloudItem.style.marginTop = '8px';
-            cloudItem.innerHTML = `<a href="${sanitize(req.cloud_drive_link)}" target="_blank" rel="noopener noreferrer" class="cloud-link-btn">
-                📂 Open External Cloud Link (Google Drive / OneDrive)
-            </a>`;
-            listEl.appendChild(cloudItem);
-        }
+        // Render cloud drive link with Open + Copy buttons
+        const linkItem = document.createElement('div');
+        linkItem.style.cssText = 'display:flex;flex-direction:column;gap:10px;width:100%;';
+        linkItem.innerHTML = `
+            <div style="padding:10px 14px;background:#f8fafc;border:1px solid #e2e8f0;border-radius:9px;font-size:12px;color:#64748b;word-break:break-all;">
+                🔗 ${sanitize(req.cloud_drive_link)}
+            </div>
+            <div style="display:flex;gap:8px;flex-wrap:wrap;">
+                <a href="${sanitize(req.cloud_drive_link)}" target="_blank" rel="noopener noreferrer" class="cloud-link-btn">
+                    📂 Open External Google Drive Link
+                </a>
+                <button onclick="navigator.clipboard.writeText('${sanitize(req.cloud_drive_link)}').then(()=>showToast('Link copied!','info'))"
+                    style="display:inline-flex;align-items:center;gap:6px;padding:10px 16px;border-radius:9px;background:#f8fafc;border:1.5px solid #e2e8f0;color:#334155;font-size:13px;font-weight:600;cursor:pointer;font-family:'Plus Jakarta Sans',sans-serif;transition:all 0.15s;">
+                    📋 Copy Link
+                </button>
+            </div>`;
+        listEl.appendChild(linkItem);
     }
 
     // ---- TAB SWITCHING ----
