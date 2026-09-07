@@ -1004,7 +1004,7 @@
         // Start inactivity timer (15 min)
         resetInactivityTimer();
         ['mousemove','keydown','click','scroll'].forEach(e => {
-            document.addEventListener(e, resetInactivityTimer);
+            document.addEventListener(e, resetInactivityTimer, { passive: true });
         });
 
         loadRequests();
