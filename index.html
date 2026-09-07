@@ -1351,8 +1351,13 @@
             </div>
         </div>
 
-        <!-- RIGHT: Nav links + CIO logo -->
+        <!-- RIGHT: Clock + Nav links + CIO logo -->
         <div style="display:flex;align-items:center;gap:16px;">
+            <!-- Live Digital Clock -->
+            <div id="navbarClock" style="display:flex;align-items:center;gap:6px;font-size:11px;font-family:'Courier New',monospace;color:rgba(255,255,255,0.7);background:rgba(15,23,42,0.6);padding:5px 11px;border-radius:8px;border:1px solid rgba(255,255,255,0.1);white-space:nowrap;">
+                <span style="width:7px;height:7px;border-radius:50%;background:#22c55e;display:inline-block;animation:clockPulse 2s infinite;flex-shrink:0;"></span>
+                <span id="clockTime">--:--:-- --</span>
+            </div>
             <ul class="nav-links">
                 <li><a href="#services">Services</a></li>
                 <li><a href="#request-form">Submit Form</a></li>
@@ -1828,6 +1833,19 @@
 </div>
 
 <!-- ============================================================
+     BIBLE VERSE OF THE DAY
+============================================================ -->
+<div class="no-print" style="background:#0d111a;padding:20px 16px 8px;">
+    <div style="max-width:760px;margin:0 auto;">
+        <div style="padding:16px 22px;background:rgba(15,23,42,0.7);border:1px solid rgba(255,255,255,0.08);border-radius:14px;text-align:center;backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);">
+            <p style="font-size:10px;font-weight:700;letter-spacing:1.2px;text-transform:uppercase;color:#f59e0b;margin-bottom:7px;opacity:0.9;">✦ Verse of the Day ✦</p>
+            <blockquote id="dailyVerseText" style="font-size:13px;font-style:italic;color:rgba(255,255,255,0.75);line-height:1.7;margin:0 0 7px;font-family:Georgia,serif;">"..."</blockquote>
+            <p id="dailyVerseRef" style="font-size:11px;font-weight:600;color:rgba(255,255,255,0.4);letter-spacing:0.3px;margin:0;"></p>
+        </div>
+    </div>
+</div>
+
+<!-- ============================================================
      FOOTER
 ============================================================ -->
 <footer class="footer no-print">
@@ -1860,6 +1878,73 @@
 ============================================================ -->
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script>
+    // ---- CLOCK ANIMATION (CSS injected via JS to keep HTML clean) ----
+    (function() {
+        const s = document.createElement('style');
+        s.textContent = '@keyframes clockPulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:0.35;transform:scale(0.75)}}';
+        document.head.appendChild(s);
+    })();
+
+    // ---- LIVE DIGITAL CLOCK (Philippine Time, 12-hr) ----
+    function updateClock() {
+        const now = new Date();
+        const ph  = new Date(now.toLocaleString('en-US', { timeZone: 'Asia/Manila' }));
+        const days = ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
+        const months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+        let h = ph.getHours(), m = ph.getMinutes(), s = ph.getSeconds();
+        const ampm = h >= 12 ? 'PM' : 'AM';
+        h = h % 12 || 12;
+        const pad = n => String(n).padStart(2, '0');
+        const timeStr = `${pad(h)}:${pad(m)}:${pad(s)} ${ampm}`;
+        const dateStr = `${days[ph.getDay()]}, ${months[ph.getMonth()]} ${ph.getDate()}`;
+        const el = document.getElementById('clockTime');
+        if (el) el.textContent = `${timeStr} | ${dateStr}`;
+    }
+    updateClock();
+    setInterval(updateClock, 1000);
+
+    // ---- DAILY BIBLE VERSE (31 verses, rotates by day of month) ----
+    const verses = [
+        { quote: "Trust in the LORD with all your heart and lean not on your own understanding.", ref: "Proverbs 3:5" },
+        { quote: "For I know the plans I have for you, declares the LORD, plans to prosper you and not to harm you, plans to give you hope and a future.", ref: "Jeremiah 29:11" },
+        { quote: "I can do all this through him who gives me strength.", ref: "Philippians 4:13" },
+        { quote: "The LORD is my shepherd; I shall not want.", ref: "Psalm 23:1" },
+        { quote: "Be strong and courageous. Do not be afraid; do not be discouraged, for the LORD your God will be with you wherever you go.", ref: "Joshua 1:9" },
+        { quote: "And we know that in all things God works for the good of those who love him, who have been called according to his purpose.", ref: "Romans 8:28" },
+        { quote: "For God so loved the world that he gave his one and only Son, that whoever believes in him shall not perish but have eternal life.", ref: "John 3:16" },
+        { quote: "Do not be anxious about anything, but in every situation, by prayer and petition, with thanksgiving, present your requests to God.", ref: "Philippians 4:6" },
+        { quote: "The LORD is my light and my salvation — whom shall I fear? The LORD is the stronghold of my life — of whom shall I be afraid?", ref: "Psalm 27:1" },
+        { quote: "Come to me, all you who are weary and burdened, and I will give you rest.", ref: "Matthew 11:28" },
+        { quote: "But those who hope in the LORD will renew their strength. They will soar on wings like eagles; they will run and not grow weary.", ref: "Isaiah 40:31" },
+        { quote: "Love is patient, love is kind. It does not envy, it does not boast, it is not proud.", ref: "1 Corinthians 13:4" },
+        { quote: "Your word is a lamp for my feet, a light on my path.", ref: "Psalm 119:105" },
+        { quote: "For the Spirit God gave us does not make us timid, but gives us power, love and self-discipline.", ref: "2 Timothy 1:7" },
+        { quote: "Delight yourself in the LORD and he will give you the desires of your heart.", ref: "Psalm 37:4" },
+        { quote: "I praise you because I am fearfully and wonderfully made; your works are wonderful, I know that full well.", ref: "Psalm 139:14" },
+        { quote: "Do not conform to the pattern of this world, but be transformed by the renewing of your mind.", ref: "Romans 12:2" },
+        { quote: "Ask and it will be given to you; seek and you will find; knock and the door will be opened to you.", ref: "Matthew 7:7" },
+        { quote: "Even though I walk through the darkest valley, I will fear no evil, for you are with me.", ref: "Psalm 23:4" },
+        { quote: "The name of the LORD is a fortified tower; the righteous run to it and are safe.", ref: "Proverbs 18:10" },
+        { quote: "Cast all your anxiety on him because he cares for you.", ref: "1 Peter 5:7" },
+        { quote: "No weapon forged against you will prevail, and you will refute every tongue that accuses you.", ref: "Isaiah 54:17" },
+        { quote: "Let us not become weary in doing good, for at the proper time we will reap a harvest if we do not give up.", ref: "Galatians 6:9" },
+        { quote: "God is our refuge and strength, an ever-present help in trouble.", ref: "Psalm 46:1" },
+        { quote: "Seek first his kingdom and his righteousness, and all these things will be given to you as well.", ref: "Matthew 6:33" },
+        { quote: "Give thanks to the LORD, for he is good; his love endures forever.", ref: "Psalm 107:1" },
+        { quote: "I have been crucified with Christ and I no longer live, but Christ lives in me.", ref: "Galatians 2:20" },
+        { quote: "The LORD bless you and keep you; the LORD make his face shine on you and be gracious to you.", ref: "Numbers 6:24–25" },
+        { quote: "Commit to the LORD whatever you do, and he will establish your plans.", ref: "Proverbs 16:3" },
+        { quote: "For where two or three gather in my name, there am I with them.", ref: "Matthew 18:20" },
+        { quote: "Now faith is confidence in what we hope for and assurance about what we do not see.", ref: "Hebrews 11:1" }
+    ];
+    (function() {
+        const idx = (new Date().getDate() - 1) % verses.length;
+        const vt = document.getElementById('dailyVerseText');
+        const vr = document.getElementById('dailyVerseRef');
+        if (vt) vt.textContent = `"${verses[idx].quote}"`;
+        if (vr) vr.textContent = `— ${verses[idx].ref}`;
+    })();
+
     const SUPABASE_URL = 'https://jnfkfzjhgbktovvvqbuk.supabase.co';
     const SUPABASE_ANON_KEY = 'sb_publishable_3Kd460W0EV6xAJuJKtCIuQ_wGtxeuM2';
     const sb = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
