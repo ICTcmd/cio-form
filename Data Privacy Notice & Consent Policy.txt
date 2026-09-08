@@ -1,0 +1,42 @@
+📋 RA 10173 — Data Privacy Act of 2012
+Data Privacy Notice & Consent Policy
+City Information Office (CIO) — City Government of Bago
+
+1. Introduction
+The City Government of Bago — City Information Office (CIO) is committed to protecting your personal data in accordance with Republic Act No. 10173, otherwise known as the Data Privacy Act of 2012 (DPA), its Implementing Rules and Regulations (IRR), and issuances of the National Privacy Commission (NPC).
+
+2. Personal Data Collected
+When you submit an official service request through this portal, we collect the following personal and organizational information:
+
+Requesting Office / Department Name
+Full Name of Contact Person
+Official Phone / Viber Number
+Social Media / Messenger Profile Details
+Event Details (Activity Name, Date, Time, Location)
+Requested Services & Additional Remarks
+3. Purpose of Data Processing
+Your personal information is collected strictly for official municipal administrative functions, specifically:
+
+Evaluating, scheduling, and processing your service request.
+Contacting you for project coordination, clarification, or site deployment.
+Logging official event documentations in internal LGU system audit logs.
+4. Data Protection & Security Measures
+We implement enterprise-grade technical, physical, and administrative security measures to prevent unauthorized access, collection, use, disclosure, or modification of your data:
+
+Database records are secured using database-level Row Level Security (RLS) and encrypted connections (HTTPS/SSL).
+Access to request details is strictly restricted to authorized CIO administrative personnel.
+5. Data Retention & Disposal
+Your personal data will be retained only as long as necessary to fulfill the purpose for which it was collected or to satisfy statutory legal and municipal record requirements. Upon expiration of the retention period, digital records will be securely archived or anonymized in accordance with national archival standards.
+
+6. Rights of the Data Subject
+Under the Data Privacy Act of 2012, you have the following rights regarding your personal information:
+
+The right to be informed about how your data is processed.
+The right to reasonable access to your personal data held by the CIO.
+The right to dispute and request correction of inaccurate data.
+The right to request the suspension or removal of your personal data from our active processing systems.
+7. Contact Information
+For inquiries or concerns regarding the processing of your personal data, contact:
+
+Office: City Information Office (CIO) — Bago City Hall
+Address: Bago City, Western Visayas, Philippines
