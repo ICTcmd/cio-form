@@ -41,6 +41,7 @@
             justify-content: space-between;
             position: sticky; top: 0; z-index: 100;
             border-bottom: 1px solid rgba(255,255,255,0.06);
+            overflow: hidden;
         }
 
         .topnav-left {
@@ -689,6 +690,14 @@
             .search-input { width: 100%; }
             .table-toolbar { flex-direction: column; align-items: stretch; }
         }
+
+        @media (min-width: 768px) {
+            #clockDate { display: inline !important; }
+        }
+
+        @media (max-width: 767px) {
+            #navbarClock { font-size: 10px; padding: 4px 8px; }
+        }
     </style>
 </head>
 <body>
@@ -707,9 +716,9 @@
     </div>
     <div class="topnav-right">
         <!-- Live Clock -->
-        <div id="navbarClock" style="display:flex;align-items:center;gap:6px;font-size:11px;font-family:'Courier New',monospace;color:rgba(255,255,255,0.55);background:rgba(255,255,255,0.05);padding:5px 11px;border-radius:8px;border:1px solid rgba(255,255,255,0.08);white-space:nowrap;">
+        <div id="navbarClock" style="display:flex;align-items:center;gap:6px;font-size:11px;font-family:'Courier New',monospace;color:rgba(255,255,255,0.55);background:rgba(255,255,255,0.05);padding:5px 11px;border-radius:8px;border:1px solid rgba(255,255,255,0.08);white-space:nowrap;flex-shrink:0;">
             <span style="width:6px;height:6px;border-radius:50%;background:#22c55e;display:inline-block;animation:clockPulse 2s infinite;flex-shrink:0;"></span>
-            <span id="clockTime">--:--:-- --</span>
+            <span id="clockTime">--:--:-- --</span><span id="clockDate" style="display:none;"></span>
         </div>
         <div class="admin-badge" id="adminBadge">
             <span class="admin-badge-dot"></span>
@@ -1710,7 +1719,9 @@
         h = h % 12 || 12;
         const pad = n => String(n).padStart(2, '0');
         const el = document.getElementById('clockTime');
-        if (el) el.textContent = `${pad(h)}:${pad(m)}:${pad(s)} ${ampm} | ${days[ph.getDay()]}, ${months[ph.getMonth()]} ${ph.getDate()}`;
+        const dateEl = document.getElementById('clockDate');
+        if (el) el.textContent = `${pad(h)}:${pad(m)}:${pad(s)} ${ampm}`;
+        if (dateEl) dateEl.textContent = ` | ${days[ph.getDay()]}, ${months[ph.getMonth()]} ${ph.getDate()}`;
     }
     updateClock();
     setInterval(updateClock, 1000);

@@ -96,6 +96,7 @@
         top: 0; left: 0; right: 0;
         z-index: 1000;
         width: 100%;
+        overflow: hidden;
         /* Mobile: solid bg to avoid GPU frame drops on scroll */
         background: rgba(13,17,26,0.97);
         border-bottom: 1px solid rgba(255,255,255,0.07);
@@ -112,6 +113,7 @@
             backdrop-filter: blur(20px);
             -webkit-backdrop-filter: blur(20px);
         }
+        #clockDate { display: inline !important; }
     }
 
     .navbar-inner {
@@ -1363,9 +1365,9 @@
         <!-- RIGHT: Clock + Nav links + CIO logo -->
         <div style="display:flex;align-items:center;gap:16px;">
             <!-- Live Digital Clock -->
-            <div id="navbarClock" style="display:flex;align-items:center;gap:6px;font-size:11px;font-family:'Courier New',monospace;color:rgba(255,255,255,0.7);background:rgba(15,23,42,0.6);padding:5px 11px;border-radius:8px;border:1px solid rgba(255,255,255,0.1);white-space:nowrap;">
+            <div id="navbarClock" style="display:flex;align-items:center;gap:6px;font-size:11px;font-family:'Courier New',monospace;color:rgba(255,255,255,0.7);background:rgba(15,23,42,0.6);padding:5px 11px;border-radius:8px;border:1px solid rgba(255,255,255,0.1);white-space:nowrap;flex-shrink:0;">
                 <span style="width:7px;height:7px;border-radius:50%;background:#22c55e;display:inline-block;animation:clockPulse 2s infinite;flex-shrink:0;"></span>
-                <span id="clockTime">--:--:-- --</span>
+                <span id="clockTime">--:--</span><span id="clockDate" style="display:none;"> | --</span>
             </div>
             <ul class="nav-links">
                 <li><a href="#services">Services</a></li>
@@ -1929,10 +1931,10 @@
         const ampm = h >= 12 ? 'PM' : 'AM';
         h = h % 12 || 12;
         const pad = n => String(n).padStart(2, '0');
-        const timeStr = `${pad(h)}:${pad(m)}:${pad(s)} ${ampm}`;
-        const dateStr = `${days[ph.getDay()]}, ${months[ph.getMonth()]} ${ph.getDate()}`;
-        const el = document.getElementById('clockTime');
-        if (el) el.textContent = `${timeStr} | ${dateStr}`;
+        const timeEl = document.getElementById('clockTime');
+        const dateEl = document.getElementById('clockDate');
+        if (timeEl) timeEl.textContent = `${pad(h)}:${pad(m)}:${pad(s)} ${ampm}`;
+        if (dateEl) dateEl.textContent = ` | ${days[ph.getDay()]}, ${months[ph.getMonth()]} ${ph.getDate()}`;
     }
     updateClock();
     setInterval(updateClock, 1000);
