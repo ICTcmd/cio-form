@@ -10,13 +10,13 @@
   "theme_color": "#0d111a",
   "icons": [
     {
-      "src": "/cio-logo.jpg",
+      "src": "/ciologoicon.jpg",
       "sizes": "192x192",
       "type": "image/jpeg",
       "purpose": "any maskable"
     },
     {
-      "src": "/cio-logo.jpg",
+      "src": "/ciologoicon.jpg",
       "sizes": "512x512",
       "type": "image/jpeg",
       "purpose": "any maskable"
