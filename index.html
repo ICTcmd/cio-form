@@ -106,6 +106,22 @@
         padding-top: env(safe-area-inset-top);
     }
 
+    /* Guide mobile button — show on mobile, hide on desktop */
+    .nav-guide-mobile {
+        display: none;
+        padding: 6px 12px;
+        font-size: 11px; font-weight: 600;
+        color: rgba(255,255,255,0.7);
+        background: rgba(255,255,255,0.07);
+        border: 1px solid rgba(255,255,255,0.12);
+        border-radius: 7px;
+        text-decoration: none;
+        white-space: nowrap;
+        flex-shrink: 0;
+        transition: all 0.2s;
+    }
+    .nav-guide-mobile:hover { color: white; background: rgba(255,255,255,0.12); }
+
     /* Enable backdrop-blur only on md+ screens where GPU can handle it */
     @media (min-width: 768px) {
         .navbar {
@@ -1298,7 +1314,9 @@
     ============================================ */
     @media (max-width: 768px) {
         .nav-links { display: none; }
-        .navbar-inner { padding: 10px 16px; gap: 6px; }
+        .nav-emblem-desktop { display: none !important; }
+        .nav-guide-mobile { display: inline-flex !important; }
+        .navbar-inner { padding: 10px 14px; gap: 6px; }
         .nav-emblem-bago { height: 32px; max-width: 32px; }
         .nav-emblem { height: 30px; }
         .nav-divider { height: 20px; }
@@ -1363,19 +1381,22 @@
         </div>
 
         <!-- RIGHT: Clock + Nav links + CIO logo -->
-        <div style="display:flex;align-items:center;gap:16px;">
+        <div style="display:flex;align-items:center;gap:10px;">
             <!-- Live Digital Clock -->
-            <div id="navbarClock" style="display:flex;align-items:center;gap:6px;font-size:11px;font-family:'Courier New',monospace;color:rgba(255,255,255,0.7);background:rgba(15,23,42,0.6);padding:5px 11px;border-radius:8px;border:1px solid rgba(255,255,255,0.1);white-space:nowrap;flex-shrink:0;">
+            <div id="navbarClock" style="display:flex;align-items:center;gap:6px;font-size:11px;font-family:'Courier New',monospace;color:rgba(255,255,255,0.7);background:rgba(15,23,42,0.6);padding:5px 10px;border-radius:8px;border:1px solid rgba(255,255,255,0.1);white-space:nowrap;flex-shrink:0;">
                 <span style="width:7px;height:7px;border-radius:50%;background:#22c55e;display:inline-block;animation:clockPulse 2s infinite;flex-shrink:0;"></span>
                 <span id="clockTime">--:--</span><span id="clockDate" style="display:none;"> | --</span>
             </div>
+            <!-- Guide button — mobile only, hidden on desktop (nav-links shows instead) -->
+            <a href="/guide" class="nav-guide-mobile">Guide</a>
             <ul class="nav-links">
                 <li><a href="#services">Services</a></li>
                 <li><a href="#request-form">Submit Form</a></li>
                 <li><a href="/guide">How to Use</a></li>
                 <li><a href="/admin-login" class="nav-login">Staff Login</a></li>
             </ul>
-            <div class="nav-emblem">
+            <!-- CIO logo — hidden on mobile -->
+            <div class="nav-emblem nav-emblem-desktop">
                 <img src="cio-logo.jpg" alt="CIO Logo" loading="eager" fetchpriority="high">
             </div>
         </div>
