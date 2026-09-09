@@ -1298,8 +1298,6 @@
        RESPONSIVE
     ============================================ */
     @media (max-width: 768px) {
-        .nav-links { display: none; }
-        .nav-emblem-desktop { display: none !important; }
         .navbar-inner { padding: 10px 14px; gap: 6px; }
         .nav-emblem-bago { height: 32px; max-width: 32px; }
         .nav-divider { height: 20px; }
@@ -1505,6 +1503,8 @@
     }
     @media (max-width: 767px) {
         .btn-hamburger { display: flex; }
+        .nav-links { display: none; }
+        .nav-emblem-desktop { display: none !important; }
         #navbarClock { display: none !important; }
     }
     </style>
@@ -1536,7 +1536,7 @@
             <!-- Live Digital Clock (desktop only) -->
             <div id="navbarClock" style="display:flex;align-items:center;gap:6px;font-size:11px;font-family:'Courier New',monospace;color:rgba(255,255,255,0.7);background:rgba(15,23,42,0.6);padding:5px 10px;border-radius:8px;border:1px solid rgba(255,255,255,0.1);white-space:nowrap;flex-shrink:0;">
                 <span style="width:7px;height:7px;border-radius:50%;background:#22c55e;display:inline-block;animation:clockPulse 2s infinite;flex-shrink:0;"></span>
-                <span id="clockTime">--:--</span><span id="clockDate" style="display:none;"> | --</span>
+                <span id="clockTime">--:--:-- --</span><span id="clockDate" style="display:none;"></span>
             </div>
             <!-- Desktop nav links -->
             <ul class="nav-links">
@@ -2254,18 +2254,29 @@
 
     // ---- LIVE DIGITAL CLOCK (Philippine Time, 12-hr) ----
     function updateClock() {
-        const now = new Date();
-        const ph  = new Date(now.toLocaleString('en-US', { timeZone: 'Asia/Manila' }));
-        const days = ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
-        const months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
-        let h = ph.getHours(), m = ph.getMinutes(), s = ph.getSeconds();
-        const ampm = h >= 12 ? 'PM' : 'AM';
-        h = h % 12 || 12;
-        const pad = n => String(n).padStart(2, '0');
-        const timeEl = document.getElementById('clockTime');
-        const dateEl = document.getElementById('clockDate');
-        if (timeEl) timeEl.textContent = `${pad(h)}:${pad(m)}:${pad(s)} ${ampm}`;
-        if (dateEl) dateEl.textContent = ` | ${days[ph.getDay()]}, ${months[ph.getMonth()]} ${ph.getDate()}`;
+        try {
+            const now = new Date();
+            const ph  = new Date(now.toLocaleString('en-US', { timeZone: 'Asia/Manila' }));
+            const days   = ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
+            const months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+            let h = ph.getHours(), m = ph.getMinutes(), s = ph.getSeconds();
+            const ampm = h >= 12 ? 'PM' : 'AM';
+            h = h % 12 || 12;
+            const pad = n => String(n).padStart(2, '0');
+            const timeEl = document.getElementById('clockTime');
+            const dateEl = document.getElementById('clockDate');
+            if (timeEl) timeEl.textContent = `${pad(h)}:${pad(m)}:${pad(s)} ${ampm}`;
+            if (dateEl) dateEl.textContent = ` | ${days[ph.getDay()]}, ${months[ph.getMonth()]} ${ph.getDate()}`;
+        } catch(e) {
+            // Fallback to local time if timezone conversion fails
+            const now = new Date();
+            let h = now.getHours(), m = now.getMinutes(), s = now.getSeconds();
+            const ampm = h >= 12 ? 'PM' : 'AM';
+            h = h % 12 || 12;
+            const pad = n => String(n).padStart(2, '0');
+            const timeEl = document.getElementById('clockTime');
+            if (timeEl) timeEl.textContent = `${pad(h)}:${pad(m)}:${pad(s)} ${ampm}`;
+        }
     }
     updateClock();
     setInterval(updateClock, 1000);
