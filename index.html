@@ -1542,7 +1542,7 @@
             <ul class="nav-links">
                 <li><a href="#services">Services</a></li>
                 <li><a href="#request-form">Submit Form</a></li>
-                <li><a href="/guide">How to Use</a></li>
+                <li><a href="#" onclick="openGuideModal();return false;">How to Use</a></li>
                 <li><a href="/admin-login" class="nav-login">Staff Login</a></li>
             </ul>
             <!-- CIO logo — desktop only -->
@@ -1586,7 +1586,7 @@
             Submit Request Form
         </a>
         <div class="drawer-divider"></div>
-        <a href="/guide" class="drawer-link" data-drawer-close>
+        <a href="#" class="drawer-link" onclick="closeDrawer();openGuideModal();return false;">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
             How to Use this Portal
         </a>
@@ -1604,6 +1604,112 @@
             <span style="color:rgba(255,255,255,0.25);margin:0 2px;">|</span>
             <span id="drawerClockDate" style="color:rgba(255,255,255,0.35);"></span>
         </div>
+    </div>
+</div>
+
+<!-- ============================================================
+     GUIDE MODAL (instant open, no page load)
+============================================================ -->
+<div id="guideModal" style="display:none;position:fixed;inset:0;z-index:2000;background:#0d111a;overflow-y:auto;">
+
+    <!-- Modal Navbar -->
+    <div style="position:sticky;top:0;z-index:10;background:rgba(13,17,26,0.97);border-bottom:1px solid rgba(255,255,255,0.07);padding:env(safe-area-inset-top) 0 0;">
+        <div style="max-width:900px;margin:0 auto;padding:12px 20px;display:flex;align-items:center;justify-content:space-between;gap:12px;">
+            <div style="display:flex;align-items:center;gap:10px;">
+                <img src="cio-logo.jpg" alt="CIO" style="height:32px;width:32px;object-fit:contain;background:white;border-radius:7px;padding:3px;">
+                <div style="line-height:1.2;">
+                    <div style="font-size:13px;font-weight:700;color:white;">CIO Request Portal</div>
+                    <div style="font-size:10px;color:rgba(255,255,255,0.4);">City Government of Bago</div>
+                </div>
+            </div>
+            <button onclick="closeGuideModal()" style="padding:7px 16px;background:transparent;border:1px solid rgba(255,255,255,0.15);border-radius:8px;font-size:12px;font-weight:600;color:rgba(255,255,255,0.6);cursor:pointer;font-family:'Plus Jakarta Sans',sans-serif;transition:all 0.2s;">Close Guide</button>
+        </div>
+    </div>
+
+    <!-- Hero -->
+    <div style="background:linear-gradient(135deg,#0f172a 0%,#1e293b 60%,#1e1b4b 100%);border-bottom:1px solid rgba(255,255,255,0.07);padding:44px 20px 36px;text-align:center;">
+        <div style="display:inline-flex;align-items:center;background:rgba(99,102,241,0.15);border:1px solid rgba(99,102,241,0.3);border-radius:100px;padding:5px 14px;font-size:11px;font-weight:700;color:#a5b4fc;letter-spacing:0.8px;text-transform:uppercase;margin-bottom:14px;">User Guide</div>
+        <h1 style="font-size:clamp(22px,4vw,34px);font-weight:800;color:white;letter-spacing:-0.5px;margin-bottom:10px;">How to Use the CIO Request Portal</h1>
+        <p style="font-size:14px;color:rgba(255,255,255,0.5);max-width:500px;margin:0 auto;">Step-by-step guide to submitting service requests and installing the portal on your device.</p>
+    </div>
+
+    <!-- Content -->
+    <div style="max-width:820px;margin:0 auto;padding:40px 20px 80px;font-family:'Plus Jakarta Sans',system-ui,sans-serif;color:#e2e8f0;">
+
+        <!-- Services -->
+        <div style="display:flex;align-items:center;gap:12px;margin-bottom:20px;padding-bottom:12px;border-bottom:1px solid rgba(255,255,255,0.08);">
+            <div style="width:36px;height:36px;border-radius:10px;background:rgba(59,130,246,0.15);border:1px solid rgba(59,130,246,0.25);display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#60a5fa" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 11 12 14 22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>
+            </div>
+            <div><div style="font-size:17px;font-weight:800;color:white;">Services You Can Request</div><div style="font-size:12px;color:rgba(255,255,255,0.4);">Available to all City Government of Bago offices</div></div>
+        </div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:16px;" id="gmServiceGrid">
+            <div style="display:flex;align-items:center;gap:8px;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.07);border-radius:9px;padding:9px 13px;font-size:12px;font-weight:500;color:rgba(255,255,255,0.65);"><span style="width:5px;height:5px;border-radius:50%;background:#6366f1;flex-shrink:0;"></span>Photo Coverage</div>
+            <div style="display:flex;align-items:center;gap:8px;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.07);border-radius:9px;padding:9px 13px;font-size:12px;font-weight:500;color:rgba(255,255,255,0.65);"><span style="width:5px;height:5px;border-radius:50%;background:#6366f1;flex-shrink:0;"></span>Video Coverage</div>
+            <div style="display:flex;align-items:center;gap:8px;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.07);border-radius:9px;padding:9px 13px;font-size:12px;font-weight:500;color:rgba(255,255,255,0.65);"><span style="width:5px;height:5px;border-radius:50%;background:#6366f1;flex-shrink:0;"></span>Video Coverage with Interview</div>
+            <div style="display:flex;align-items:center;gap:8px;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.07);border-radius:9px;padding:9px 13px;font-size:12px;font-weight:500;color:rgba(255,255,255,0.65);"><span style="width:5px;height:5px;border-radius:50%;background:#6366f1;flex-shrink:0;"></span>Drone Footage</div>
+            <div style="display:flex;align-items:center;gap:8px;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.07);border-radius:9px;padding:9px 13px;font-size:12px;font-weight:500;color:rgba(255,255,255,0.65);"><span style="width:5px;height:5px;border-radius:50%;background:#6366f1;flex-shrink:0;"></span>Graphic / Lay-out Design</div>
+            <div style="display:flex;align-items:center;gap:8px;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.07);border-radius:9px;padding:9px 13px;font-size:12px;font-weight:500;color:rgba(255,255,255,0.65);"><span style="width:5px;height:5px;border-radius:50%;background:#6366f1;flex-shrink:0;"></span>Video Editing</div>
+            <div style="display:flex;align-items:center;gap:8px;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.07);border-radius:9px;padding:9px 13px;font-size:12px;font-weight:500;color:rgba(255,255,255,0.65);"><span style="width:5px;height:5px;border-radius:50%;background:#6366f1;flex-shrink:0;"></span>Live Streaming</div>
+            <div style="display:flex;align-items:center;gap:8px;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.07);border-radius:9px;padding:9px 13px;font-size:12px;font-weight:500;color:rgba(255,255,255,0.65);"><span style="width:5px;height:5px;border-radius:50%;background:#6366f1;flex-shrink:0;"></span>Radio Guesting</div>
+            <div style="display:flex;align-items:center;gap:8px;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.07);border-radius:9px;padding:9px 13px;font-size:12px;font-weight:500;color:rgba(255,255,255,0.65);"><span style="width:5px;height:5px;border-radius:50%;background:#6366f1;flex-shrink:0;"></span>Social Media Posting</div>
+            <div style="display:flex;align-items:center;gap:8px;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.07);border-radius:9px;padding:9px 13px;font-size:12px;font-weight:500;color:rgba(255,255,255,0.65);"><span style="width:5px;height:5px;border-radius:50%;background:#6366f1;flex-shrink:0;"></span>Press Release / Write-up</div>
+            <div style="display:flex;align-items:center;gap:8px;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.07);border-radius:9px;padding:9px 13px;font-size:12px;font-weight:500;color:rgba(255,255,255,0.65);"><span style="width:5px;height:5px;border-radius:50%;background:#6366f1;flex-shrink:0;"></span>Copy of Photo / Video Materials</div>
+            <div style="display:flex;align-items:center;gap:8px;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.07);border-radius:9px;padding:9px 13px;font-size:12px;font-weight:500;color:rgba(255,255,255,0.65);"><span style="width:5px;height:5px;border-radius:50%;background:#6366f1;flex-shrink:0;"></span>Others</div>
+        </div>
+        <div style="background:rgba(59,130,246,0.08);border:1px solid rgba(59,130,246,0.2);border-radius:12px;padding:14px 16px;font-size:13px;color:rgba(255,255,255,0.6);line-height:1.7;margin-bottom:36px;"><strong style="color:#93c5fd;">Important:</strong> Submit requests at least <strong style="color:rgba(255,255,255,0.8);">3 working days before the event</strong>, subject to CIO personnel and equipment availability.</div>
+
+        <!-- How to Submit -->
+        <div style="display:flex;align-items:center;gap:12px;margin-bottom:20px;padding-bottom:12px;border-bottom:1px solid rgba(255,255,255,0.08);">
+            <div style="width:36px;height:36px;border-radius:10px;background:rgba(59,130,246,0.15);border:1px solid rgba(59,130,246,0.25);display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#60a5fa" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+            </div>
+            <div><div style="font-size:17px;font-weight:800;color:white;">How to Submit a Request</div><div style="font-size:12px;color:rgba(255,255,255,0.4);">7 simple steps</div></div>
+        </div>
+        <div style="display:flex;flex-direction:column;gap:10px;margin-bottom:36px;">
+            <div style="display:flex;gap:14px;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.07);border-radius:12px;padding:16px 18px;"><div style="width:28px;height:28px;border-radius:50%;background:rgba(99,102,241,0.2);border:1.5px solid rgba(99,102,241,0.4);color:#a5b4fc;font-size:12px;font-weight:800;display:flex;align-items:center;justify-content:center;flex-shrink:0;">1</div><div><div style="font-size:13px;font-weight:700;color:white;margin-bottom:4px;">Open the Portal</div><div style="font-size:12px;color:rgba(255,255,255,0.55);line-height:1.6;">Go to <strong style="color:rgba(255,255,255,0.8);">https://cio-bago.digital</strong> on any browser — Chrome, Safari, or Firefox.</div></div></div>
+            <div style="display:flex;gap:14px;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.07);border-radius:12px;padding:16px 18px;"><div style="width:28px;height:28px;border-radius:50%;background:rgba(99,102,241,0.2);border:1.5px solid rgba(99,102,241,0.4);color:#a5b4fc;font-size:12px;font-weight:800;display:flex;align-items:center;justify-content:center;flex-shrink:0;">2</div><div><div style="font-size:13px;font-weight:700;color:white;margin-bottom:4px;">Fill in the Request Form</div><div style="font-size:12px;color:rgba(255,255,255,0.55);line-height:1.6;">Enter your <strong style="color:rgba(255,255,255,0.8);">Requesting Office</strong>, <strong style="color:rgba(255,255,255,0.8);">Contact Person</strong>, phone number, event details, date, time, and venue.</div></div></div>
+            <div style="display:flex;gap:14px;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.07);border-radius:12px;padding:16px 18px;"><div style="width:28px;height:28px;border-radius:50%;background:rgba(99,102,241,0.2);border:1.5px solid rgba(99,102,241,0.4);color:#a5b4fc;font-size:12px;font-weight:800;display:flex;align-items:center;justify-content:center;flex-shrink:0;">3</div><div><div style="font-size:13px;font-weight:700;color:white;margin-bottom:4px;">Select the Services Needed</div><div style="font-size:12px;color:rgba(255,255,255,0.55);line-height:1.6;">Check all services required. You can select multiple services in a single request.</div></div></div>
+            <div style="display:flex;gap:14px;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.07);border-radius:12px;padding:16px 18px;"><div style="width:28px;height:28px;border-radius:50%;background:rgba(99,102,241,0.2);border:1.5px solid rgba(99,102,241,0.4);color:#a5b4fc;font-size:12px;font-weight:800;display:flex;align-items:center;justify-content:center;flex-shrink:0;">4</div><div><div style="font-size:13px;font-weight:700;color:white;margin-bottom:4px;">Attach Supporting Files (Optional)</div><div style="font-size:12px;color:rgba(255,255,255,0.55);line-height:1.6;">Upload files to <strong style="color:rgba(255,255,255,0.8);">Google Drive</strong> and paste the link. Set sharing to <strong style="color:rgba(255,255,255,0.8);">"Anyone with the link."</strong></div></div></div>
+            <div style="display:flex;gap:14px;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.07);border-radius:12px;padding:16px 18px;"><div style="width:28px;height:28px;border-radius:50%;background:rgba(99,102,241,0.2);border:1.5px solid rgba(99,102,241,0.4);color:#a5b4fc;font-size:12px;font-weight:800;display:flex;align-items:center;justify-content:center;flex-shrink:0;">5</div><div><div style="font-size:13px;font-weight:700;color:white;margin-bottom:4px;">Accept the Data Privacy Notice</div><div style="font-size:12px;color:rgba(255,255,255,0.55);line-height:1.6;">Click the privacy link, scroll to the bottom, then click <strong style="color:rgba(255,255,255,0.8);">"I Accept &amp; Understand."</strong></div></div></div>
+            <div style="display:flex;gap:14px;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.07);border-radius:12px;padding:16px 18px;"><div style="width:28px;height:28px;border-radius:50%;background:rgba(99,102,241,0.2);border:1.5px solid rgba(99,102,241,0.4);color:#a5b4fc;font-size:12px;font-weight:800;display:flex;align-items:center;justify-content:center;flex-shrink:0;">6</div><div><div style="font-size:13px;font-weight:700;color:white;margin-bottom:4px;">Submit and Note Your Control Number</div><div style="font-size:12px;color:rgba(255,255,255,0.55);line-height:1.6;">Click <strong style="color:rgba(255,255,255,0.8);">"Submit Service Request."</strong> Screenshot your <strong style="color:rgba(255,255,255,0.8);">Control Number</strong> — you'll need it to track your request.</div></div></div>
+        </div>
+
+        <!-- Install -->
+        <div style="display:flex;align-items:center;gap:12px;margin-bottom:20px;padding-bottom:12px;border-bottom:1px solid rgba(255,255,255,0.08);">
+            <div style="width:36px;height:36px;border-radius:10px;background:rgba(139,92,246,0.15);border:1px solid rgba(139,92,246,0.25);display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#a78bfa" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="2" width="14" height="20" rx="2" ry="2"/><line x1="12" y1="18" x2="12.01" y2="18"/></svg>
+            </div>
+            <div><div style="font-size:17px;font-weight:800;color:white;">Install on Your Device</div><div style="font-size:12px;color:rgba(255,255,255,0.4);">No app store needed</div></div>
+        </div>
+        <div style="display:flex;gap:8px;margin-bottom:16px;flex-wrap:wrap;">
+            <button class="gm-device-tab active" onclick="gmSwitchDevice('android',this)" style="padding:7px 16px;border-radius:8px;font-size:12px;font-weight:700;border:1.5px solid rgba(99,102,241,0.5);background:rgba(99,102,241,0.2);color:#a5b4fc;cursor:pointer;font-family:'Plus Jakarta Sans',sans-serif;transition:all 0.2s;">Android</button>
+            <button class="gm-device-tab" onclick="gmSwitchDevice('ios',this)" style="padding:7px 16px;border-radius:8px;font-size:12px;font-weight:700;border:1.5px solid rgba(255,255,255,0.1);background:transparent;color:rgba(255,255,255,0.45);cursor:pointer;font-family:'Plus Jakarta Sans',sans-serif;transition:all 0.2s;">iPhone / iPad</button>
+            <button class="gm-device-tab" onclick="gmSwitchDevice('desktop',this)" style="padding:7px 16px;border-radius:8px;font-size:12px;font-weight:700;border:1.5px solid rgba(255,255,255,0.1);background:transparent;color:rgba(255,255,255,0.45);cursor:pointer;font-family:'Plus Jakarta Sans',sans-serif;transition:all 0.2s;">Desktop / Laptop</button>
+        </div>
+        <div id="gm-panel-android" style="display:flex;flex-direction:column;gap:10px;margin-bottom:36px;">
+            <div style="display:flex;gap:14px;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.07);border-radius:12px;padding:14px 16px;"><div style="width:28px;height:28px;border-radius:50%;background:rgba(99,102,241,0.2);border:1.5px solid rgba(99,102,241,0.4);color:#a5b4fc;font-size:12px;font-weight:800;display:flex;align-items:center;justify-content:center;flex-shrink:0;">1</div><div><div style="font-size:13px;font-weight:700;color:white;margin-bottom:3px;">Open in Chrome</div><div style="font-size:12px;color:rgba(255,255,255,0.55);line-height:1.6;">Open <strong style="color:rgba(255,255,255,0.8);">https://cio-bago.digital</strong> in Google Chrome on your Android phone.</div></div></div>
+            <div style="display:flex;gap:14px;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.07);border-radius:12px;padding:14px 16px;"><div style="width:28px;height:28px;border-radius:50%;background:rgba(99,102,241,0.2);border:1.5px solid rgba(99,102,241,0.4);color:#a5b4fc;font-size:12px;font-weight:800;display:flex;align-items:center;justify-content:center;flex-shrink:0;">2</div><div><div style="font-size:13px;font-weight:700;color:white;margin-bottom:3px;">Tap the Three-Dot Menu</div><div style="font-size:12px;color:rgba(255,255,255,0.55);line-height:1.6;">Tap the three dots in the top-right corner of Chrome.</div></div></div>
+            <div style="display:flex;gap:14px;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.07);border-radius:12px;padding:14px 16px;"><div style="width:28px;height:28px;border-radius:50%;background:rgba(99,102,241,0.2);border:1.5px solid rgba(99,102,241,0.4);color:#a5b4fc;font-size:12px;font-weight:800;display:flex;align-items:center;justify-content:center;flex-shrink:0;">3</div><div><div style="font-size:13px;font-weight:700;color:white;margin-bottom:3px;">Tap "Add to Home Screen"</div><div style="font-size:12px;color:rgba(255,255,255,0.55);line-height:1.6;">Select <strong style="color:rgba(255,255,255,0.8);">"Add to Home screen"</strong> then tap <strong style="color:rgba(255,255,255,0.8);">Add</strong>. The CIO Portal icon appears on your home screen.</div></div></div>
+        </div>
+        <div id="gm-panel-ios" style="display:none;flex-direction:column;gap:10px;margin-bottom:36px;">
+            <div style="display:flex;gap:14px;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.07);border-radius:12px;padding:14px 16px;"><div style="width:28px;height:28px;border-radius:50%;background:rgba(99,102,241,0.2);border:1.5px solid rgba(99,102,241,0.4);color:#a5b4fc;font-size:12px;font-weight:800;display:flex;align-items:center;justify-content:center;flex-shrink:0;">1</div><div><div style="font-size:13px;font-weight:700;color:white;margin-bottom:3px;">Open in Safari</div><div style="font-size:12px;color:rgba(255,255,255,0.55);line-height:1.6;">Open <strong style="color:rgba(255,255,255,0.8);">https://cio-bago.digital</strong> in <strong style="color:rgba(255,255,255,0.8);">Safari</strong>. This does not work in Chrome on iPhone.</div></div></div>
+            <div style="display:flex;gap:14px;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.07);border-radius:12px;padding:14px 16px;"><div style="width:28px;height:28px;border-radius:50%;background:rgba(99,102,241,0.2);border:1.5px solid rgba(99,102,241,0.4);color:#a5b4fc;font-size:12px;font-weight:800;display:flex;align-items:center;justify-content:center;flex-shrink:0;">2</div><div><div style="font-size:13px;font-weight:700;color:white;margin-bottom:3px;">Tap the Share Button</div><div style="font-size:12px;color:rgba(255,255,255,0.55);line-height:1.6;">Tap the Share icon — the box with an arrow pointing upward — at the bottom of the screen.</div></div></div>
+            <div style="display:flex;gap:14px;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.07);border-radius:12px;padding:14px 16px;"><div style="width:28px;height:28px;border-radius:50%;background:rgba(99,102,241,0.2);border:1.5px solid rgba(99,102,241,0.4);color:#a5b4fc;font-size:12px;font-weight:800;display:flex;align-items:center;justify-content:center;flex-shrink:0;">3</div><div><div style="font-size:13px;font-weight:700;color:white;margin-bottom:3px;">Tap "Add to Home Screen"</div><div style="font-size:12px;color:rgba(255,255,255,0.55);line-height:1.6;">Scroll down and tap <strong style="color:rgba(255,255,255,0.8);">"Add to Home Screen,"</strong> then tap <strong style="color:rgba(255,255,255,0.8);">Add</strong>.</div></div></div>
+        </div>
+        <div id="gm-panel-desktop" style="display:none;flex-direction:column;gap:10px;margin-bottom:36px;">
+            <div style="display:flex;gap:14px;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.07);border-radius:12px;padding:14px 16px;"><div style="width:28px;height:28px;border-radius:50%;background:rgba(99,102,241,0.2);border:1.5px solid rgba(99,102,241,0.4);color:#a5b4fc;font-size:12px;font-weight:800;display:flex;align-items:center;justify-content:center;flex-shrink:0;">1</div><div><div style="font-size:13px;font-weight:700;color:white;margin-bottom:3px;">Open in Chrome or Edge</div><div style="font-size:12px;color:rgba(255,255,255,0.55);line-height:1.6;">Visit <strong style="color:rgba(255,255,255,0.8);">https://cio-bago.digital</strong> in Google Chrome or Microsoft Edge.</div></div></div>
+            <div style="display:flex;gap:14px;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.07);border-radius:12px;padding:14px 16px;"><div style="width:28px;height:28px;border-radius:50%;background:rgba(99,102,241,0.2);border:1.5px solid rgba(99,102,241,0.4);color:#a5b4fc;font-size:12px;font-weight:800;display:flex;align-items:center;justify-content:center;flex-shrink:0;">2</div><div><div style="font-size:13px;font-weight:700;color:white;margin-bottom:3px;">Click the Install Icon</div><div style="font-size:12px;color:rgba(255,255,255,0.55);line-height:1.6;">Look for the <strong style="color:rgba(255,255,255,0.8);">install icon</strong> in the address bar (monitor with a download arrow). Click it, then click <strong style="color:rgba(255,255,255,0.8);">Install</strong>.</div></div></div>
+            <div style="display:flex;gap:14px;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.07);border-radius:12px;padding:14px 16px;"><div style="width:28px;height:28px;border-radius:50%;background:rgba(99,102,241,0.2);border:1.5px solid rgba(99,102,241,0.4);color:#a5b4fc;font-size:12px;font-weight:800;display:flex;align-items:center;justify-content:center;flex-shrink:0;">3</div><div><div style="font-size:13px;font-weight:700;color:white;margin-bottom:3px;">Done</div><div style="font-size:12px;color:rgba(255,255,255,0.55);line-height:1.6;">A shortcut appears on your taskbar and desktop. Opens without a browser window.</div></div></div>
+        </div>
+
+        <!-- CTA -->
+        <div style="background:linear-gradient(135deg,rgba(99,102,241,0.15) 0%,rgba(139,92,246,0.1) 100%);border:1px solid rgba(99,102,241,0.25);border-radius:14px;padding:24px;text-align:center;">
+            <div style="font-size:17px;font-weight:800;color:white;margin-bottom:6px;">Ready to Submit a Request?</div>
+            <div style="font-size:13px;color:rgba(255,255,255,0.5);margin-bottom:16px;">Fill out the form and get your request in under 3 minutes.</div>
+            <button onclick="closeGuideModal()" style="display:inline-flex;align-items:center;gap:8px;padding:11px 26px;background:#4f46e5;color:white;border:none;border-radius:10px;font-size:14px;font-weight:700;cursor:pointer;font-family:'Plus Jakarta Sans',sans-serif;transition:all 0.2s;">Go to the Form</button>
+        </div>
+
     </div>
 </div>
 
@@ -2740,6 +2846,52 @@
         document.addEventListener('keydown', function(e) {
             if (e.key === 'Escape') closeDrawer();
         }, { passive: true });
+    })();
+
+    // ---- GUIDE MODAL ----
+    function openGuideModal() {
+        const modal = document.getElementById('guideModal');
+        modal.style.display = 'block';
+        document.body.style.overflow = 'hidden';
+        modal.scrollTop = 0;
+    }
+
+    function closeGuideModal() {
+        document.getElementById('guideModal').style.display = 'none';
+        document.body.style.overflow = '';
+    }
+
+    function gmSwitchDevice(device, btn) {
+        // Update tab styles
+        document.querySelectorAll('.gm-device-tab').forEach(t => {
+            t.style.background = 'transparent';
+            t.style.borderColor = 'rgba(255,255,255,0.1)';
+            t.style.color = 'rgba(255,255,255,0.45)';
+        });
+        btn.style.background = 'rgba(99,102,241,0.2)';
+        btn.style.borderColor = 'rgba(99,102,241,0.5)';
+        btn.style.color = '#a5b4fc';
+        // Show correct panel
+        ['android','ios','desktop'].forEach(d => {
+            const p = document.getElementById('gm-panel-' + d);
+            if (p) p.style.display = d === device ? 'flex' : 'none';
+        });
+    }
+
+    // Close guide modal on Escape
+    document.addEventListener('keydown', function(e) {
+        if (e.key === 'Escape') closeGuideModal();
+    }, { passive: true });
+
+    // Responsive guide service grid
+    (function() {
+        const grid = document.getElementById('gmServiceGrid');
+        if (!grid) return;
+        function checkWidth() {
+            grid.style.gridTemplateColumns = window.innerWidth < 500 ? '1fr' : '1fr 1fr';
+        }
+        checkWidth();
+        window.addEventListener('resize', checkWidth, { passive: true });
     })();
 </script>
 </body>
