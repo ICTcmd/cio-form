@@ -96,31 +96,16 @@
         top: 0; left: 0; right: 0;
         z-index: 1000;
         width: 100%;
-        overflow: hidden;
         /* Mobile: solid bg to avoid GPU frame drops on scroll */
         background: rgba(13,17,26,0.97);
         border-bottom: 1px solid rgba(255,255,255,0.07);
-        /* No backdrop-filter on mobile — applied via media query below */
         display: flex;
         align-items: center;
         padding-top: env(safe-area-inset-top);
     }
 
-    /* Guide mobile button — show on mobile, hide on desktop */
-    .nav-guide-mobile {
-        display: none;
-        padding: 6px 12px;
-        font-size: 11px; font-weight: 600;
-        color: rgba(255,255,255,0.7);
-        background: rgba(255,255,255,0.07);
-        border: 1px solid rgba(255,255,255,0.12);
-        border-radius: 7px;
-        text-decoration: none;
-        white-space: nowrap;
-        flex-shrink: 0;
-        transition: all 0.2s;
-    }
-    .nav-guide-mobile:hover { color: white; background: rgba(255,255,255,0.12); }
+    /* Guide mobile button — removed, replaced by drawer */
+    .nav-guide-mobile { display: none; }
 
     /* Enable backdrop-blur only on md+ screens where GPU can handle it */
     @media (min-width: 768px) {
@@ -1315,10 +1300,8 @@
     @media (max-width: 768px) {
         .nav-links { display: none; }
         .nav-emblem-desktop { display: none !important; }
-        .nav-guide-mobile { display: inline-flex !important; }
         .navbar-inner { padding: 10px 14px; gap: 6px; }
         .nav-emblem-bago { height: 32px; max-width: 32px; }
-        .nav-emblem { height: 30px; }
         .nav-divider { height: 20px; }
         .nav-brand-text span:first-child { font-size: 10px; }
         .nav-brand-text span:last-child { font-size: 9px; }
@@ -1356,6 +1339,174 @@
         .btn-hero-primary, .btn-hero-secondary { width: 100%; justify-content: center; }
         #verseGrid { grid-template-columns: 1fr !important; }
     }
+
+    /* ============================================
+       MOBILE DRAWER
+    ============================================ */
+    .drawer-backdrop {
+        position: fixed; inset: 0;
+        background: rgba(2,6,23,0.75);
+        backdrop-filter: blur(4px);
+        -webkit-backdrop-filter: blur(4px);
+        z-index: 1100;
+        opacity: 0;
+        pointer-events: none;
+        transition: opacity 0.3s ease;
+    }
+    .drawer-backdrop.open {
+        opacity: 1;
+        pointer-events: all;
+    }
+    .drawer-panel {
+        position: fixed;
+        top: 0; right: 0; bottom: 0;
+        width: 288px;
+        background: #0f172a;
+        border-left: 1px solid rgba(255,255,255,0.08);
+        z-index: 1200;
+        display: flex;
+        flex-direction: column;
+        transform: translateX(100%);
+        transition: transform 0.3s ease;
+        box-shadow: -8px 0 40px rgba(0,0,0,0.4);
+    }
+    .drawer-panel.open {
+        transform: translateX(0);
+    }
+    .drawer-header {
+        display: flex; align-items: center;
+        justify-content: space-between;
+        padding: 18px 20px 16px;
+        border-bottom: 1px solid rgba(255,255,255,0.07);
+        flex-shrink: 0;
+    }
+    .drawer-header-left {
+        display: flex; align-items: center; gap: 10px;
+    }
+    .drawer-logo {
+        height: 32px; width: 32px;
+        object-fit: contain;
+        background: white;
+        border-radius: 7px;
+        padding: 3px;
+        flex-shrink: 0;
+    }
+    .drawer-title {
+        font-size: 12px; font-weight: 800;
+        color: white; letter-spacing: 0.3px;
+        text-transform: uppercase;
+        line-height: 1.2;
+    }
+    .drawer-title span {
+        display: block;
+        font-size: 10px; font-weight: 400;
+        color: rgba(255,255,255,0.4);
+        text-transform: none;
+    }
+    .drawer-close {
+        width: 32px; height: 32px;
+        background: rgba(255,255,255,0.06);
+        border: 1px solid rgba(255,255,255,0.1);
+        border-radius: 8px;
+        color: rgba(255,255,255,0.6);
+        cursor: pointer;
+        display: flex; align-items: center; justify-content: center;
+        font-size: 16px; line-height: 1;
+        transition: all 0.2s;
+        flex-shrink: 0;
+    }
+    .drawer-close:hover { background: rgba(255,255,255,0.12); color: white; }
+    .drawer-nav {
+        flex: 1;
+        padding: 16px 16px 8px;
+        display: flex;
+        flex-direction: column;
+        gap: 4px;
+        overflow-y: auto;
+    }
+    .drawer-link {
+        display: flex; align-items: center; gap: 10px;
+        padding: 13px 16px;
+        border-radius: 10px;
+        font-size: 14px; font-weight: 600;
+        color: rgba(255,255,255,0.7);
+        text-decoration: none;
+        border: 1px solid transparent;
+        transition: all 0.18s;
+        -webkit-tap-highlight-color: transparent;
+    }
+    .drawer-link:hover, .drawer-link:active {
+        background: rgba(255,255,255,0.06);
+        color: white;
+        border-color: rgba(255,255,255,0.08);
+    }
+    .drawer-link svg {
+        width: 16px; height: 16px;
+        flex-shrink: 0; opacity: 0.7;
+    }
+    .drawer-link-login {
+        color: #d97706;
+        background: rgba(217,119,6,0.08);
+        border-color: rgba(217,119,6,0.25) !important;
+        margin-top: 8px;
+    }
+    .drawer-link-login:hover, .drawer-link-login:active {
+        background: rgba(217,119,6,0.15) !important;
+        color: #fbbf24 !important;
+    }
+    .drawer-divider {
+        height: 1px;
+        background: rgba(255,255,255,0.07);
+        margin: 8px 0;
+    }
+    .drawer-footer {
+        padding: 16px 20px calc(16px + env(safe-area-inset-bottom));
+        border-top: 1px solid rgba(255,255,255,0.07);
+        flex-shrink: 0;
+    }
+    .drawer-clock {
+        display: flex; align-items: center; gap: 7px;
+        font-size: 11px; font-family: 'Courier New', monospace;
+        color: rgba(255,255,255,0.5);
+        background: rgba(255,255,255,0.04);
+        border: 1px solid rgba(255,255,255,0.08);
+        border-radius: 8px;
+        padding: 8px 12px;
+    }
+    .drawer-clock-dot {
+        width: 6px; height: 6px;
+        border-radius: 50%;
+        background: #22c55e;
+        flex-shrink: 0;
+        animation: clockPulse 2s infinite;
+    }
+    /* Hamburger button */
+    .btn-hamburger {
+        display: none;
+        flex-direction: column;
+        justify-content: center; align-items: center;
+        gap: 4.5px;
+        width: 36px; height: 36px;
+        background: rgba(255,255,255,0.06);
+        border: 1px solid rgba(255,255,255,0.12);
+        border-radius: 8px;
+        cursor: pointer;
+        flex-shrink: 0;
+        -webkit-tap-highlight-color: transparent;
+        transition: all 0.2s;
+    }
+    .btn-hamburger:hover { background: rgba(255,255,255,0.1); }
+    .btn-hamburger span {
+        display: block;
+        width: 16px; height: 1.5px;
+        background: rgba(255,255,255,0.75);
+        border-radius: 2px;
+        transition: all 0.2s;
+    }
+    @media (max-width: 767px) {
+        .btn-hamburger { display: flex; }
+        #navbarClock { display: none !important; }
+    }
     </style>
 </head>
 <body>
@@ -1380,29 +1531,81 @@
             </div>
         </div>
 
-        <!-- RIGHT: Clock + Nav links + CIO logo -->
+        <!-- RIGHT: Clock + Nav links + CIO logo + Hamburger -->
         <div style="display:flex;align-items:center;gap:10px;">
-            <!-- Live Digital Clock -->
+            <!-- Live Digital Clock (desktop only) -->
             <div id="navbarClock" style="display:flex;align-items:center;gap:6px;font-size:11px;font-family:'Courier New',monospace;color:rgba(255,255,255,0.7);background:rgba(15,23,42,0.6);padding:5px 10px;border-radius:8px;border:1px solid rgba(255,255,255,0.1);white-space:nowrap;flex-shrink:0;">
                 <span style="width:7px;height:7px;border-radius:50%;background:#22c55e;display:inline-block;animation:clockPulse 2s infinite;flex-shrink:0;"></span>
                 <span id="clockTime">--:--</span><span id="clockDate" style="display:none;"> | --</span>
             </div>
-            <!-- Guide button — mobile only, hidden on desktop (nav-links shows instead) -->
-            <a href="/guide" class="nav-guide-mobile">Guide</a>
+            <!-- Desktop nav links -->
             <ul class="nav-links">
                 <li><a href="#services">Services</a></li>
                 <li><a href="#request-form">Submit Form</a></li>
                 <li><a href="/guide">How to Use</a></li>
                 <li><a href="/admin-login" class="nav-login">Staff Login</a></li>
             </ul>
-            <!-- CIO logo — hidden on mobile -->
+            <!-- CIO logo — desktop only -->
             <div class="nav-emblem nav-emblem-desktop">
                 <img src="cio-logo.jpg" alt="CIO Logo" loading="eager" fetchpriority="high">
             </div>
+            <!-- Hamburger — mobile only -->
+            <button class="btn-hamburger" id="drawerToggle" aria-label="Open menu">
+                <span></span><span></span><span></span>
+            </button>
         </div>
     </div>
 </nav>
 
+<!-- ============================================================
+     MOBILE DRAWER
+============================================================ -->
+<div id="drawerBackdrop" class="drawer-backdrop"></div>
+<div id="drawerPanel" class="drawer-panel" role="dialog" aria-modal="true" aria-label="Navigation menu">
+
+    <!-- Drawer Header -->
+    <div class="drawer-header">
+        <div class="drawer-header-left">
+            <img src="bago-city-logo.png" alt="Bago City" class="drawer-logo">
+            <div class="drawer-title">
+                CIO Portal
+                <span>City Government of Bago</span>
+            </div>
+        </div>
+        <button class="drawer-close" id="drawerClose" aria-label="Close menu">&#x2715;</button>
+    </div>
+
+    <!-- Drawer Nav -->
+    <nav class="drawer-nav">
+        <a href="#services" class="drawer-link" data-drawer-close>
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg>
+            Services
+        </a>
+        <a href="#request-form" class="drawer-link" data-drawer-close>
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
+            Submit Request Form
+        </a>
+        <div class="drawer-divider"></div>
+        <a href="/guide" class="drawer-link" data-drawer-close>
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+            How to Use this Portal
+        </a>
+        <a href="/admin-login" class="drawer-link drawer-link-login" data-drawer-close>
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4"/><polyline points="10 17 15 12 10 7"/><line x1="15" y1="12" x2="3" y2="12"/></svg>
+            Staff Login
+        </a>
+    </nav>
+
+    <!-- Drawer Footer: Clock -->
+    <div class="drawer-footer">
+        <div class="drawer-clock">
+            <span class="drawer-clock-dot"></span>
+            <span id="drawerClockTime">--:--:-- --</span>
+            <span style="color:rgba(255,255,255,0.25);margin:0 2px;">|</span>
+            <span id="drawerClockDate" style="color:rgba(255,255,255,0.35);"></span>
+        </div>
+    </div>
+</div>
 
 <!-- ============================================================
      HERO
@@ -2486,6 +2689,58 @@
                 .catch(err => console.log('SW registration failed:', err));
         });
     }
+
+    // ---- MOBILE DRAWER ----
+    (function() {
+        const toggle   = document.getElementById('drawerToggle');
+        const backdrop = document.getElementById('drawerBackdrop');
+        const panel    = document.getElementById('drawerPanel');
+        const closeBtn = document.getElementById('drawerClose');
+
+        function openDrawer() {
+            backdrop.classList.add('open');
+            panel.classList.add('open');
+            document.body.style.overflow = 'hidden';
+        }
+
+        function closeDrawer() {
+            backdrop.classList.remove('open');
+            panel.classList.remove('open');
+            document.body.style.overflow = '';
+        }
+
+        if (toggle)   toggle.addEventListener('click', openDrawer);
+        if (closeBtn) closeBtn.addEventListener('click', closeDrawer);
+        if (backdrop) backdrop.addEventListener('click', closeDrawer);
+
+        // Close on any drawer link tap
+        document.querySelectorAll('[data-drawer-close]').forEach(el => {
+            el.addEventListener('click', closeDrawer);
+        });
+
+        // Drawer clock — mirrors main clock, updates every second
+        function updateDrawerClock() {
+            const now = new Date();
+            const ph  = new Date(now.toLocaleString('en-US', { timeZone: 'Asia/Manila' }));
+            const days   = ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
+            const months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+            let h = ph.getHours(), m = ph.getMinutes(), s = ph.getSeconds();
+            const ampm = h >= 12 ? 'PM' : 'AM';
+            h = h % 12 || 12;
+            const pad = n => String(n).padStart(2, '0');
+            const tEl = document.getElementById('drawerClockTime');
+            const dEl = document.getElementById('drawerClockDate');
+            if (tEl) tEl.textContent = `${pad(h)}:${pad(m)}:${pad(s)} ${ampm}`;
+            if (dEl) dEl.textContent = `${days[ph.getDay()]}, ${months[ph.getMonth()]} ${ph.getDate()}`;
+        }
+        updateDrawerClock();
+        setInterval(updateDrawerClock, 1000);
+
+        // Close drawer on Escape key
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape') closeDrawer();
+        }, { passive: true });
+    })();
 </script>
 </body>
 </html>
