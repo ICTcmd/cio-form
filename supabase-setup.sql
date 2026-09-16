@@ -39,6 +39,12 @@ CREATE TABLE IF NOT EXISTS requests (
     progress_status TEXT CHECK (progress_status IN ('Completed', 'Ongoing', 'Deferred')),
     progress_remarks TEXT,
     assigned_personnel TEXT,
+
+    -- Extra service fields
+    cloud_drive_link TEXT,
+    graphic_design_link TEXT,
+    graphic_design_instructions TEXT,
+    press_release_link TEXT,
     
     -- Overall Status
     status TEXT NOT NULL DEFAULT 'Pending' CHECK (status IN ('Pending', 'Contacted', 'Approved', 'Declined', 'Completed'))
