@@ -355,6 +355,7 @@
         .act-btn.call:hover, .act-btn.call:active  { border-color: #22c55e; color: #16a34a; background: #f0fdf4; }
         .act-btn.msg:hover, .act-btn.msg:active    { border-color: #3b82f6; color: #2563eb; background: #eff6ff; }
         .act-btn.print:hover, .act-btn.print:active { border-color: #8b5cf6; color: #7c3aed; background: #f5f3ff; }
+        .act-btn.dispatch:hover, .act-btn.dispatch:active { border-color: #0891b2; color: #0e7490; background: #ecfeff; }
         .act-btn.del:hover, .act-btn.del:active    { border-color: #ef4444; color: #dc2626; background: #fef2f2; }
 
         .act-btn svg { width: 15px; height: 15px; }
@@ -941,6 +942,140 @@
     </div>
 </div>
 
+<!-- DISPATCH FORM MODAL -->
+<div class="modal-overlay" id="dispatchModal" style="align-items:flex-start;overflow-y:auto;padding:20px;">
+    <div class="modal-card" style="max-width:680px;width:100%;margin:auto;padding:0;overflow:hidden;">
+
+        <!-- Modal Header -->
+        <div style="background:#0f172a;padding:18px 24px;display:flex;justify-content:space-between;align-items:center;">
+            <div>
+                <div style="font-size:15px;font-weight:700;color:white;">Coverage Dispatch Form</div>
+                <div style="font-size:11px;color:rgba(255,255,255,0.4);margin-top:2px;">Fill in and print the dispatch order</div>
+            </div>
+            <div style="display:flex;gap:8px;">
+                <button onclick="printDispatch()" style="padding:8px 16px;background:#4f46e5;color:white;border:none;border-radius:8px;font-size:13px;font-weight:600;cursor:pointer;font-family:'Plus Jakarta Sans',sans-serif;">Print</button>
+                <button onclick="closeDispatchModal()" style="padding:8px 14px;background:rgba(255,255,255,0.08);color:rgba(255,255,255,0.7);border:1px solid rgba(255,255,255,0.15);border-radius:8px;font-size:13px;cursor:pointer;font-family:'Plus Jakarta Sans',sans-serif;">Close</button>
+            </div>
+        </div>
+
+        <!-- Form Body -->
+        <div style="padding:24px;background:white;" id="dispatchFormBody">
+
+            <!-- Letterhead -->
+            <div style="text-align:center;margin-bottom:18px;padding-bottom:14px;border-bottom:2px solid #0f172a;">
+                <img src="cio-logo.jpg" alt="CIO" style="height:64px;width:auto;object-fit:contain;margin-bottom:8px;display:block;margin-left:auto;margin-right:auto;">
+                <div style="font-size:15px;font-weight:800;color:#0f172a;letter-spacing:0.5px;text-transform:uppercase;">City Information Office</div>
+                <div style="font-size:11px;color:#475569;margin-top:2px;">City Government of Bago, Western Visayas</div>
+                <div style="font-size:13px;font-weight:700;color:#1d4ed8;margin-top:8px;letter-spacing:0.5px;text-transform:uppercase;">Coverage Dispatch Order</div>
+            </div>
+
+            <!-- Dispatch No & Date Row -->
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:14px;">
+                <div>
+                    <label style="font-size:11px;font-weight:700;color:#64748b;text-transform:uppercase;letter-spacing:0.5px;display:block;margin-bottom:4px;">Dispatch No.</label>
+                    <input id="df_dispatchNo" type="text" placeholder="e.g. CIO-2026-001" style="width:100%;padding:8px 12px;border:1.5px solid #e2e8f0;border-radius:7px;font-size:13px;font-family:'Plus Jakarta Sans',sans-serif;color:#0f172a;outline:none;">
+                </div>
+                <div>
+                    <label style="font-size:11px;font-weight:700;color:#64748b;text-transform:uppercase;letter-spacing:0.5px;display:block;margin-bottom:4px;">Date Dispatched</label>
+                    <input id="df_dispatchDate" type="date" style="width:100%;padding:8px 12px;border:1.5px solid #e2e8f0;border-radius:7px;font-size:13px;font-family:'Plus Jakarta Sans',sans-serif;color:#0f172a;outline:none;">
+                </div>
+            </div>
+
+            <!-- Event Details -->
+            <div style="background:#f8fafc;border:1px solid #e2e8f0;border-radius:10px;padding:16px;margin-bottom:14px;">
+                <div style="font-size:11px;font-weight:700;color:#64748b;text-transform:uppercase;letter-spacing:0.5px;margin-bottom:12px;">Event Details</div>
+                <div style="margin-bottom:10px;">
+                    <label style="font-size:11px;font-weight:600;color:#475569;display:block;margin-bottom:3px;">Event / Activity</label>
+                    <input id="df_event" type="text" style="width:100%;padding:8px 12px;border:1.5px solid #e2e8f0;border-radius:7px;font-size:13px;font-family:'Plus Jakarta Sans',sans-serif;color:#0f172a;background:white;outline:none;">
+                </div>
+                <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:10px;">
+                    <div>
+                        <label style="font-size:11px;font-weight:600;color:#475569;display:block;margin-bottom:3px;">Date of Event</label>
+                        <input id="df_eventDate" type="text" style="width:100%;padding:8px 12px;border:1.5px solid #e2e8f0;border-radius:7px;font-size:13px;font-family:'Plus Jakarta Sans',sans-serif;color:#0f172a;background:white;outline:none;">
+                    </div>
+                    <div>
+                        <label style="font-size:11px;font-weight:600;color:#475569;display:block;margin-bottom:3px;">Time</label>
+                        <input id="df_eventTime" type="text" style="width:100%;padding:8px 12px;border:1.5px solid #e2e8f0;border-radius:7px;font-size:13px;font-family:'Plus Jakarta Sans',sans-serif;color:#0f172a;background:white;outline:none;">
+                    </div>
+                </div>
+                <div style="margin-bottom:10px;">
+                    <label style="font-size:11px;font-weight:600;color:#475569;display:block;margin-bottom:3px;">Venue / Location</label>
+                    <input id="df_venue" type="text" style="width:100%;padding:8px 12px;border:1.5px solid #e2e8f0;border-radius:7px;font-size:13px;font-family:'Plus Jakarta Sans',sans-serif;color:#0f172a;background:white;outline:none;">
+                </div>
+                <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;">
+                    <div>
+                        <label style="font-size:11px;font-weight:600;color:#475569;display:block;margin-bottom:3px;">Departure Time</label>
+                        <input id="df_departure" type="text" placeholder="e.g. 7:00 AM" style="width:100%;padding:8px 12px;border:1.5px solid #e2e8f0;border-radius:7px;font-size:13px;font-family:'Plus Jakarta Sans',sans-serif;color:#0f172a;background:white;outline:none;">
+                    </div>
+                    <div>
+                        <label style="font-size:11px;font-weight:600;color:#475569;display:block;margin-bottom:3px;">Return Time</label>
+                        <input id="df_return" type="text" placeholder="e.g. 5:00 PM" style="width:100%;padding:8px 12px;border:1.5px solid #e2e8f0;border-radius:7px;font-size:13px;font-family:'Plus Jakarta Sans',sans-serif;color:#0f172a;background:white;outline:none;">
+                    </div>
+                </div>
+            </div>
+
+            <!-- Coverage Team -->
+            <div style="background:#f8fafc;border:1px solid #e2e8f0;border-radius:10px;padding:16px;margin-bottom:14px;">
+                <div style="font-size:11px;font-weight:700;color:#64748b;text-transform:uppercase;letter-spacing:0.5px;margin-bottom:12px;">Coverage Team — Role &amp; Assigned Staff</div>
+                <div style="display:flex;flex-direction:column;gap:8px;">
+                    <div style="display:grid;grid-template-columns:160px 1fr;align-items:center;gap:10px;">
+                        <label style="font-size:12px;font-weight:600;color:#334155;">Photographer(s)</label>
+                        <input id="df_photographers" type="text" placeholder="Names of assigned staff" style="width:100%;padding:7px 12px;border:1.5px solid #e2e8f0;border-radius:7px;font-size:13px;font-family:'Plus Jakarta Sans',sans-serif;color:#0f172a;background:white;outline:none;">
+                    </div>
+                    <div style="display:grid;grid-template-columns:160px 1fr;align-items:center;gap:10px;">
+                        <label style="font-size:12px;font-weight:600;color:#334155;">Videographer(s)</label>
+                        <input id="df_videographers" type="text" placeholder="Names of assigned staff" style="width:100%;padding:7px 12px;border:1.5px solid #e2e8f0;border-radius:7px;font-size:13px;font-family:'Plus Jakarta Sans',sans-serif;color:#0f172a;background:white;outline:none;">
+                    </div>
+                    <div style="display:grid;grid-template-columns:160px 1fr;align-items:center;gap:10px;">
+                        <label style="font-size:12px;font-weight:600;color:#334155;">Writer / Documentation</label>
+                        <input id="df_writer" type="text" placeholder="Names of assigned staff" style="width:100%;padding:7px 12px;border:1.5px solid #e2e8f0;border-radius:7px;font-size:13px;font-family:'Plus Jakarta Sans',sans-serif;color:#0f172a;background:white;outline:none;">
+                    </div>
+                    <div style="display:grid;grid-template-columns:160px 1fr;align-items:center;gap:10px;">
+                        <label style="font-size:12px;font-weight:600;color:#334155;">Drone Operator</label>
+                        <input id="df_drone" type="text" placeholder="Names of assigned staff" style="width:100%;padding:7px 12px;border:1.5px solid #e2e8f0;border-radius:7px;font-size:13px;font-family:'Plus Jakarta Sans',sans-serif;color:#0f172a;background:white;outline:none;">
+                    </div>
+                    <div style="display:grid;grid-template-columns:160px 1fr;align-items:center;gap:10px;">
+                        <label style="font-size:12px;font-weight:600;color:#334155;">Reels Videographer</label>
+                        <input id="df_reels" type="text" placeholder="Names of assigned staff" style="width:100%;padding:7px 12px;border:1.5px solid #e2e8f0;border-radius:7px;font-size:13px;font-family:'Plus Jakarta Sans',sans-serif;color:#0f172a;background:white;outline:none;">
+                    </div>
+                </div>
+            </div>
+
+            <!-- Coverage Notes -->
+            <div style="background:#f8fafc;border:1px solid #e2e8f0;border-radius:10px;padding:16px;margin-bottom:14px;">
+                <div style="font-size:11px;font-weight:700;color:#64748b;text-transform:uppercase;letter-spacing:0.5px;margin-bottom:12px;">Coverage Notes</div>
+                <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:10px;">
+                    <div>
+                        <label style="font-size:11px;font-weight:600;color:#475569;display:block;margin-bottom:3px;">Transportation</label>
+                        <input id="df_transport" type="text" placeholder="e.g. Service vehicle" style="width:100%;padding:7px 12px;border:1.5px solid #e2e8f0;border-radius:7px;font-size:13px;font-family:'Plus Jakarta Sans',sans-serif;color:#0f172a;background:white;outline:none;">
+                    </div>
+                    <div>
+                        <label style="font-size:11px;font-weight:600;color:#475569;display:block;margin-bottom:3px;">Meals</label>
+                        <input id="df_meals" type="text" placeholder="e.g. Provided / Not provided" style="width:100%;padding:7px 12px;border:1.5px solid #e2e8f0;border-radius:7px;font-size:13px;font-family:'Plus Jakarta Sans',sans-serif;color:#0f172a;background:white;outline:none;">
+                    </div>
+                </div>
+                <div>
+                    <label style="font-size:11px;font-weight:600;color:#475569;display:block;margin-bottom:3px;">Special Instructions</label>
+                    <textarea id="df_instructions" rows="2" placeholder="Any special instructions for the team..." style="width:100%;padding:8px 12px;border:1.5px solid #e2e8f0;border-radius:7px;font-size:13px;font-family:'Plus Jakarta Sans',sans-serif;color:#0f172a;background:white;outline:none;resize:vertical;"></textarea>
+                </div>
+            </div>
+
+            <!-- Dispatched By -->
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;">
+                <div>
+                    <label style="font-size:11px;font-weight:700;color:#64748b;text-transform:uppercase;letter-spacing:0.5px;display:block;margin-bottom:4px;">Dispatched By</label>
+                    <input id="df_dispatchedBy" type="text" placeholder="Name and position" style="width:100%;padding:8px 12px;border:1.5px solid #e2e8f0;border-radius:7px;font-size:13px;font-family:'Plus Jakarta Sans',sans-serif;color:#0f172a;outline:none;">
+                </div>
+                <div>
+                    <label style="font-size:11px;font-weight:700;color:#64748b;text-transform:uppercase;letter-spacing:0.5px;display:block;margin-bottom:4px;">Date</label>
+                    <input id="df_signDate" type="date" style="width:100%;padding:8px 12px;border:1.5px solid #e2e8f0;border-radius:7px;font-size:13px;font-family:'Plus Jakarta Sans',sans-serif;color:#0f172a;outline:none;">
+                </div>
+            </div>
+
+        </div><!-- end dispatchFormBody -->
+    </div>
+</div>
+
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script>
     const SUPABASE_URL = 'https://jnfkfzjhgbktovvvqbuk.supabase.co';
@@ -1173,6 +1308,9 @@
                 </button>
                 <button class="act-btn print" data-tip="Print Form" onclick="printRequest('${sanitize(req.id)}')">
                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 6 2 18 2 18 9"/><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><rect x="6" y="14" width="12" height="8"/></svg>
+                </button>
+                <button class="act-btn dispatch" data-tip="Dispatch Form" onclick="openDispatchModal('${sanitize(req.id)}')">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
                 </button>
                 <button class="act-btn del" data-tip="Delete" onclick="deleteRequest('${sanitize(req.id)}')">
                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/><path d="M10 11v6"/><path d="M14 11v6"/><path d="M9 6V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"/></svg>
@@ -1690,6 +1828,149 @@
         } catch (err) {
             showToast('Error: ' + err.message, 'error');
         }
+    }
+
+    // ---- DISPATCH FORM ----
+    function openDispatchModal(id) {
+        const req = allRequests.find(r => r.id === id);
+        if (!req) return;
+
+        // Pre-fill from request data
+        document.getElementById('df_event').value      = req.event_activity || '';
+        document.getElementById('df_eventDate').value  = req.event_date || '';
+        document.getElementById('df_eventTime').value  = req.event_time || '';
+        document.getElementById('df_venue').value      = req.event_venue || '';
+        document.getElementById('df_signDate').value   = new Date().toISOString().split('T')[0];
+        document.getElementById('df_dispatchDate').value = new Date().toISOString().split('T')[0];
+
+        // Clear team fields
+        ['df_dispatchNo','df_departure','df_return','df_photographers',
+         'df_videographers','df_writer','df_drone','df_reels',
+         'df_transport','df_meals','df_instructions','df_dispatchedBy'
+        ].forEach(id => {
+            const el = document.getElementById(id);
+            if (el && el.tagName !== 'INPUT' || (el && el.value === undefined)) return;
+            if (el && id !== 'df_dispatchNo') { /* keep blank for manual fill */ }
+        });
+        // Clear only team/notes fields, not pre-filled event ones
+        ['df_dispatchNo','df_departure','df_return','df_photographers',
+         'df_videographers','df_writer','df_drone','df_reels',
+         'df_transport','df_meals','df_instructions','df_dispatchedBy'
+        ].forEach(fid => {
+            const el = document.getElementById(fid);
+            if (el) el.value = '';
+        });
+
+        document.getElementById('dispatchModal').classList.add('open');
+        document.body.style.overflow = 'hidden';
+    }
+
+    function closeDispatchModal() {
+        document.getElementById('dispatchModal').classList.remove('open');
+        document.body.style.overflow = '';
+    }
+
+    document.getElementById('dispatchModal').addEventListener('click', function(e) {
+        if (e.target === this) closeDispatchModal();
+    });
+
+    function printDispatch() {
+        const get = id => {
+            const el = document.getElementById(id);
+            return el ? (el.value || '').trim() : '';
+        };
+
+        const fmtDate = str => {
+            if (!str) return '';
+            const d = new Date(str + 'T00:00');
+            return d.toLocaleDateString('en-PH', { year:'numeric', month:'long', day:'numeric' });
+        };
+
+        const row = (label, val) =>
+            `<tr><td style="padding:5px 8px;font-size:9.5pt;font-weight:600;color:#475569;width:160px;white-space:nowrap;vertical-align:top;">${label}</td><td style="padding:5px 8px;font-size:9.5pt;color:#0f172a;border-bottom:1px solid #f1f5f9;">${val || '<span style="color:#cbd5e1;">—</span>'}</td></tr>`;
+
+        const html = `<!DOCTYPE html><html><head><meta charset="UTF-8">
+        <style>
+            @page { size: portrait; margin: 12mm 14mm; }
+            body { font-family: Arial, sans-serif; color: #0f172a; }
+            .header { text-align:center; padding-bottom:10px; border-bottom:2.5px solid #0f172a; margin-bottom:14px; }
+            .header img { height:60px; }
+            .header h1 { font-size:14pt; font-weight:900; letter-spacing:0.5px; margin:6px 0 2px; }
+            .header h2 { font-size:10pt; font-weight:400; color:#475569; margin:0 0 6px; }
+            .header h3 { font-size:12pt; font-weight:700; color:#1d4ed8; letter-spacing:0.5px; margin:0; }
+            .section { margin-bottom:12px; }
+            .section-title { font-size:9pt; font-weight:700; text-transform:uppercase; letter-spacing:0.6px; color:#64748b; background:#f8fafc; padding:5px 8px; border-left:3px solid #1d4ed8; margin-bottom:4px; }
+            table { width:100%; border-collapse:collapse; }
+            .sig-row { display:flex; gap:40px; margin-top:24px; }
+            .sig-box { flex:1; border-top:1.5px solid #0f172a; padding-top:6px; text-align:center; font-size:9.5pt; }
+            .sig-label { font-size:8.5pt; color:#64748b; margin-top:2px; }
+        </style></head><body>
+        <div class="header">
+            <img src="/cio-logo.jpg" alt="CIO">
+            <h1>CITY INFORMATION OFFICE</h1>
+            <h2>City Government of Bago, Western Visayas, Philippines</h2>
+            <h3>COVERAGE DISPATCH ORDER</h3>
+        </div>
+
+        <div class="section">
+            <div class="section-title">Dispatch Information</div>
+            <table>
+                ${row('Dispatch No.', get('df_dispatchNo'))}
+                ${row('Date Dispatched', fmtDate(get('df_dispatchDate')))}
+            </table>
+        </div>
+
+        <div class="section">
+            <div class="section-title">Event Details</div>
+            <table>
+                ${row('Event / Activity', get('df_event'))}
+                ${row('Date of Event', get('df_eventDate'))}
+                ${row('Time', get('df_eventTime'))}
+                ${row('Venue / Location', get('df_venue'))}
+                ${row('Departure Time', get('df_departure'))}
+                ${row('Return Time', get('df_return'))}
+            </table>
+        </div>
+
+        <div class="section">
+            <div class="section-title">Coverage Team — Role &amp; Assigned Staff</div>
+            <table>
+                ${row('Photographer(s)', get('df_photographers'))}
+                ${row('Videographer(s)', get('df_videographers'))}
+                ${row('Writer / Documentation', get('df_writer'))}
+                ${row('Drone Operator', get('df_drone'))}
+                ${row('Reels Videographer', get('df_reels'))}
+            </table>
+        </div>
+
+        <div class="section">
+            <div class="section-title">Coverage Notes</div>
+            <table>
+                ${row('Transportation', get('df_transport'))}
+                ${row('Meals', get('df_meals'))}
+                ${row('Special Instructions', get('df_instructions').replace(/\n/g,'<br>'))}
+            </table>
+        </div>
+
+        <div class="sig-row">
+            <div class="sig-box">
+                ${get('df_dispatchedBy') || '&nbsp;'}
+                <div class="sig-label">Dispatched By / City Information Officer</div>
+                <div class="sig-label">${fmtDate(get('df_signDate'))}</div>
+            </div>
+            <div class="sig-box">
+                &nbsp;
+                <div class="sig-label">Received By</div>
+                <div class="sig-label">Date: ___________________</div>
+            </div>
+        </div>
+        </body></html>`;
+
+        const win = window.open('', '_blank', 'width=900,height=700');
+        win.document.write(html);
+        win.document.close();
+        win.focus();
+        setTimeout(() => { win.print(); }, 600);
     }
 
     // ---- SERVICE WORKER REGISTRATION ----
