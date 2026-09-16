@@ -355,7 +355,6 @@
         .act-btn.call:hover, .act-btn.call:active  { border-color: #22c55e; color: #16a34a; background: #f0fdf4; }
         .act-btn.msg:hover, .act-btn.msg:active    { border-color: #3b82f6; color: #2563eb; background: #eff6ff; }
         .act-btn.print:hover, .act-btn.print:active { border-color: #8b5cf6; color: #7c3aed; background: #f5f3ff; }
-        .act-btn.dispatch:hover, .act-btn.dispatch:active { border-color: #0891b2; color: #0e7490; background: #ecfeff; }
         .act-btn.del:hover, .act-btn.del:active    { border-color: #ef4444; color: #dc2626; background: #fef2f2; }
 
         .act-btn svg { width: 15px; height: 15px; }
@@ -398,6 +397,8 @@
         .act-btn.view:hover, .act-btn.view:active { border-color: #0891b2; color: #0e7490; background: #f0f9ff; }
         .act-btn.key { color: #d97706; border-color: #fef3c7; }
         .act-btn.key:hover, .act-btn.key:active { border-color: #d97706; color: #b45309; background: #fffbeb; }
+        .act-btn.dispatch { color: #0891b2; border-color: #cffafe; }
+        .act-btn.dispatch:hover, .act-btn.dispatch:active { border-color: #0891b2; color: #0e7490; background: #ecfeff; }
 
         /* ---- UPDATE PASSWORD BUTTON in topnav ---- */
         .btn-update-pw {
@@ -1833,7 +1834,10 @@
     // ---- DISPATCH FORM ----
     function openDispatchModal(id) {
         const req = allRequests.find(r => r.id === id);
-        if (!req) return;
+        if (!req) {
+            showToast('Request data not found. Try refreshing.', 'error');
+            return;
+        }
 
         // Pre-fill from request data
         document.getElementById('df_event').value      = req.event_activity || '';
