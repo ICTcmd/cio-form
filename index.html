@@ -1651,7 +1651,6 @@
             <div style="display:flex;align-items:center;gap:8px;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.07);border-radius:9px;padding:9px 13px;font-size:12px;font-weight:500;color:rgba(255,255,255,0.65);"><span style="width:5px;height:5px;border-radius:50%;background:#6366f1;flex-shrink:0;"></span>Drone Footage</div>
             <div style="display:flex;align-items:center;gap:8px;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.07);border-radius:9px;padding:9px 13px;font-size:12px;font-weight:500;color:rgba(255,255,255,0.65);"><span style="width:5px;height:5px;border-radius:50%;background:#6366f1;flex-shrink:0;"></span>Graphic / Lay-out Design</div>
             <div style="display:flex;align-items:center;gap:8px;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.07);border-radius:9px;padding:9px 13px;font-size:12px;font-weight:500;color:rgba(255,255,255,0.65);"><span style="width:5px;height:5px;border-radius:50%;background:#6366f1;flex-shrink:0;"></span>Video Editing</div>
-            <div style="display:flex;align-items:center;gap:8px;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.07);border-radius:9px;padding:9px 13px;font-size:12px;font-weight:500;color:rgba(255,255,255,0.65);"><span style="width:5px;height:5px;border-radius:50%;background:#6366f1;flex-shrink:0;"></span>Live Streaming</div>
             <div style="display:flex;align-items:center;gap:8px;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.07);border-radius:9px;padding:9px 13px;font-size:12px;font-weight:500;color:rgba(255,255,255,0.65);"><span style="width:5px;height:5px;border-radius:50%;background:#6366f1;flex-shrink:0;"></span>Radio Guesting</div>
             <div style="display:flex;align-items:center;gap:8px;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.07);border-radius:9px;padding:9px 13px;font-size:12px;font-weight:500;color:rgba(255,255,255,0.65);"><span style="width:5px;height:5px;border-radius:50%;background:#6366f1;flex-shrink:0;"></span>Social Media Posting</div>
             <div style="display:flex;align-items:center;gap:8px;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.07);border-radius:9px;padding:9px 13px;font-size:12px;font-weight:500;color:rgba(255,255,255,0.65);"><span style="width:5px;height:5px;border-radius:50%;background:#6366f1;flex-shrink:0;"></span>Press Release / Write-up</div>
@@ -1970,10 +1969,6 @@
                             <span>Drone</span>
                         </label>
                         <label class="checkbox-item">
-                            <input type="checkbox" id="liveStreaming" value="Live Streaming">
-                            <span>Live Streaming</span>
-                        </label>
-                        <label class="checkbox-item">
                             <input type="checkbox" id="pressRelease" value="Press Release / Write-up">
                             <span>Press Release / Write-up</span>
                         </label>
@@ -2002,10 +1997,16 @@
 
                     <!-- Conditional: Graphic Design Upload -->
                     <div id="graphicDesignFields" class="conditional-field">
-                        <div class="cond-title">🎨 For Graphic / Lay-out Design — Reference Files Link</div>
-                        <p style="font-size:12px;color:var(--slate-600);margin-bottom:10px;">Share your content reference, text, or images via Google Drive, OneDrive, or Dropbox. Set sharing to "Anyone with the link".</p>
-                        <div class="form-group" style="margin:0;">
+                        <div class="cond-title">For Graphic / Lay-out Design — Reference Files &amp; Instructions</div>
+                        <p style="font-size:12px;color:var(--slate-600);margin-bottom:12px;">Both fields are required when requesting Graphic / Lay-out Design.</p>
+                        <div class="form-group">
+                            <label>Reference Files Link <span class="req">*</span></label>
                             <input type="text" id="graphicDesignFile" placeholder="https://drive.google.com/drive/folders/...">
+                            <div style="font-size:11px;color:var(--slate-400);margin-top:4px;">Share your content, text, or images via Google Drive, OneDrive, or Dropbox. Set sharing to "Anyone with the link".</div>
+                        </div>
+                        <div class="form-group" style="margin-bottom:0;">
+                            <label>Design Instructions <span class="req">*</span></label>
+                            <textarea id="graphicDesignInstructions" rows="3" placeholder="Describe what you need — size, purpose, text to include, preferred style, color, deadline, etc." style="width:100%;padding:10px 14px;border:1.5px solid var(--slate-200);border-radius:var(--radius-sm);font-size:14px;font-family:'Plus Jakarta Sans',sans-serif;color:var(--navy);background:var(--slate-50);outline:none;resize:vertical;transition:all 0.2s;"></textarea>
                         </div>
                     </div>
 
@@ -2326,6 +2327,17 @@
     });
     document.getElementById('graphicDesign').addEventListener('change', function () {
         document.getElementById('graphicDesignFields').classList.toggle('active', this.checked);
+        // Reset error styles when unchecked
+        if (!this.checked) {
+            document.getElementById('graphicDesignFile').style.borderColor = '';
+            document.getElementById('graphicDesignInstructions').style.borderColor = '';
+        }
+    });
+    document.getElementById('graphicDesignFile').addEventListener('input', function () {
+        this.style.borderColor = '';
+    });
+    document.getElementById('graphicDesignInstructions').addEventListener('input', function () {
+        this.style.borderColor = '';
     });
     document.getElementById('pressRelease').addEventListener('change', function () {
         document.getElementById('pressReleaseFields').classList.toggle('active', this.checked);
@@ -2468,7 +2480,7 @@
     function getSelectedServices() {
         const ids = ['graphicDesign','radioGuesting','photoCoverage','videoEditing',
                      'videoCoverage','socialMediaPosting','videoCoverageInterview',
-                     'copyMaterials','drone','liveStreaming','pressRelease','others'];
+                     'copyMaterials','drone','pressRelease','others'];
         return ids.filter(id => document.getElementById(id).checked)
                   .map(id => {
                       const val = document.getElementById(id).value;
@@ -2487,6 +2499,30 @@
 
         const services = getSelectedServices();
         if (!services.length) { alert('Please select at least one service.'); return; }
+
+        // Validate Graphic / Lay-out Design — link and instructions are required
+        if (services.includes('Graphic/ Lay-out Design')) {
+            const gdLink = document.getElementById('graphicDesignFile').value.trim();
+            const gdInstructions = document.getElementById('graphicDesignInstructions').value.trim();
+            if (!gdLink) {
+                showToast('Please provide a reference files link for Graphic / Lay-out Design.', 'error');
+                document.getElementById('graphicDesignFile').focus();
+                document.getElementById('graphicDesignFile').style.borderColor = '#ef4444';
+                return;
+            }
+            if (!gdLink.match(/^https?:\/\/.+/)) {
+                showToast('Reference files link must start with https://', 'error');
+                document.getElementById('graphicDesignFile').focus();
+                document.getElementById('graphicDesignFile').style.borderColor = '#ef4444';
+                return;
+            }
+            if (!gdInstructions) {
+                showToast('Please provide design instructions for Graphic / Lay-out Design.', 'error');
+                document.getElementById('graphicDesignInstructions').focus();
+                document.getElementById('graphicDesignInstructions').style.borderColor = '#ef4444';
+                return;
+            }
+        }
 
         // Validate cloud drive link if provided
         const cloudDriveLink = document.getElementById('cloudDriveLink').value.trim();
@@ -2523,6 +2559,7 @@
             remarks: document.getElementById('remarks').value || null,
             cloud_drive_link: cloudDriveLink || null,
             graphic_design_link: document.getElementById('graphicDesignFile').value.trim() || null,
+            graphic_design_instructions: document.getElementById('graphicDesignInstructions').value.trim() || null,
             press_release_link: document.getElementById('pressReleaseFile').value.trim() || null,
             status: 'Pending'
         };
@@ -2549,6 +2586,7 @@
             document.getElementById('remarks').value = '';
             document.getElementById('cloudDriveLink').value = '';
             document.getElementById('graphicDesignFile').value = '';
+            document.getElementById('graphicDesignInstructions').value = '';
             document.getElementById('pressReleaseFile').value = '';
 
             // Re-lock privacy after reset

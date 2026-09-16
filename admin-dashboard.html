@@ -1409,7 +1409,7 @@
 
     function buildPrintHTML(req) {
         const services = Array.isArray(req.services) ? req.services : [];
-        const all = ['Graphic/ Lay-out Design','Photo Coverage','Video Coverage','Video Coverage with Interview','Drone','Radio Guesting','Video Editing','Social Media Posting','Copy of Photo/Video Materials','Live Streaming','Press Release / Write-up','Others'];
+        const all = ['Graphic/ Lay-out Design','Photo Coverage','Video Coverage','Video Coverage with Interview','Drone','Radio Guesting','Video Editing','Social Media Posting','Copy of Photo/Video Materials','Press Release / Write-up','Others'];
         const boxes = all.map(s => `<div class="chk-item"><span class="box">${services.includes(s)?'✓':''}</span>${s}</div>`).join('');
         const hasVE = services.includes('Video Editing');
         const hasSM = services.includes('Social Media Posting');
