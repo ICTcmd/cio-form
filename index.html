@@ -2030,18 +2030,19 @@
 
                     <!-- Conditional: Copy Materials -->
                     <div id="copyMaterialsFields" class="conditional-field">
-                        <div class="cond-title">📂 For Copy of Photo/Video Materials</div>
-                        <div class="form-row-3">
+                        <div class="cond-title">For Copy of Photo/Video Materials</div>
+                        <p style="font-size:12px;color:var(--slate-600);margin-bottom:12px;">All three fields are required for this request.</p>
+                        <div style="display:flex;flex-direction:column;gap:12px;">
                             <div class="form-group" style="margin:0;">
-                                <label>About</label>
-                                <input type="text" id="copyAbout">
+                                <label>About <span class="req">*</span></label>
+                                <input type="text" id="copyAbout" placeholder="What is this material about?">
                             </div>
                             <div class="form-group" style="margin:0;">
-                                <label>Event</label>
-                                <input type="text" id="copyEvent">
+                                <label>Event <span class="req">*</span></label>
+                                <input type="text" id="copyEvent" placeholder="Name of the event">
                             </div>
                             <div class="form-group" style="margin:0;">
-                                <label>Date Taken</label>
+                                <label>Date Taken <span class="req">*</span></label>
                                 <input type="date" id="copyDateTaken">
                             </div>
                         </div>
@@ -2339,6 +2340,11 @@
     document.getElementById('graphicDesignInstructions').addEventListener('input', function () {
         this.style.borderColor = '';
     });
+    ['copyAbout','copyEvent','copyDateTaken'].forEach(id => {
+        document.getElementById(id).addEventListener('input', function () {
+            this.style.borderColor = '';
+        });
+    });
     document.getElementById('pressRelease').addEventListener('change', function () {
         document.getElementById('pressReleaseFields').classList.toggle('active', this.checked);
     });
@@ -2524,7 +2530,30 @@
             }
         }
 
-        // Validate cloud drive link if provided
+        // Validate Copy of Photo/Video Materials — all three fields required
+        if (services.includes('Copy of Photo/Video Materials')) {
+            const copyAbout = document.getElementById('copyAbout').value.trim();
+            const copyEvent = document.getElementById('copyEvent').value.trim();
+            const copyDate  = document.getElementById('copyDateTaken').value.trim();
+            if (!copyAbout) {
+                showToast('Please fill in the "About" field for Copy of Photo/Video Materials.', 'error');
+                document.getElementById('copyAbout').focus();
+                document.getElementById('copyAbout').style.borderColor = '#ef4444';
+                return;
+            }
+            if (!copyEvent) {
+                showToast('Please fill in the "Event" field for Copy of Photo/Video Materials.', 'error');
+                document.getElementById('copyEvent').focus();
+                document.getElementById('copyEvent').style.borderColor = '#ef4444';
+                return;
+            }
+            if (!copyDate) {
+                showToast('Please fill in the "Date Taken" field for Copy of Photo/Video Materials.', 'error');
+                document.getElementById('copyDateTaken').focus();
+                document.getElementById('copyDateTaken').style.borderColor = '#ef4444';
+                return;
+            }
+        }
         const cloudDriveLink = document.getElementById('cloudDriveLink').value.trim();
         if (cloudDriveLink && !cloudDriveLink.match(/^https?:\/\/.+/)) {
             showToast('⚠ Please enter a valid link starting with https://', 'error');
