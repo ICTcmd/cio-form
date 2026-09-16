@@ -1843,16 +1843,7 @@
         document.getElementById('df_signDate').value   = new Date().toISOString().split('T')[0];
         document.getElementById('df_dispatchDate').value = new Date().toISOString().split('T')[0];
 
-        // Clear team fields
-        ['df_dispatchNo','df_departure','df_return','df_photographers',
-         'df_videographers','df_writer','df_drone','df_reels',
-         'df_transport','df_meals','df_instructions','df_dispatchedBy'
-        ].forEach(id => {
-            const el = document.getElementById(id);
-            if (el && el.tagName !== 'INPUT' || (el && el.value === undefined)) return;
-            if (el && id !== 'df_dispatchNo') { /* keep blank for manual fill */ }
-        });
-        // Clear only team/notes fields, not pre-filled event ones
+        // Clear team/notes fields for fresh entry
         ['df_dispatchNo','df_departure','df_return','df_photographers',
          'df_videographers','df_writer','df_drone','df_reels',
          'df_transport','df_meals','df_instructions','df_dispatchedBy'
