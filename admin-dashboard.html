@@ -1173,6 +1173,13 @@
 
     async function loadRequests() {
         try {
+            // Ensure we have a valid session before querying
+            const { data: { session } } = await sb.auth.getSession();
+            if (!session) {
+                window.location.href = '/admin-login';
+                return;
+            }
+
             const { data, error } = await sb
                 .from('requests')
                 .select('*')
@@ -1360,7 +1367,10 @@
 
     function printRequest(id) {
         const req = allRequests.find(r => r.id === id);
-        if (!req) return;
+        if (!req) {
+            showToast('Could not load request. Try refreshing.', 'error');
+            return;
+        }
         const html = buildPrintHTML(req);
         const win = window.open('', '_blank', 'width=1000,height=700');
         win.document.write(`<!DOCTYPE html><html><head>
@@ -1488,7 +1498,17 @@
 
     async function openDetailModal(id) {
         const req = allRequests.find(r => r.id === id);
-        if (!req) return;
+        if (!req) {
+            // allRequests may be empty — try reloading
+            showToast('Loading request data...', 'info');
+            await loadRequests();
+            const retryReq = allRequests.find(r => r.id === id);
+            if (!retryReq) {
+                showToast('Could not load request details. Try refreshing.', 'error');
+                return;
+            }
+            return openDetailModal(id);
+        }
 
         document.getElementById('detailModalTitle').textContent = req.control_number || 'Request Details';
         document.getElementById('detailModalSub').textContent = req.requesting_office || '';
