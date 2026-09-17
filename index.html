@@ -2580,24 +2580,26 @@
             event_time: document.getElementById('eventTime').value,
             event_venue: document.getElementById('eventVenue').value,
             services: services,
-            video_editing_due_date: document.getElementById('videoEditingDueDate').value || null,
-            social_media_dates: document.getElementById('socialMediaDates').value || null,
-            copy_about: document.getElementById('copyAbout').value || null,
-            copy_event: document.getElementById('copyEvent').value || null,
-            copy_date_taken: document.getElementById('copyDateTaken').value || null,
-            remarks: document.getElementById('remarks').value || null,
-            cloud_drive_link: cloudDriveLink || null,
             status: 'Pending'
         };
 
-        // Add extra columns only if they have values — avoids RLS errors
-        // if these columns don't yet exist in the DB
-        const gdLink  = document.getElementById('graphicDesignFile').value.trim();
-        const gdInstr = document.getElementById('graphicDesignInstructions').value.trim();
-        const prLink  = document.getElementById('pressReleaseFile').value.trim();
-        if (gdLink)  payload.graphic_design_link = gdLink;
-        if (gdInstr) payload.graphic_design_instructions = gdInstr;
-        if (prLink)  payload.press_release_link = prLink;
+        // Conditionally add optional fields — only when they have a value
+        // This prevents RLS errors if columns don't exist yet in the DB
+        const optionalFields = {
+            video_editing_due_date: document.getElementById('videoEditingDueDate').value || null,
+            social_media_dates:     document.getElementById('socialMediaDates').value || null,
+            copy_about:             document.getElementById('copyAbout').value || null,
+            copy_event:             document.getElementById('copyEvent').value || null,
+            copy_date_taken:        document.getElementById('copyDateTaken').value || null,
+            remarks:                document.getElementById('remarks').value || null,
+            cloud_drive_link:       cloudDriveLink || null,
+            graphic_design_link:    document.getElementById('graphicDesignFile').value.trim() || null,
+            graphic_design_instructions: document.getElementById('graphicDesignInstructions').value.trim() || null,
+            press_release_link:     document.getElementById('pressReleaseFile').value.trim() || null,
+        };
+        Object.entries(optionalFields).forEach(([key, val]) => {
+            if (val !== null && val !== '') payload[key] = val;
+        });
 
         try {
             txt.textContent = '⏳ Saving request...';
