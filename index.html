@@ -2056,8 +2056,8 @@
                         <h3>REMARKS / ADDITIONAL INSTRUCTIONS</h3>
                     </div>
                     <div class="form-group">
-                        <label for="remarks">Remarks <span style="color:var(--slate-400);font-weight:400;">(optional)</span></label>
-                        <textarea id="remarks" name="remarks" rows="3" placeholder="Any special instructions, additional notes, or specific requirements for this request..." style="width:100%;padding:10px 14px;border:1.5px solid var(--slate-200);border-radius:var(--radius-sm);font-size:14px;color:var(--navy);font-family:'Plus Jakarta Sans',sans-serif;outline:none;resize:vertical;transition:all 0.2s;background:var(--slate-50);line-height:1.6;"></textarea>
+                        <label for="remarks">Remarks / Additional Instructions <span class="req">*</span></label>
+                        <textarea id="remarks" name="remarks" rows="3" required placeholder="Describe your specific requirements, special instructions, preferred style, or any additional notes for this request..." style="width:100%;padding:10px 14px;border:1.5px solid var(--slate-200);border-radius:var(--radius-sm);font-size:14px;color:var(--navy);font-family:'Plus Jakarta Sans',sans-serif;outline:none;resize:vertical;transition:all 0.2s;background:var(--slate-50);line-height:1.6;"></textarea>
                     </div>
                 </div>
 
@@ -2505,6 +2505,15 @@
 
         const services = getSelectedServices();
         if (!services.length) { alert('Please select at least one service.'); return; }
+
+        // Validate remarks — mandatory for all submissions
+        const remarksVal = document.getElementById('remarks').value.trim();
+        if (!remarksVal) {
+            showToast('Please provide remarks or additional instructions for your request.', 'error');
+            document.getElementById('remarks').focus();
+            document.getElementById('remarks').style.borderColor = '#ef4444';
+            return;
+        }
 
         // Validate Graphic / Lay-out Design — link and instructions are required
         if (services.includes('Graphic/ Lay-out Design')) {

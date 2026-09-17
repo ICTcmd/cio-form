@@ -737,6 +737,7 @@
 <!-- TABS BAR (superadmin sees extra tab) -->
 <div class="tabs-bar" id="tabsBar">
     <button class="tab-btn active" onclick="switchTab('requests')">Requests Management</button>
+    <button class="tab-btn" onclick="switchTab('calendar')">📅 Calendar</button>
     <button class="tab-btn" id="userMgmtTab" style="display:none;" onclick="switchTab('users')">User Management</button>
 </div>
 
@@ -856,7 +857,30 @@
                 </table>
             </div>
         </div>
-    </div>
+    </div><!-- end panel-users -->
+
+    <!-- TAB: CALENDAR -->
+    <div class="tab-panel" id="panel-calendar">
+        <div class="page-heading">
+            <h1>📅 Event Calendar</h1>
+            <p>View all upcoming events and coverage requests for the current month.</p>
+        </div>
+        <div style="background:white;border-radius:16px;border:1px solid #e2e8f0;box-shadow:0 1px 4px rgba(0,0,0,0.04);padding:24px;overflow:hidden;">
+            <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:20px;">
+                <h2 id="calendarMonthYear" style="font-size:20px;font-weight:800;color:#0f172a;margin:0;"></h2>
+                <div style="display:flex;gap:8px;">
+                    <button onclick="changeMonth(-1)" style="padding:8px 12px;background:#f8fafc;border:1.5px solid #e2e8f0;border-radius:8px;font-size:13px;font-weight:600;cursor:pointer;font-family:'Plus Jakarta Sans',sans-serif;color:#334155;">← Prev</button>
+                    <button onclick="changeMonth(1)" style="padding:8px 12px;background:#f8fafc;border:1.5px solid #e2e8f0;border-radius:8px;font-size:13px;font-weight:600;cursor:pointer;font-family:'Plus Jakarta Sans',sans-serif;color:#334155;">Next →</button>
+                    <button onclick="changeMonth(0)" style="padding:8px 16px;background:#4f46e5;color:white;border:none;border-radius:8px;font-size:13px;font-weight:600;cursor:pointer;font-family:'Plus Jakarta Sans',sans-serif;">Today</button>
+                </div>
+            </div>
+            <div id="calendarGrid" style="display:grid;grid-template-columns:repeat(7,1fr);gap:8px;"></div>
+        </div>
+        <div style="margin-top:20px;background:white;border-radius:16px;border:1px solid #e2e8f0;box-shadow:0 1px 4px rgba(0,0,0,0.04);padding:20px;">
+            <h3 style="font-size:15px;font-weight:700;color:#0f172a;margin:0 0 14px;">Upcoming Events This Month</h3>
+            <div id="upcomingEventsList" style="display:flex;flex-direction:column;gap:10px;"></div>
+        </div>
+    </div><!-- end panel-calendar -->
 
 </div><!-- end page-body -->
 
@@ -956,6 +980,10 @@
                 <div style="font-size:11px;color:rgba(255,255,255,0.4);margin-top:2px;">Fill in and print the dispatch order</div>
             </div>
             <div style="display:flex;gap:8px;">
+                <button onclick="saveDispatchForm()" id="saveDispatchBtn" style="padding:8px 16px;background:#059669;color:white;border:none;border-radius:8px;font-size:13px;font-weight:600;cursor:pointer;font-family:'Plus Jakarta Sans',sans-serif;display:flex;align-items:center;gap:6px;">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg>
+                    Save
+                </button>
                 <button onclick="printDispatch()" style="padding:8px 16px;background:#4f46e5;color:white;border:none;border-radius:8px;font-size:13px;font-weight:600;cursor:pointer;font-family:'Plus Jakarta Sans',sans-serif;">Print</button>
                 <button onclick="closeDispatchModal()" style="padding:8px 14px;background:rgba(255,255,255,0.08);color:rgba(255,255,255,0.7);border:1px solid rgba(255,255,255,0.15);border-radius:8px;font-size:13px;cursor:pointer;font-family:'Plus Jakarta Sans',sans-serif;">Close</button>
             </div>
@@ -976,7 +1004,10 @@
             <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:14px;">
                 <div>
                     <label style="font-size:11px;font-weight:700;color:#64748b;text-transform:uppercase;letter-spacing:0.5px;display:block;margin-bottom:4px;">Dispatch No.</label>
-                    <input id="df_dispatchNo" type="text" placeholder="e.g. CIO-2026-001" style="width:100%;padding:8px 12px;border:1.5px solid #e2e8f0;border-radius:7px;font-size:13px;font-family:'Plus Jakarta Sans',sans-serif;color:#0f172a;outline:none;">
+                    <div style="display:flex;gap:8px;">
+                        <input id="df_dispatchNo" type="text" placeholder="e.g. CIO-2026-001" readonly style="width:100%;padding:8px 12px;border:1.5px solid #e2e8f0;border-radius:7px;font-size:13px;font-family:'Plus Jakarta Sans',sans-serif;color:#0f172a;outline:none;background:#f8fafc;cursor:default;">
+                        <button onclick="generateDispatchNumber()" type="button" style="padding:8px 12px;background:#4f46e5;color:white;border:none;border-radius:7px;font-size:11px;font-weight:600;cursor:pointer;white-space:nowrap;font-family:'Plus Jakarta Sans',sans-serif;">Generate</button>
+                    </div>
                 </div>
                 <div>
                     <label style="font-size:11px;font-weight:700;color:#64748b;text-transform:uppercase;letter-spacing:0.5px;display:block;margin-bottom:4px;">Date Dispatched</label>
@@ -1040,6 +1071,10 @@
                     <div style="display:grid;grid-template-columns:160px 1fr;align-items:center;gap:10px;">
                         <label style="font-size:12px;font-weight:600;color:#334155;">Reels Videographer</label>
                         <input id="df_reels" type="text" placeholder="Names of assigned staff" style="width:100%;padding:7px 12px;border:1.5px solid #e2e8f0;border-radius:7px;font-size:13px;font-family:'Plus Jakarta Sans',sans-serif;color:#0f172a;background:white;outline:none;">
+                    </div>
+                    <div style="display:grid;grid-template-columns:160px 1fr;align-items:center;gap:10px;">
+                        <label style="font-size:12px;font-weight:600;color:#334155;">Layout Artist</label>
+                        <input id="df_layoutArtist" type="text" placeholder="Names of assigned staff" style="width:100%;padding:7px 12px;border:1.5px solid #e2e8f0;border-radius:7px;font-size:13px;font-family:'Plus Jakarta Sans',sans-serif;color:#0f172a;background:white;outline:none;">
                     </div>
                 </div>
             </div>
@@ -1717,6 +1752,156 @@
         document.querySelector(`[onclick="switchTab('${tab}')"]`).classList.add('active');
         document.getElementById(`panel-${tab}`).classList.add('active');
         if (tab === 'users') loadUsers();
+        if (tab === 'calendar') renderCalendar();
+    }
+
+    // ---- CALENDAR ----
+    let currentCalendarDate = new Date();
+
+    function changeMonth(delta) {
+        if (delta === 0) {
+            currentCalendarDate = new Date();
+        } else {
+            currentCalendarDate.setMonth(currentCalendarDate.getMonth() + delta);
+        }
+        renderCalendar();
+    }
+
+    function renderCalendar() {
+        const year = currentCalendarDate.getFullYear();
+        const month = currentCalendarDate.getMonth();
+        const today = new Date();
+        const isCurrentMonth = year === today.getFullYear() && month === today.getMonth();
+
+        // Set header
+        const months = ['January','February','March','April','May','June','July','August','September','October','November','December'];
+        document.getElementById('calendarMonthYear').textContent = `${months[month]} ${year}`;
+
+        // Get first day of month and total days
+        const firstDay = new Date(year, month, 1).getDay(); // 0 = Sunday
+        const daysInMonth = new Date(year, month + 1, 0).getDate();
+
+        // Get events for this month
+        const monthStr = String(month + 1).padStart(2, '0');
+        const eventsThisMonth = allRequests.filter(r => {
+            if (!r.event_date) return false;
+            return r.event_date.startsWith(`${year}-${monthStr}`);
+        }).sort((a, b) => new Date(a.event_date) - new Date(b.event_date));
+
+        // Build calendar grid
+        const grid = document.getElementById('calendarGrid');
+        grid.innerHTML = '';
+
+        // Day headers
+        ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'].forEach(day => {
+            const header = document.createElement('div');
+            header.style.cssText = 'text-align:center;font-size:11px;font-weight:700;color:#64748b;padding:8px 4px;text-transform:uppercase;letter-spacing:0.5px;';
+            header.textContent = day;
+            grid.appendChild(header);
+        });
+
+        // Empty cells before first day
+        for (let i = 0; i < firstDay; i++) {
+            const empty = document.createElement('div');
+            empty.style.cssText = 'background:#f8fafc;border-radius:8px;min-height:80px;';
+            grid.appendChild(empty);
+        }
+
+        // Days of month
+        for (let day = 1; day <= daysInMonth; day++) {
+            const dateStr = `${year}-${monthStr}-${String(day).padStart(2,'0')}`;
+            const eventsOnDay = eventsThisMonth.filter(r => r.event_date === dateStr);
+            const isToday = isCurrentMonth && day === today.getDate();
+
+            const cell = document.createElement('div');
+            cell.style.cssText = `
+                background:white;
+                border:1.5px solid ${isToday ? '#4f46e5' : '#e2e8f0'};
+                border-radius:8px;
+                min-height:80px;
+                padding:6px;
+                display:flex;
+                flex-direction:column;
+                gap:3px;
+                position:relative;
+                transition:all 0.2s;
+                cursor:default;
+            `;
+            if (eventsOnDay.length > 0) {
+                cell.style.cursor = 'pointer';
+                cell.onmouseenter = () => cell.style.borderColor = '#4f46e5';
+                cell.onmouseleave = () => { if (!isToday) cell.style.borderColor = '#e2e8f0'; };
+            }
+
+            const dayNum = document.createElement('div');
+            dayNum.style.cssText = `font-size:13px;font-weight:700;color:${isToday ? '#4f46e5' : '#0f172a'};margin-bottom:4px;`;
+            dayNum.textContent = day;
+            cell.appendChild(dayNum);
+
+            eventsOnDay.slice(0, 3).forEach(evt => {
+                const eventPill = document.createElement('div');
+                eventPill.style.cssText = `
+                    font-size:10px;
+                    background:#dbeafe;
+                    color:#1e40af;
+                    padding:3px 6px;
+                    border-radius:4px;
+                    overflow:hidden;
+                    text-overflow:ellipsis;
+                    white-space:nowrap;
+                    font-weight:600;
+                    cursor:pointer;
+                `;
+                eventPill.textContent = evt.event_activity;
+                eventPill.title = `${evt.event_activity} - ${evt.requesting_office}`;
+                eventPill.onclick = () => openDetailModal(evt.id);
+                cell.appendChild(eventPill);
+            });
+
+            if (eventsOnDay.length > 3) {
+                const more = document.createElement('div');
+                more.style.cssText = 'font-size:9px;color:#64748b;font-weight:600;margin-top:2px;';
+                more.textContent = `+${eventsOnDay.length - 3} more`;
+                cell.appendChild(more);
+            }
+
+            grid.appendChild(cell);
+        }
+
+        // Upcoming events list
+        const upcomingList = document.getElementById('upcomingEventsList');
+        if (eventsThisMonth.length === 0) {
+            upcomingList.innerHTML = '<div style="text-align:center;padding:20px;color:#94a3b8;font-size:13px;">No events scheduled this month.</div>';
+        } else {
+            upcomingList.innerHTML = '';
+            eventsThisMonth.forEach(evt => {
+                const item = document.createElement('div');
+                item.style.cssText = 'display:flex;align-items:center;justify-content:space-between;padding:12px 16px;background:#f8fafc;border:1px solid #e2e8f0;border-radius:10px;cursor:pointer;transition:all 0.2s;';
+                item.onmouseenter = () => { item.style.background = '#eff6ff'; item.style.borderColor = '#93c5fd'; };
+                item.onmouseleave = () => { item.style.background = '#f8fafc'; item.style.borderColor = '#e2e8f0'; };
+                item.onclick = () => openDetailModal(evt.id);
+
+                const left = document.createElement('div');
+                left.innerHTML = `
+                    <div style="font-size:13px;font-weight:700;color:#0f172a;margin-bottom:2px;">${sanitize(evt.event_activity)}</div>
+                    <div style="font-size:11px;color:#64748b;">${sanitize(evt.requesting_office)} — ${new Date(evt.event_date + 'T00:00').toLocaleDateString('en-PH', {month:'short',day:'numeric',year:'numeric'})}</div>
+                `;
+
+                const right = document.createElement('div');
+                const pillClass = {
+                    'Pending': 'pill-pending',
+                    'Contacted': 'pill-contacted',
+                    'Approved': 'pill-approved',
+                    'Declined': 'pill-declined',
+                    'Completed': 'pill-completed'
+                }[evt.status] || 'pill-pending';
+                right.innerHTML = `<span class="status-pill ${pillClass}">${evt.status}</span>`;
+
+                item.appendChild(left);
+                item.appendChild(right);
+                upcomingList.appendChild(item);
+            });
+        }
     }
 
     // ---- USER MANAGEMENT ----
@@ -1854,12 +2039,16 @@
     }
 
     // ---- DISPATCH FORM ----
+    let currentDispatchRequestId = null;
+
     function openDispatchModal(id) {
         const req = allRequests.find(r => r.id === id);
         if (!req) {
             showToast('Request data not found. Try refreshing.', 'error');
             return;
         }
+
+        currentDispatchRequestId = id;
 
         // Pre-fill from request data
         document.getElementById('df_event').value      = req.event_activity || '';
@@ -1869,14 +2058,27 @@
         document.getElementById('df_signDate').value   = new Date().toISOString().split('T')[0];
         document.getElementById('df_dispatchDate').value = new Date().toISOString().split('T')[0];
 
-        // Clear team/notes fields for fresh entry
-        ['df_dispatchNo','df_departure','df_return','df_photographers',
-         'df_videographers','df_writer','df_drone','df_reels',
-         'df_transport','df_meals','df_instructions','df_dispatchedBy'
-        ].forEach(fid => {
-            const el = document.getElementById(fid);
-            if (el) el.value = '';
-        });
+        // Load saved dispatch data if exists
+        if (req.dispatch_data) {
+            try {
+                const dd = typeof req.dispatch_data === 'string' ? JSON.parse(req.dispatch_data) : req.dispatch_data;
+                Object.keys(dd).forEach(key => {
+                    const el = document.getElementById(key);
+                    if (el) el.value = dd[key] || '';
+                });
+            } catch (e) {
+                console.warn('Could not parse dispatch_data:', e);
+            }
+        } else {
+            // Clear team/notes fields for fresh entry
+            ['df_dispatchNo','df_departure','df_return','df_photographers',
+             'df_videographers','df_writer','df_drone','df_reels','df_layoutArtist',
+             'df_transport','df_meals','df_instructions','df_dispatchedBy'
+            ].forEach(fid => {
+                const el = document.getElementById(fid);
+                if (el) el.value = '';
+            });
+        }
 
         document.getElementById('dispatchModal').classList.add('open');
         document.body.style.overflow = 'hidden';
@@ -1885,6 +2087,71 @@
     function closeDispatchModal() {
         document.getElementById('dispatchModal').classList.remove('open');
         document.body.style.overflow = '';
+        currentDispatchRequestId = null;
+    }
+
+    function generateDispatchNumber() {
+        const now = new Date();
+        const year = now.getFullYear();
+        const month = String(now.getMonth() + 1).padStart(2, '0');
+        const day = String(now.getDate()).padStart(2, '0');
+        const random = Math.floor(Math.random() * 900 + 100);
+        const dispatchNo = `CIO-${year}${month}${day}-${random}`;
+        document.getElementById('df_dispatchNo').value = dispatchNo;
+    }
+
+    async function saveDispatchForm() {
+        if (!currentDispatchRequestId) {
+            showToast('No request selected.', 'error');
+            return;
+        }
+
+        const btn = document.getElementById('saveDispatchBtn');
+        const originalText = btn.innerHTML;
+        btn.disabled = true;
+        btn.innerHTML = '⏳ Saving...';
+
+        try {
+            const dispatchData = {
+                df_dispatchNo: document.getElementById('df_dispatchNo').value,
+                df_dispatchDate: document.getElementById('df_dispatchDate').value,
+                df_event: document.getElementById('df_event').value,
+                df_eventDate: document.getElementById('df_eventDate').value,
+                df_eventTime: document.getElementById('df_eventTime').value,
+                df_venue: document.getElementById('df_venue').value,
+                df_departure: document.getElementById('df_departure').value,
+                df_return: document.getElementById('df_return').value,
+                df_photographers: document.getElementById('df_photographers').value,
+                df_videographers: document.getElementById('df_videographers').value,
+                df_writer: document.getElementById('df_writer').value,
+                df_drone: document.getElementById('df_drone').value,
+                df_reels: document.getElementById('df_reels').value,
+                df_layoutArtist: document.getElementById('df_layoutArtist').value,
+                df_transport: document.getElementById('df_transport').value,
+                df_meals: document.getElementById('df_meals').value,
+                df_instructions: document.getElementById('df_instructions').value,
+                df_dispatchedBy: document.getElementById('df_dispatchedBy').value,
+                df_signDate: document.getElementById('df_signDate').value
+            };
+
+            const { error } = await sb
+                .from('requests')
+                .update({ dispatch_data: dispatchData })
+                .eq('id', currentDispatchRequestId);
+
+            if (error) throw error;
+
+            // Update local data
+            const req = allRequests.find(r => r.id === currentDispatchRequestId);
+            if (req) req.dispatch_data = dispatchData;
+
+            showToast('✅ Dispatch form saved successfully!', 'success');
+        } catch (err) {
+            showToast('Error saving: ' + err.message, 'error');
+        } finally {
+            btn.disabled = false;
+            btn.innerHTML = originalText;
+        }
     }
 
     document.getElementById('dispatchModal').addEventListener('click', function(e) {
@@ -1957,6 +2224,7 @@
                 ${row('Writer / Documentation', get('df_writer'))}
                 ${row('Drone Operator', get('df_drone'))}
                 ${row('Reels Videographer', get('df_reels'))}
+                ${row('Layout Artist', get('df_layoutArtist'))}
             </table>
         </div>
 
