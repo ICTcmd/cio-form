@@ -2603,7 +2603,7 @@
 
         try {
             txt.textContent = '⏳ Saving request...';
-            const { error } = await sb.from('requests').insert([payload]);
+            const { error } = await sb.from('requests').insert(payload);
             if (error) throw error;
 
             showToast('✅ Request submitted! Control #: ' + controlNumber, 'success');
