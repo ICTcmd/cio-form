@@ -765,11 +765,17 @@
         
         .cal-event-chip:hover { transform: translateX(2px); opacity: 0.9; }
         
-        .cal-event-chip.status-pending { background: #fef3c7; color: #92400e; border-color: #fde047; }
+        /* STATUS COLOR SYSTEM - Professional Government Palette */
+        .cal-event-chip.status-completed { background: #d1fae5; color: #065f46; border-color: #86efac; }
+        .cal-event-chip.status-approved { background: #dbeafe; color: #1e40af; border-color: #93c5fd; }
         .cal-event-chip.status-contacted { background: #dbeafe; color: #1e40af; border-color: #93c5fd; }
-        .cal-event-chip.status-approved { background: #d1fae5; color: #065f46; border-color: #6ee7b7; }
-        .cal-event-chip.status-declined { background: #fee2e2; color: #991b1b; border-color: #fca5a5; }
-        .cal-event-chip.status-completed { background: #d1fae5; color: #14532d; border-color: #86efac; }
+        .cal-event-chip.status-pending { background: #fed7aa; color: #92400e; border-color: #fdba74; }
+        .cal-event-chip.status-cancelled { background: #fee2e2; color: #991b1b; border-color: #fca5a5; }
+        .cal-event-chip.status-draft { background: #f1f5f9; color: #475569; border-color: #cbd5e1; }
+        .cal-event-chip.status-past-needs-update { background: #fef3c7; color: #78350f; border-color: #fde047; }
+        
+        /* Cancelled events get subtle strikethrough */
+        .cal-event-chip.status-cancelled .cal-event-title { text-decoration: line-through; opacity: 0.7; }
         
         .cal-event-dot {
             width: 6px;
@@ -778,11 +784,66 @@
             flex-shrink: 0;
         }
         
-        .status-pending .cal-event-dot { background: #f59e0b; }
-        .status-contacted .cal-event-dot { background: #3b82f6; }
-        .status-approved .cal-event-dot { background: #10b981; }
-        .status-declined .cal-event-dot { background: #ef4444; }
-        .status-completed .cal-event-dot { background: #22c55e; }
+        /* Status dot colors match event background semantic meaning */
+        .status-completed .cal-event-dot { background: #059669; }
+        .status-approved .cal-event-dot { background: #2563eb; }
+        .status-contacted .cal-event-dot { background: #2563eb; }
+        .status-pending .cal-event-dot { background: #ea580c; }
+        .status-cancelled .cal-event-dot { background: #dc2626; }
+        .status-draft .cal-event-dot { background: #64748b; }
+        .status-past-needs-update .cal-event-dot { background: #ca8a04; }
+        
+        /* Status pills for list views */
+        .status-pill.pill-completed { background: #d1fae5; color: #065f46; border: 1px solid #86efac; }
+        .status-pill.pill-approved { background: #dbeafe; color: #1e40af; border: 1px solid #93c5fd; }
+        .status-pill.pill-contacted { background: #dbeafe; color: #1e40af; border: 1px solid #93c5fd; }
+        .status-pill.pill-pending { background: #fed7aa; color: #92400e; border: 1px solid #fdba74; }
+        .status-pill.pill-cancelled { background: #fee2e2; color: #991b1b; border: 1px solid #fca5a5; }
+        .status-pill.pill-draft { background: #f1f5f9; color: #475569; border: 1px solid #cbd5e1; }
+        .status-pill.pill-past-needs-update { background: #fef3c7; color: #78350f; border: 1px solid #fde047; }
+        
+        /* Status Legend */
+        .status-legend {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            padding: 12px 20px;
+            background: #f8fafc;
+            border-bottom: 1px solid #e2e8f0;
+            flex-wrap: wrap;
+        }
+        
+        .status-legend-label {
+            font-size: 11px;
+            font-weight: 600;
+            color: #64748b;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-right: 8px;
+        }
+        
+        .status-legend-item {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 12px;
+            font-weight: 500;
+            color: #475569;
+        }
+        
+        .status-legend-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            flex-shrink: 0;
+        }
+        
+        .legend-completed { background: #059669; }
+        .legend-approved { background: #2563eb; }
+        .legend-pending { background: #ea580c; }
+        .legend-cancelled { background: #dc2626; }
+        .legend-draft { background: #64748b; }
+        .legend-past { background: #ca8a04; }
         
         .cal-more-events {
             font-size: 10px;
@@ -1102,11 +1163,13 @@
                         <label style="display:block;font-size:11px;font-weight:600;color:#64748b;margin-bottom:4px;text-transform:uppercase;letter-spacing:0.5px;">Status</label>
                         <select id="filterStatus" onchange="applyCalendarFilters()" style="width:100%;padding:7px 10px;border:1px solid #e2e8f0;border-radius:6px;font-size:13px;font-family:'Plus Jakarta Sans',sans-serif;color:#0f172a;background:white;outline:none;">
                             <option value="">All Statuses</option>
-                            <option value="Pending">Pending</option>
-                            <option value="Contacted">Contacted</option>
-                            <option value="Approved">Approved</option>
-                            <option value="Declined">Declined</option>
-                            <option value="Completed">Completed</option>
+                            <option value="Completed">✅ Completed</option>
+                            <option value="Approved">🔵 Approved / Upcoming</option>
+                            <option value="Contacted">🔵 Contacted</option>
+                            <option value="Pending">🟠 Pending</option>
+                            <option value="Declined">🔴 Cancelled</option>
+                            <option value="Draft">⚪ Draft</option>
+                            <option value="Past-Needs-Update">⚠️ Past / Needs Update</option>
                         </select>
                     </div>
                     <div>
@@ -1125,6 +1188,35 @@
                     </div>
                 </div>
                 <button onclick="clearCalendarFilters()" style="padding:6px 14px;background:white;border:1px solid #e2e8f0;border-radius:6px;font-size:12px;font-weight:600;cursor:pointer;font-family:'Plus Jakarta Sans',sans-serif;color:#64748b;transition:all 0.15s;">Clear Filters</button>
+            </div>
+
+            <!-- Status Legend -->
+            <div class="status-legend">
+                <span class="status-legend-label">Status:</span>
+                <div class="status-legend-item">
+                    <span class="status-legend-dot legend-completed"></span>
+                    <span>Completed</span>
+                </div>
+                <div class="status-legend-item">
+                    <span class="status-legend-dot legend-approved"></span>
+                    <span>Approved</span>
+                </div>
+                <div class="status-legend-item">
+                    <span class="status-legend-dot legend-pending"></span>
+                    <span>Pending</span>
+                </div>
+                <div class="status-legend-item">
+                    <span class="status-legend-dot legend-cancelled"></span>
+                    <span>Cancelled</span>
+                </div>
+                <div class="status-legend-item">
+                    <span class="status-legend-dot legend-draft"></span>
+                    <span>Draft</span>
+                </div>
+                <div class="status-legend-item">
+                    <span class="status-legend-dot legend-past"></span>
+                    <span>Past / Needs Update</span>
+                </div>
             </div>
 
             <!-- Month View -->
@@ -2029,6 +2121,49 @@
     let currentCalendarView = 'month';
     let calendarFilters = { status: '', office: '', coverage: '' };
 
+    function getEventStatus(event) {
+        // Determine the actual display status based on event data and date
+        const eventDate = new Date(event.event_date + 'T00:00');
+        const today = new Date();
+        today.setHours(0, 0, 0, 0);
+        const isPast = eventDate < today;
+        
+        // Priority order for status determination
+        if (event.status === 'Declined') return 'cancelled';
+        if (event.status === 'Completed') return 'completed';
+        if (event.status === 'Pending') return 'pending';
+        if (event.status === 'Draft') return 'draft';
+        
+        // For Approved/Contacted events
+        if (event.status === 'Approved' || event.status === 'Contacted') {
+            // If event date has passed but not marked completed
+            if (isPast) return 'past-needs-update';
+            // Future approved event
+            return 'approved';
+        }
+        
+        // If past but no clear status
+        if (isPast && event.status !== 'Completed') {
+            return 'past-needs-update';
+        }
+        
+        // Default to approved for future events
+        return 'approved';
+    }
+
+    function getStatusLabel(statusClass) {
+        const labels = {
+            'completed': 'Completed',
+            'approved': 'Approved',
+            'contacted': 'Contacted',
+            'pending': 'Pending',
+            'cancelled': 'Cancelled',
+            'draft': 'Draft',
+            'past-needs-update': 'Past / Needs Update'
+        };
+        return labels[statusClass] || statusClass;
+    }
+
     function changeMonth(delta) {
         if (delta === 0) {
             currentCalendarDate = new Date();
@@ -2095,7 +2230,13 @@
 
     function filterEvents(events) {
         return events.filter(evt => {
-            if (calendarFilters.status && evt.status !== calendarFilters.status) return false;
+            const displayStatus = getEventStatus(evt);
+            
+            if (calendarFilters.status) {
+                const filterStatus = calendarFilters.status.toLowerCase();
+                if (filterStatus === 'past-needs-update' && displayStatus !== 'past-needs-update') return false;
+                if (filterStatus !== 'past-needs-update' && evt.status !== calendarFilters.status) return false;
+            }
             if (calendarFilters.office && !(evt.requesting_office || '').toLowerCase().includes(calendarFilters.office)) return false;
             if (calendarFilters.coverage) {
                 const services = Array.isArray(evt.services) ? evt.services.join(',').toLowerCase() : (evt.services || '').toLowerCase();
@@ -2178,9 +2319,11 @@
             cell.appendChild(dayNum);
 
             eventsOnDay.slice(0, 2).forEach(evt => {
+                const statusClass = getEventStatus(evt);
                 const chip = document.createElement('div');
-                chip.className = `cal-event-chip status-${evt.status.toLowerCase()}`;
-                chip.innerHTML = `<span class="cal-event-dot"></span><span style="flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-weight:600;">${sanitize(evt.event_activity)}</span>`;
+                chip.className = `cal-event-chip status-${statusClass}`;
+                chip.innerHTML = `<span class="cal-event-dot"></span><span class="cal-event-title" style="flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-weight:600;">${sanitize(evt.event_activity)}</span>`;
+                chip.title = `${evt.event_activity} - ${getStatusLabel(statusClass)}`;
                 chip.onclick = (e) => {
                     e.stopPropagation();
                     openDetailModal(evt.id);
@@ -2235,6 +2378,8 @@
             const day = d.getDate();
             const monthShort = d.toLocaleDateString('en-PH', {month:'short'});
             const weekday = d.toLocaleDateString('en-PH', {weekday:'short'});
+            const statusClass = getEventStatus(evt);
+            const statusLabel = getStatusLabel(statusClass);
 
             const row = document.createElement('div');
             row.className = 'upcoming-event-row';
@@ -2255,7 +2400,7 @@
                         <span>${sanitize(evt.requesting_office)}</span>
                     </div>
                 </div>
-                <span class="status-pill pill-${evt.status.toLowerCase()}">${evt.status}</span>
+                <span class="status-pill pill-${statusClass}">${statusLabel}</span>
             `;
             list.appendChild(row);
         });
@@ -2283,6 +2428,8 @@
         filteredEvents.forEach(evt => {
             const d = new Date(evt.event_date + 'T00:00');
             const dateStr = d.toLocaleDateString('en-PH', {weekday:'long', month:'long', day:'numeric', year:'numeric'});
+            const statusClass = getEventStatus(evt);
+            const statusLabel = getStatusLabel(statusClass);
             
             if (dateStr !== currentDate) {
                 if (currentDate !== '') html += '</div>';
@@ -2295,7 +2442,7 @@
                     <div style="font-size:13px;font-weight:700;color:#0f172a;margin-bottom:4px;">${evt.event_time || 'TBD'} • ${sanitize(evt.event_activity)}</div>
                     <div style="font-size:12px;color:#64748b;">${sanitize(evt.event_venue || 'TBD')} • ${sanitize(evt.requesting_office)}</div>
                 </div>
-                <span class="status-pill pill-${evt.status.toLowerCase()}">${evt.status}</span>
+                <span class="status-pill pill-${statusClass}">${statusLabel}</span>
             </div>`;
         });
         html += '</div>';
