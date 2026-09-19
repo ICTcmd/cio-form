@@ -2247,6 +2247,12 @@
     }
 
     function renderCalendar() {
+        // Ensure we have data before rendering
+        if (!allRequests || allRequests.length === 0) {
+            console.warn('renderCalendar: No requests data available yet');
+            return;
+        }
+
         const year = currentCalendarDate.getFullYear();
         const month = currentCalendarDate.getMonth();
         const today = new Date();
@@ -2267,6 +2273,9 @@
             if (!r.event_date) return false;
             return r.event_date.startsWith(`${year}-${monthStr}`);
         });
+        
+        console.log(`Calendar: Found ${eventsThisMonth.length} events for ${months[month]} ${year}`);
+        
         const filteredEvents = filterEvents(eventsThisMonth).sort((a, b) => new Date(a.event_date) - new Date(b.event_date));
 
         // Update summary cards
@@ -2304,6 +2313,11 @@
         for (let day = 1; day <= daysInMonth; day++) {
             const dateStr = `${year}-${monthStr}-${String(day).padStart(2,'0')}`;
             const eventsOnDay = filteredEvents.filter(r => r.event_date === dateStr);
+            
+            if (eventsOnDay.length > 0) {
+                console.log(`Day ${day}: ${eventsOnDay.length} event(s)`, eventsOnDay.map(e => e.event_activity));
+            }
+            
             const isToday = isCurrentMonth && day === today.getDate();
             const dayOfWeek = new Date(year, month, day).getDay();
             const isWeekend = dayOfWeek === 0 || dayOfWeek === 6;
